@@ -4,6 +4,7 @@ import RiskGroupCard from '../../components/Home/RiskGroupCard';
 import TodayAppointments from '../../components/Home/TodayAppointments';
 import './homepage.css';
 
+
 const HomePage = () => {
   return (
     <div className="home-page">
