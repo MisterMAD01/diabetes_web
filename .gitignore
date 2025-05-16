@@ -4,3 +4,4 @@ backend/.env
 frontend/.gitignore
 frontend/README.md
 frontend/google-signin-frontend
+backend/Export
