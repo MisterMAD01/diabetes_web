@@ -4,29 +4,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background: linear-gradient(to right, #ffffff, #ffffff);
+  min-height: 100vh;
   font-family: 'Sarabun', sans-serif;
 }
 
 .welcome-page__box {
   text-align: center;
   background-color: white;
-  padding: 3rem;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  max-width: 480px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
   width: 100%;
+  margin: 2rem auto;
 }
 
 .welcome-page__title {
-  font-size: 1.8rem;
-  color: #1e3a8a;
+  font-size: 1.75rem;
+  color: #1d4ed8;
   margin-bottom: 0.5rem;
 }
 
 .welcome-page__subtitle {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #334155;
   margin-bottom: 2rem;
 }
@@ -34,13 +34,14 @@
 .welcome-page__buttons {
   display: flex;
   justify-content: center;
+  gap: 0.75rem;
 }
 
 .welcome-page__btn {
   font-size: 1rem;
   font-weight: 600;
   padding: 0.75rem 1.5rem;
-  border-radius: 10px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -53,5 +54,43 @@
 }
 
 .welcome-page__btn--login:hover {
-  background-color: #1d4ed8;
+  background-color: #1e40af;
+}
+
+.welcome-page__btn--register {
+  background-color: #10b981;
+  color: white;
+}
+
+.welcome-page__btn--register:hover {
+  background-color: #059669;
+}
+@media (max-width: 500px) {
+  .welcome-page__box {
+    padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+    border-radius: 8px;
+    max-width: 96vw;
+  }
+
+  .welcome-page__buttons {
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .welcome-page__btn {
+    width: 100%;
+    min-width: 0;
+    font-size: 1.1rem;
+  }
+}
+.welcome-page__logo {
+  height: 88px;
+
+}
+
+@media (max-width: 500px) {
+  .welcome-page__logo {
+    height: 88px;
+
+  }
 }
