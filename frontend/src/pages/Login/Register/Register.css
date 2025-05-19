@@ -1,20 +1,56 @@
-@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap');
-
-.register-container {
-  max-width: 400px;
-  margin: 5rem auto;
-  padding: 2rem;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: 'Sarabun', sans-serif;
-  color: #1e293b;
+body, .register-bg {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
-.register-container h2 {
+.register-bg {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.register-container {
+  width: 100%;
+  max-width: 410px;
+  background: #fff;
+  margin: 2rem auto;
+  padding: 2.5rem 2rem 2rem 2rem;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px 0 rgba(30, 64, 175, 0.11);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+}
+
+.register-logo-area {
   text-align: center;
   margin-bottom: 1.5rem;
-  font-size: 1.75rem;
+}
+
+.register-logo-img {
+  height: 72px;
+  margin-bottom: 0.5rem;
+}
+
+.register-app-name {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #2563eb;
+}
+
+.register-app-desc {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 0.7rem;
+}
+
+.register-title {
+  text-align: center;
+  margin-bottom: 1.3rem;
+  font-size: 1.55rem;
   color: #1d4ed8;
 }
 
@@ -24,16 +60,46 @@
   gap: 1rem;
 }
 
-.register-form input {
-  padding: 0.75rem 1rem;
+.register-input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.register-input-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 1.1rem;
+  color: #2563eb;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.register-input {
+  padding-left: 2.1rem;
+  padding-right: 2.1rem;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
+  height: 2.5rem;
+  width: 100%;
 }
 
-.register-form button {
-  background-color: #10b981;
+.register-input-eye {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  font-size: 1.15rem;
+  user-select: none;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+}
+
+.register-btn {
+  background-color: #2563eb;
   color: white;
   border: none;
   padding: 0.75rem;
@@ -41,58 +107,80 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  margin-top: 0.2rem;
+  transition: background-color 0.2s;
 }
 
-.register-form button:hover {
-  background-color: #059669;
+.register-btn:disabled {
+  opacity: 0.7;
 }
 
-.divider {
+.register-btn:hover:enabled {
+  background-color: #1e40af;
+}
+
+.register-divider {
   text-align: center;
-  margin: 1.5rem 0;
-  font-size: 0.9rem;
+  margin: 1.5rem 0rem 0;
+  font-size: 1rem;
   color: #6b7280;
   position: relative;
+  font-weight: 500;
 }
 
-.divider::before,
-.divider::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 40%;
-  height: 1px;
-  background-color: #d1d5db;
-}
-
-.divider::before {
-  left: 0;
-}
-
-.divider::after {
-  right: 0;
-}
-
-.message {
+.register-message {
   text-align: center;
   margin-top: 1rem;
   color: #ef4444;
   font-weight: 500;
+  background: #fff1f1;
+  border: 1px solid #ef4444;
+  border-radius: 8px;
+  padding: 0.5rem;
+  animation: fade-in 0.2s;
 }
 
-.back-to-login {
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.register-back-to-login {
   text-align: center;
-  margin-top: 1rem;
-  font-size: 0.95rem;
+  margin-top: 1.3rem;
+  font-size: 0.97rem;
 }
 
-.back-to-login a {
+.register-back-to-login a {
   color: #2563eb;
   text-decoration: none;
   font-weight: 600;
 }
 
-.back-to-login a:hover {
+.register-back-to-login a:hover {
   text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .register-bg {
+    padding: 0;
+    min-height: 100vh;
+  }
+  .register-container {
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    max-width: 100vw;
+    min-height: 100vh;
+    padding: 2rem 0.5rem 1rem 0.5rem;
+  }
+  .register-logo-img { height: 56px; }
+  .register-app-name { font-size: 1rem; }
+}
+.google-register-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* แนวตั้ง */
 }

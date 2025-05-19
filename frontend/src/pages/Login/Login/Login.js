@@ -3,8 +3,12 @@ import axios from "axios";
 import GoogleLogin from "./GoogleLogin";
 import { Link } from "react-router-dom";
 import "./Login.css";
+import logo from "../../../assets/Logo.png";
 
-const API_URL = process.env.REACT_APP_API; // ✅ เพิ่มบรรทัดนี้
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser, faLock, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
+const API_URL = process.env.REACT_APP_API;
 
 function parseJwt(token) {
   try {
@@ -24,10 +28,12 @@ function parseJwt(token) {
 
 function Login() {
   const [formData, setFormData] = useState({
-    username: "",
+    identifier: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,8 +42,20 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage("");
+    const loginData = {
+      username: formData.identifier,
+      email: formData.identifier,
+      password: formData.password,
+    };
+
     try {
-      const response = await axios.post(`${API_URL}/api/auth/login`, formData); // ✅ ใช้ API_URL
+      const response = await axios.post(
+        `${API_URL}/api/auth/login`,
+        loginData,
+        { withCredentials: true }
+      );
       const token = response.data.token;
       localStorage.setItem("token", token);
 
@@ -47,40 +65,76 @@ function Login() {
       window.location.href = "/home";
     } catch (error) {
       setMessage(error.response?.data?.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="login-container">
-      <h2>เข้าสู่ระบบ</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="text"
-          name="username"
-          placeholder="ชื่อผู้ใช้ (Username)"
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="รหัสผ่าน"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">เข้าสู่ระบบ</button>
-      </form>
+    <div className="login-bg">
+      <div className="login-container">
+        <div className="login-logo-area">
+          <img src={logo} alt="Logo" className="login-logo-img" />
+          <div className="login-app-name">Diabetes Web System</div>
+          <div className="login-app-desc">ระบบจัดการเบาหวานสำหรับคลินิกและผู้ป่วย</div>
+        </div>
+        <h2 className="login-title">เข้าสู่ระบบ</h2>
+        <form onSubmit={handleLogin}>
+          <div className="login-input-wrapper">
+            <span className="login-input-icon">
+              <FontAwesomeIcon icon={faUser} />
+            </span>
+            <input
+              className="login-input"
+              type="text"
+              name="identifier"
+              placeholder="ชื่อผู้ใช้ หรือ อีเมล"
+              value={formData.identifier}
+              onChange={handleChange}
+              required
+              autoComplete="username"
+            />
+          </div>
+          <div className="login-input-wrapper">
+            <span className="login-input-icon">
+              <FontAwesomeIcon icon={faLock} />
+            </span>
+            <input
+              className="login-input"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="รหัสผ่าน"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              autoComplete="current-password"
+            />
+            <span
+              className="login-input-eye"
+              onClick={() => setShowPassword((show) => !show)}
+              title={showPassword ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"}
+              tabIndex={0}
+              role="button"
+              aria-label={showPassword ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"}
+            >
+              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+            </span>
+          </div>
+          <button className="login-btn" type="submit" disabled={loading}>
+            {loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
+          </button>
+        </form>
+        <div className="register-divider">หรือ</div>
+        <div className="login-google-container">
+          <GoogleLogin setMessage={setMessage} />
+        </div>
 
-      <div className="google-login-container">
-        <GoogleLogin setMessage={setMessage} />
-      </div>
-
-      {message && <p className="login-message">{message}</p>}
-
-      <div className="register-link">
-        <p>ยังไม่มีบัญชีใช่ไหม? <Link to="/register">สมัครสมาชิก</Link></p>
+        {message && <div className="login-message">{message}</div>}
+        <div className="login-register-link">
+          <p>
+            ยังไม่มีบัญชีใช่ไหม? <Link to="/register">สมัครสมาชิก</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

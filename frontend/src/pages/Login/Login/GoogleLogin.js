@@ -11,48 +11,48 @@ function parseJwt(token) {
     const jsonPayload = decodeURIComponent(
       atob(base64)
         .split('')
-        .map((c) => {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        })
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
         .join('')
     );
-
     return JSON.parse(jsonPayload);
   } catch (error) {
     return null;
   }
 }
 
-function GoogleLogin() {
+function GoogleLogin({ setMessage }) {
   useEffect(() => {
     window.google.accounts.id.initialize({
       client_id: CLIENT_ID,
       callback: handleCallbackResponse,
     });
 
-    window.google.accounts.id.renderButton(document.getElementById("google-login-button"), { theme: "outline", size: "large" });
+    window.google.accounts.id.renderButton(
+      document.getElementById("google-login-button"),
+      { theme: "outline", size: "large" }
+    );
   }, []);
 
   const handleCallbackResponse = async (response) => {
     try {
-      const res = await axios.post(`${API_URL}/api/auth/google/login`, {
-        googleIdToken: response.credential,
-      });
-      alert("Login Successful!");
-  
+      const res = await axios.post(
+        `${API_URL}/api/auth/google/login`,
+        { googleIdToken: response.credential },
+        { withCredentials: true } // ✅ ส่ง cookie (refresh token)
+      );
+
       const token = res.data.token;
       localStorage.setItem("token", token);
-  
-      const decoded = parseJwt(token); // ✨ ถอด JWT
-      localStorage.setItem("role", decoded?.role); // ✨ ดึง role จาก token
-  
-      window.location.href = "/user/profile";
+
+      const decoded = parseJwt(token);
+      localStorage.setItem("role", decoded?.role);
+
+      window.location.href = "/home";
     } catch (error) {
-      alert(error.response?.data?.message || "Google Login Failed!");
+      setMessage?.(error.response?.data?.message || "Google Login Failed!");
     }
   };
-  
-  
+
   return (
     <div>
       <h2>Login with Google</h2>

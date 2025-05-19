@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import GoogleRegister from "./GoogleRegister";
-import "./Register.css";
 import { useNavigate, Link } from "react-router-dom";
+import "./Register.css";
+import logo from "../../../assets/Logo.png";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser, faLock, faEnvelope, faIdCard, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const API_URL = process.env.REACT_APP_API;
 
@@ -13,7 +16,9 @@ function Register() {
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,8 +28,10 @@ function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage("");
     try {
-      const response = await axios.post(`${API_URL}/api/auth/register`, formData); // ✅ ใช้ API_URL
+      const response = await axios.post(`${API_URL}/api/auth/register`, formData);
       setMessage(response.data.message);
 
       setTimeout(() => {
@@ -32,57 +39,107 @@ function Register() {
       }, 1500);
     } catch (error) {
       setMessage(error.response?.data?.message || "เกิดข้อผิดพลาดในการลงทะเบียน");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="register-container">
-      <h2>สมัครสมาชิก</h2>
+    <div className="register-bg">
+      <div className="register-container">
+        <div className="register-logo-area">
+          <img src={logo} alt="Logo" className="register-logo-img" />
+          <div className="register-app-name">Diabetes Web System</div>
+          <div className="register-app-desc">ระบบจัดการเบาหวานสำหรับคลินิกและผู้ป่วย</div>
+        </div>
+        <h2 className="register-title">สมัครสมาชิก</h2>
+        <form className="register-form" onSubmit={handleRegister}>
+          <div className="register-input-wrapper">
+            <span className="register-input-icon">
+              <FontAwesomeIcon icon={faUser} />
+            </span>
+            <input
+              className="register-input"
+              type="text"
+              name="username"
+              placeholder="ชื่อผู้ใช้ (Username)"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              autoComplete="username"
+            />
+          </div>
+          <div className="register-input-wrapper">
+            <span className="register-input-icon">
+              <FontAwesomeIcon icon={faIdCard} />
+            </span>
+            <input
+              className="register-input"
+              type="text"
+              name="name"
+              placeholder="ชื่อ-นามสกุล"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              autoComplete="name"
+            />
+          </div>
+          <div className="register-input-wrapper">
+            <span className="register-input-icon">
+              <FontAwesomeIcon icon={faEnvelope} />
+            </span>
+            <input
+              className="register-input"
+              type="email"
+              name="email"
+              placeholder="อีเมล"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              autoComplete="email"
+            />
+          </div>
+          <div className="register-input-wrapper">
+            <span className="register-input-icon">
+              <FontAwesomeIcon icon={faLock} />
+            </span>
+            <input
+              className="register-input"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="รหัสผ่าน"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              autoComplete="new-password"
+            />
+            <span
+              className="register-input-eye"
+              onClick={() => setShowPassword((show) => !show)}
+              title={showPassword ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"}
+              tabIndex={0}
+              role="button"
+              aria-label={showPassword ? "ซ่อนรหัสผ่าน" : "แสดงรหัสผ่าน"}
+            >
+              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+            </span>
+          </div>
+          <button className="register-btn" type="submit" disabled={loading}>
+            {loading ? "กำลังสมัครสมาชิก..." : "ลงทะเบียน"}
+          </button>
+        </form>
 
-      <form className="register-form" onSubmit={handleRegister}>
-        <input
-          type="text"
-          name="username"
-          placeholder="ชื่อผู้ใช้ (Username)"
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="text"
-          name="name"
-          placeholder="ชื่อ-นามสกุล"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="อีเมล"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="รหัสผ่าน"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">ลงทะเบียน</button>
-      </form>
+        <div className="register-divider">หรือ</div>
 
-      <div className="divider">หรือ</div>
+        <GoogleRegister />
 
-      <GoogleRegister />
+        {message && <div className="register-message">{message}</div>}
 
-      {message && <p className="message">{message}</p>}
-
-      <div className="back-to-login">
-        <p>มีบัญชีอยู่แล้ว? <Link to="/login">เข้าสู่ระบบ</Link></p>
+        <div className="register-back-to-login">
+          <p>
+            มีบัญชีอยู่แล้ว? <Link to="/login">เข้าสู่ระบบ</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

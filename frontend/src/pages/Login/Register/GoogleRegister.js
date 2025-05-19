@@ -18,27 +18,29 @@ function GoogleRegister() {
     );
   }, []);
 
-  const handleCallbackResponse = (response) => {
-    const user = jwtDecode(response.credential);
-    console.log("Google User:", user);
+const handleCallbackResponse = (response) => {
+  if (!response.credential) {
+    alert("No Google credential received");
+    return;
+  }
+  const user = jwtDecode(response.credential);
+  console.log("Google JWT User:", user);
+  localStorage.setItem("googleRegister", JSON.stringify({
+    googleIdToken: response.credential,
+    name: user.name,
+    email: user.email,
+    picture: user.picture,
+  }));
+  window.location.href = "/additional-info";
+};
 
-    // เก็บข้อมูล Google ลง localStorage
-    localStorage.setItem("googleRegister", JSON.stringify({
-      googleIdToken: response.credential,
-      name: user.name,
-      email: user.email,
-      picture: user.picture,
-    }));
-
-    // ไปหน้าเก็บข้อมูลเพิ่มเติม
-    window.location.href = "/additional-info";
-  };
 
   return (
-    <div>
-      <h2>Register with Google</h2>
-      <div id="google-register-button"></div>
-    </div>
+<div className="google-register-box">
+  <h2>Register with Google</h2>
+  <div id="google-register-button"></div>
+</div>
+
   );
 }
 
