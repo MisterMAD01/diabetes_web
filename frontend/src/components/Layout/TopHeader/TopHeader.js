@@ -1,46 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import useLogout from "../../../hooks/useLogout";
+import { UserContext } from "../../../contexts/UserContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import "./TopHeader.css";
 
 const TopHeader = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
   const [currentTime, setCurrentTime] = useState("");
   const navigate = useNavigate();
-  const handleLogout = useLogout();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    axios
-      .get("http://localhost:5000/api/user/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setUserInfo(res.data.profile))
-      .catch((err) => console.error("Failed to fetch user info:", err));
-  }, []);
+  const { user, logout, loadingUser } = useContext(UserContext);
 
   useEffect(() => {
     const updateClock = () => {
       const now = new Date();
       const formattedDate = now.toLocaleDateString("th-TH", {
-        weekday: "long", // วันในสัปดาห์ เช่น วันพุธ
+        weekday: "long",
         year: "numeric",
         month: "long",
         day: "numeric"
       });
       setCurrentTime(formattedDate);
     };
+
     updateClock();
     const interval = setInterval(updateClock, 1000);
     return () => clearInterval(interval);
   }, []);
-  
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -56,24 +42,34 @@ const TopHeader = () => {
 
   return (
     <div className="top-header">
-<div className="logo-header">
-  <span>{currentTime}</span>
-</div>
-
+      <div className="logo-header">
+        <span>{currentTime}</span>
+      </div>
 
       <div className="user-info1">
         <div className="dropdown">
-          <div className="avatar-circle">
-            {userInfo ? getInitial(userInfo.username) : "?"}
-          </div>
-          <span>{userInfo ? userInfo.username : "กำลังโหลด..."}</span>
+          {user?.picture ? (
+            <img
+              src={user.picture}
+              alt="avatar"
+              className="user-avatar-mini"
+              onClick={toggleDropdown}
+            />
+          ) : (
+            <div className="avatar-circle" onClick={toggleDropdown}>
+              {loadingUser ? "?" : getInitial(user?.name)}
+            </div>
+          )}
+
+          <span>{loadingUser ? "" : user?.name || "ไม่พบข้อมูล"}</span>
           <button className="dropdown-btn" onClick={toggleDropdown}>
             <FontAwesomeIcon icon={isDropdownOpen ? faCaretUp : faCaretDown} />
           </button>
+
           {isDropdownOpen && (
             <div className="dropdown-menu">
               <button onClick={handleManageAccount}>โปรไฟล์ของฉัน</button>
-              <button onClick={handleLogout}>ออกจากระบบ</button>
+              <button onClick={logout}>ออกจากระบบ</button>
             </div>
           )}
         </div>

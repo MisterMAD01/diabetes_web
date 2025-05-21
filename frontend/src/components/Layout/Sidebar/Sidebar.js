@@ -1,38 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../../contexts/UserContext";
 import "./Sidebar.css";
 import logo from "../../../assets/Logo.png";
 
-function parseJwt(token) {
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map((c) => `%${('00' + c.charCodeAt(0).toString(16)).slice(-2)}`)
-        .join('')
-    );
-    return JSON.parse(jsonPayload);
-  } catch (error) {
-    return null;
-  }
-}
-
 const Sidebar = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  const role = token ? parseJwt(token)?.role : "";
+  const { user } = useContext(UserContext); // ✅ ใช้ context
+  const role = user?.role;
 
   return (
     <div className="sidebar">
- <div className="sidebar-header">
-  <img src={logo} alt="Logo" className="sidebar-logo" />
-  <div>
-    <h1>รพ.สต.โคกเคียน</h1>
-    <p className="sidebar-sub">ระบบจัดการผู้ป่วยเบาหวาน</p>
-  </div>
-</div>
+      <div className="sidebar-header">
+        <img src={logo} alt="Logo" className="sidebar-logo" />
+        <div>
+          <h1>รพ.สต.โคกเคียน</h1>
+          <p className="sidebar-sub">ระบบจัดการผู้ป่วยเบาหวาน</p>
+        </div>
+      </div>
 
       <nav className="sidebar-menu">
         <button onClick={() => navigate("/home")}>
