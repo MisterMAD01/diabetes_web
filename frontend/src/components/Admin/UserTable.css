@@ -1,0 +1,66 @@
+.user-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 1rem;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.user-table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.user-table__header th {
+  background: #f5f7fa;
+  font-weight: bold;
+  color: #1e293b;
+  padding: 0.75rem 1rem;
+}
+
+.user-table__row {
+  border-bottom: 1px solid #eaeaea;
+}
+
+.user-table__cell {
+  padding: 0.75rem 1rem;
+  white-space: nowrap;
+}
+
+.user-table__avatar {
+  width: 38px;
+  height: 38px;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.user-table__action-btn {
+  background: none;
+  border: none;
+  color: #1e3a8a;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin: 0 4px;
+  transition: color 0.2s;
+}
+.user-table__action-btn:hover {
+  color: #2563eb;
+}
+
+.user-table__status--approved {
+  color: #14b88e;
+  font-weight: bold;
+}
+
+.user-table__status--pending {
+  color: #f59e42;
+  font-weight: bold;
+}

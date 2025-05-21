@@ -1,0 +1,80 @@
+.user-form-modal__overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.user-form-modal {
+  background: #fff;
+  border-radius: 10px;
+  width: 410px;
+  max-width: 90vw;
+  padding: 2rem 2rem 1rem;
+  box-shadow: 0 0 20px rgba(0,0,0,0.19);
+  position: relative;
+}
+
+.user-form-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-form-modal__close-btn {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.user-form-modal__form {
+  margin-top: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.user-form-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.user-form-modal__submit-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.user-form-modal__submit-btn:hover {
+  background: #1d4ed8;
+}
+
+.user-form-modal__cancel-btn {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.user-form-modal__cancel-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+.user-form-modal__header h6 {
+  font-size: 1.35rem; /* หรือจะ 1.5rem ก็ได้ตามชอบ */
+  font-weight: bold;
+  color: #1e3a8a;
+  margin: 0;
+}

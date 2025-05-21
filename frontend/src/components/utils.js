@@ -34,3 +34,14 @@ export const toThaiDate = (dateStr) => {
     return date.toISOString().split('T')[0];
   };
   
+  export function formatDateShortThai(dateString) {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (isNaN(date)) return "";
+
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear() + 543; // แปลงปี ค.ศ. เป็น พ.ศ.
+
+  return `${day}/${month}/${year}`;
+}

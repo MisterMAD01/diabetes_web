@@ -1,166 +1,237 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import {
-  Container,
-  Typography,
-  CircularProgress,
-  Box,
-  TextField,
-  Button,
-} from "@mui/material";
+import { CircularProgress, Box, Button, Typography } from "@mui/material";
+import { UserContext } from "../../contexts/UserContext";
+import EditProfileModal from "./EditProfileModal";
+import ChangePasswordModal from "./ChangePasswordModal";
+import { formatDateShortThai } from "../../components/utils";
+import "./UserProfile.css";
 
 const API_URL = process.env.REACT_APP_API;
+const getInitial = (name) =>
+  name && name.trim().length > 0 ? name.trim().charAt(0).toUpperCase() : "?";
 
-// ดึงอักษรย่อจากชื่อ
-const getInitials = (name) => {
-  if (!name) return "";
-  const parts = name.trim().split(" ");
-  return parts.length >= 2
-    ? parts[0][0].toUpperCase() + parts[1][0].toUpperCase()
-    : parts[0].slice(0, 2).toUpperCase();
-};
-
-function UserProfile() {
+export default function UserProfile() {
+  const { accessToken, setUser } = useContext(UserContext);
   const [profile, setProfile] = useState(null);
-  const [editable, setEditable] = useState(false);
-  const [formData, setFormData] = useState({ name: "", email: "", picture: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    avatarFile: null,
+    deleteAvatar: "false",
+  });
+  const [loading, setLoading] = useState(false);
+  const [openProfileModal, setOpenProfileModal] = useState(false);
+  const [openPasswordModal, setOpenPasswordModal] = useState(false);
 
   useEffect(() => {
-    async function fetchProfile() {
+    if (!accessToken) return;
+
+    const fetchProfile = async () => {
+      setLoading(true);
       try {
-        const response = await axios.get(`${API_URL}/api/user/me`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        const res = await axios.get(`${API_URL}/api/user/me`, {
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
-        setProfile(response.data.profile);
+        const p = res.data.profile;
+        setProfile(p);
         setFormData({
-          name: response.data.profile.name || "",
-          email: response.data.profile.email || "",
-          picture: response.data.profile.picture || "",
+          name: p.name || "",
+          email: p.email || "",
+          avatarFile: null,
+          deleteAvatar: "false",
         });
       } catch (error) {
-        console.error("Error fetching profile:", error);
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-    }
-    fetchProfile();
-  }, []);
+    };
 
-  const handleEditToggle = () => {
-    setEditable(!editable);
-  };
+    fetchProfile();
+  }, [accessToken]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
   };
 
   const handleSave = async () => {
+    setLoading(true);
     try {
-      await axios.patch(`${API_URL}/api/user/me`,
-        { ...formData },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const data = new FormData();
+      data.append("name", formData.name);
+      data.append("email", formData.email);
+      if (formData.deleteAvatar === "true") data.append("deleteAvatar", "true");
+      if (formData.avatarFile) data.append("avatar", formData.avatarFile);
+
+      if (formData.avatarFile) {
+        const previewUrl = URL.createObjectURL(formData.avatarFile);
+        setUser((prev) => ({ ...prev, picture: previewUrl }));
+        setProfile((prev) => ({ ...prev, picture: previewUrl }));
+      } else if (formData.deleteAvatar === "true") {
+        setUser((prev) => ({ ...prev, picture: null }));
+        setProfile((prev) => ({ ...prev, picture: null }));
+      }
+
+      await axios.patch(`${API_URL}/api/user/me`, data, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      const res = await axios.get(`${API_URL}/api/user/me`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const updated = res.data.profile;
+      const fullUrl = updated.picture
+        ? updated.picture.startsWith("http")
+          ? updated.picture
+          : `${API_URL}/api/user/uploads/${updated.picture}`
+        : null;
+
+      setUser((prev) => ({ ...prev, ...updated, picture: fullUrl }));
+      setProfile((prev) => ({ ...prev, ...updated, picture: fullUrl }));
+
       alert("อัปเดตข้อมูลสำเร็จ!");
-      setEditable(false);
-    } catch (error) {
+      setOpenProfileModal(false);
+    } catch (err) {
+      console.error(err);
       alert("ไม่สามารถอัปเดตข้อมูลได้!");
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (loading && !profile)
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <CircularProgress color="primary" />
+      </Box>
+    );
+
+  if (!profile)
+    return (
+      <Typography variant="h6" sx={{ mt: 4, textAlign: "center" }}>
+        ไม่พบข้อมูลโปรไฟล์
+      </Typography>
+    );
+
+  const avatarSrc = profile.picture
+    ? profile.picture.startsWith("http")
+      ? profile.picture
+      : `${API_URL}/api/user/uploads/${profile.picture}`
+    : null;
+
   return (
-    <Container
-      sx={{
-        marginTop: "20px",
-        textAlign: "center",
-        padding: "20px",
-        maxWidth: "800px",
-        backgroundColor: "#f9f9f9",
-        borderRadius: "8px",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      <Typography variant="h4" sx={{ color: "#333", marginBottom: "20px" }}>
-        ข้อมูลผู้ใช้
+    <Box className="page-container">
+      <Typography variant="h4" className="page-title" gutterBottom>
+        โปรไฟล์ของฉัน
       </Typography>
 
-      {profile ? (
-        <Box>
-          {/* Avatar */}
-          <Box sx={{ marginBottom: "20px", display: "flex", justifyContent: "center" }}>
-            {formData.picture ? (
+      <Box className="content-box">
+        <Box sx={{ display: "flex", gap: 15, flexWrap: "wrap" }}>
+          <Box
+            sx={{
+              flexBasis: "180px",
+              textAlign: "center",
+            }}
+          >
+            {avatarSrc ? (
               <img
-                src={formData.picture}
+                src={avatarSrc}
                 alt="User Avatar"
-                style={{ borderRadius: "50%", width: "150px", height: "150px" }}
+                style={{
+                  width: 180,
+                  height: 180,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "4px solid #2563eb",
+                }}
               />
             ) : (
               <Box
                 sx={{
-                  width: "150px",
-                  height: "150px",
+                  width: 180,
+                  height: 180,
                   borderRadius: "50%",
-                  backgroundColor: "#cbd5e1",
-                  color: "#1e293b",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "48px",
+                  backgroundColor: "#2563eb",
+                  color: "white",
+                  fontSize: 72,
                   fontWeight: "bold",
+                  lineHeight: "180px",
+                  userSelect: "none",
                 }}
               >
-                {getInitials(formData.name)}
+                {getInitial(profile.name)}
               </Box>
             )}
+            <Typography sx={{ mt: 1 }}>
+              รหัสผู้ใช้ : {profile.id}
+            </Typography>
+            <Typography>สร้างเมื่อ : {formatDateShortThai(profile.created_at)}</Typography>
           </Box>
 
-          {/* Display or Edit */}
-          {editable ? (
-            <Box>
-              <TextField
-                name="name"
-                label="ชื่อ"
-                value={formData.name}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                name="email"
-                label="อีเมล"
-                value={formData.email}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-              />
-              <TextField
-                name="picture"
-                label="รูปภาพ (URL)"
-                value={formData.picture}
-                onChange={handleInputChange}
-                fullWidth
-                margin="normal"
-              />
-              <Button variant="contained" color="primary" onClick={handleSave} sx={{ mt: 2 }}>
-                บันทึกข้อมูล
-              </Button>
-            </Box>
-          ) : (
-            <Box>
-              <Typography variant="h6">ชื่อผู้ใช้: <strong>{profile.username}</strong></Typography>
-              <Typography variant="h6">ชื่อ: <strong>{profile.name}</strong></Typography>
-              <Typography variant="h6">อีเมล: <strong>{profile.email}</strong></Typography>
-              <Button variant="contained" color="secondary" sx={{ mt: 3 }} onClick={handleEditToggle}>
-                แก้ไขข้อมูล
-              </Button>
-            </Box>
-          )}
+          <Box sx={{ flex: 1, minWidth: 250 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              ข้อมูลผู้ใช้
+            </Typography>
+            <Typography sx={{ mb: 1 }}>
+              <strong>ชื่อผู้ใช้ :</strong> {profile.username}
+            </Typography>
+            <Typography sx={{ mb: 1 }}>
+              <strong>ชื่อ-นามสกุล :</strong> {profile.name}
+            </Typography>
+            <Typography sx={{ mb: 1 }}>
+              <strong>อีเมล :</strong> {profile.email}
+            </Typography>
+            <Typography sx={{ mb: 1 }}>
+              <strong>สิทธิ์การใช้งาน :</strong> {profile.role}
+            </Typography>
+          </Box>
         </Box>
-      ) : (
-        <CircularProgress color="primary" />
-      )}
-    </Container>
+
+        <Box
+          sx={{
+            mt: 3,
+            display: "flex",
+            justifyContent: "center",
+            gap: 2,
+            flexWrap: "wrap",
+          }}
+        >
+          <Button
+            variant="contained"
+            onClick={() => setOpenProfileModal(true)}
+            sx={{ minWidth: 140 }}
+          >
+            แก้ไขข้อมูล
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => setOpenPasswordModal(true)}
+            sx={{ minWidth: 140 }}
+          >
+            เปลี่ยนรหัสผ่าน
+          </Button>
+        </Box>
+      </Box>
+
+      <EditProfileModal
+        open={openProfileModal}
+        onClose={() => setOpenProfileModal(false)}
+        formData={formData}
+        onChange={handleInputChange}
+        onSave={handleSave}
+      />
+      <ChangePasswordModal
+        open={openPasswordModal}
+        onClose={() => setOpenPasswordModal(false)}
+      />
+    </Box>
   );
 }
-
-export default UserProfile;
