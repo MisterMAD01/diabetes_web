@@ -1,0 +1,164 @@
+/* ตั้ง modal-box ให้อยู่กลางจอแน่นอน */
+.modal-box {
+  position: fixed;       /* fix ตำแหน่ง */
+  top: 50%;             /* กลางแนวตั้ง */
+  left: 50%;            /* กลางแนวนอน */
+  transform: translate(-50%, -50%); /* เลื่อนกลับครึ่งขนาดตัวเอง เพื่อจัดกลาง */
+  background-color: white;
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  width: 450px;
+  max-width: 90vw;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  font-family: 'Sarabun', sans-serif;
+  color: #1e293b;
+  outline: none;
+  z-index: 1300; /* ให้ modal ทับชั้นอื่น */
+}
+
+.modal-box.small {
+  width: 350px;
+  max-width: 90vw;
+  padding: 1.5rem 1.5rem;
+}
+
+.avatar-preview {
+  display: flex;
+  flex-direction: column; /* เปลี่ยนเป็น column ให้ข้อความอยู่ใต้รูป */
+  align-items: center;    /* จัดให้อยู่กึ่งกลางแนวนอน */
+  margin-bottom: 1rem;
+  cursor: pointer;
+  position: relative;
+  gap: 0.3rem; /* เพิ่มระยะห่างระหว่างรูปกับข้อความ */
+}
+
+
+.avatar-preview img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #2563eb;
+}
+
+.user-avatar-placeholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #dbeafe;
+  color: #2563eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  user-select: none;
+}
+
+.avatar-preview button {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  min-width: 0;
+  padding: 4px 8px;
+}
+
+.backdrop-blur {
+  backdrop-filter: blur(4px);
+  background-color: rgba(0,0,0,0.25);
+}
+
+.cropper-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: #333; /* สีพื้นหลัง cropper */
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+/* ปุ่มใน modal */
+button.MuiButton-root {
+  font-family: 'Sarabun', sans-serif;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button.MuiButton-outlined {
+  background-color: white;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+}
+
+button.MuiButton-outlined:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+button.MuiButton-contained {
+  background-color: #2563eb;
+  color: white;
+}
+
+button.MuiButton-contained:hover {
+  background-color: #1d4ed8;
+}
+
+/* ช่องข้อความและ input ต่างๆ */
+.MuiTextField-root {
+  font-family: 'Sarabun', sans-serif;
+}
+
+/* สไลเดอร์ zoom */
+.MuiSlider-root {
+  margin-bottom: 1rem;
+}
+
+/* Responsive สำหรับ modal เล็ก */
+@media (max-width: 500px) {
+  .modal-box {
+    width: 95vw;
+    padding: 1.5rem 1rem;
+  }
+  .modal-box.small {
+    width: 95vw;
+  }
+}
+.avatar-preview {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.avatar-preview img,
+.user-avatar-placeholder {
+  width: 100px;       /* ขนาดรูป avatar */
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 3px solid #2563eb;
+}
+
+.avatar-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 50%;
+  padding: 4px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-icon img {
+  width: 16px;  /* ขนาดไอคอนกล้อง */
+  height: 16px;
+}
