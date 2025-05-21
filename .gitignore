@@ -1,6 +1,11 @@
+# ไม่ติดตามไฟล์ .env ทั้งใน frontend และ backend
 frontend/.env
 backend/.env
+
+# ไฟล์หรือโฟลเดอร์ขยะที่ไม่ต้องการติดตาม
 ขยะ
+
+# ไฟล์และโฟลเดอร์ที่ไม่ต้องการติดตาม
 /frontend/.gitignore
 /frontend/README.md
 /frontend/google-signin-frontend
