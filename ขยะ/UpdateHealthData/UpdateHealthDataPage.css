@@ -1,0 +1,197 @@
+/* UpdateHealthDataPage.css */
+
+/* จัด Layout Container ให้อยู่ตรงกลางหน้าจอ */
+.container {
+    display: flex;
+    justify-content: center; /* จัดกึ่งกลางตามแนวแกนหลัก (แนวนอน) */
+    align-items: center; /* จัดกึ่งกลางตามแนวแกนไขว้ (แนวตั้ง) */
+    padding: 20px; /* กำหนด Padding รอบ Container */
+  }
+  
+  /* กำหนด Style สำหรับ Card ที่บรรจุ Form */
+  .card {
+    width: 100%; /* กำหนดความกว้างเต็ม Container */
+    max-width: 800px; /* กำหนดความกว้างสูงสุด */
+    border: 1px solid #ccc; /* กำหนดขอบ */
+    border-radius: 8px; /* กำหนดขอบโค้ง */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* กำหนดเงา */
+    padding: 20px; /* กำหนด Padding ภายใน Card */
+    background-color: white; /* กำหนดพื้นหลังสีขาว */
+  }
+  
+  /* กำหนด Style สำหรับ Header ของ Card */
+  .card-header {
+    text-align: center; /* จัดข้อความกึ่งกลาง */
+    margin-bottom: 15px; /* กำหนด Margin ด้านล่าง */
+  }
+  
+  /* กำหนด Style สำหรับ Title ของ Card */
+  .card-title {
+    font-size: 1.5rem; /* กำหนดขนาดตัวอักษร */
+    font-weight: bold; /* กำหนดตัวหนา */
+    margin-bottom: 5px; /* กำหนด Margin ด้านล่าง */
+  }
+  
+  /* กำหนด Style สำหรับคำอธิบายของ Card */
+  .card-description {
+    color: #666; /* กำหนดสีข้อความ */
+    margin-bottom: 10px; /* กำหนด Margin ด้านล่าง */
+  }
+  
+  /* กำหนด Style สำหรับส่วน Content ของ Card */
+  .card-content {
+    padding-top: 15px; /* กำหนด Padding ด้านบน */
+  }
+  
+  /* กำหนด Style สำหรับ Footer ของ Card (ส่วนปุ่ม) */
+  .card-footer {
+    display: flex; /* ใช้ Flexbox สำหรับจัด Layout */
+    justify-content: flex-end; /* จัดให้เนื้อหาชิดขวา */
+    padding-top: 20px; /* กำหนด Padding ด้านบน */
+  }
+  
+  /* กำหนด Style สำหรับ Group ของ Form (Label + Input) */
+  .form-group {
+    margin-bottom: 15px; /* กำหนด Margin ด้านล่าง */
+  }
+  
+  /* กำหนด Style สำหรับ Layout แบบ Grid */
+  .grid {
+    display: grid; /* ใช้ CSS Grid Layout */
+  }
+  
+  /* กำหนดให้มี 2 Columns ใน Grid */
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* สร้าง 2 Columns ที่มีขนาดเท่ากัน */
+  }
+  
+  /* กำหนดระยะห่างระหว่าง Columns และ Rows ใน Grid */
+  .gap-6 {
+    gap: 1.5rem; /* เท่ากับ 24px */
+  }
+  
+  /* กำหนดระยะห่างด้านล่างสำหรับ Element ที่อยู่ใน Container ที่มี Class "space-y-2" */
+  .space-y-2 > * + * {
+    margin-top: 0.5rem; /* เท่ากับ 8px */
+  }
+  
+  /* กำหนดระยะห่างด้านล่างสำหรับ Element ที่อยู่ใน Container ที่มี Class "space-y-6" */
+  .space-y-6 > * + * {
+    margin-top: 1.5rem; /* เท่ากับ 24px */
+  }
+  
+  /* กำหนดให้ Element เป็น Block (แสดงเต็มความกว้าง) */
+  .block {
+    display: block;
+  }
+  
+  /* กำหนดสีข้อความเป็นสีเทาเข้ม */
+  .text-gray-700 {
+    color: #4a5568; /* Tailwind CSS Gray 700 */
+  }
+  
+  /* กำหนดขนาดตัวอักษรเป็นขนาดเล็ก */
+  .text-sm {
+    font-size: 0.875rem; /* Tailwind CSS Text SM */
+  }
+  
+  /* กำหนดให้ตัวอักษรเป็นตัวหนา */
+  .font-bold {
+    font-weight: bold;
+  }
+  
+  /* กำหนดสีข้อความ Error เป็นสีแดง */
+  .text-red-500 {
+    color: #ef4444; /* Tailwind CSS Red 500 */
+  }
+  
+  /* กำหนดสีข้อความเป็นสีเทาอ่อน */
+  .text-gray-500 {
+    color: #6b7280; /* Tailwind CSS Gray 500 */
+  }
+  
+  /* กำหนดให้ Element มี Position เป็น Relative (เพื่อใช้กับ Absolute Child) */
+  .relative {
+    position: relative;
+  }
+  
+  /* กำหนดให้ Element มี Position เป็น Absolute */
+  .absolute {
+    position: absolute;
+  }
+  
+  /* กำหนดระยะห่างจากขวา 0.75rem (12px) */
+  .right-3 {
+    right: 0.75rem;
+  }
+  
+  /* กำหนดตำแหน่งกึ่งกลางแนวตั้ง */
+  .top-1\/2 {
+    top: 50%;
+  }
+  
+  /* กำหนดให้เลื่อนตำแหน่งขึ้นไป -50% ของความสูงตัวเอง (จัดกึ่งกลาง) */
+  .-translate-y-1\/2 {
+    transform: translateY(-50%);
+  }
+  
+  /* กำหนดความกว้าง 1.25rem (20px) */
+  .w-5 {
+    width: 1.25rem;
+  }
+  
+  /* กำหนดความสูง 1.25rem (20px) */
+  .h-5 {
+    height: 1.25rem;
+  }
+  
+  /* กำหนดให้ Element ไม่ตอบสนองต่อ Mouse Events */
+  .pointer-events-none {
+    pointer-events: none;
+  }
+  
+  /* กำหนดสีพื้นหลังเป็นสีขาว */
+  .bg-white {
+    background-color: #fff;
+  }
+  
+  /* กำหนดให้มีขอบโค้ง */
+  .rounded {
+    border-radius: 0.25rem; /* Tailwind CSS Rounded MD */
+  }
+  
+  /* กำหนดให้มี Shadow ขนาดเล็ก */
+  .shadow {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1); /* Tailwind CSS Shadow */
+  }
+  
+  /* กำหนด Margin ด้านบน 0.25rem (4px) */
+  .mt-1 {
+    margin-top: 0.25rem;
+  }
+  
+  /* กำหนดสีพื้นหลังเป็นสีเทาอ่อนมาก */
+  .bg-gray-100 {
+    background-color: #f7fafc; /* Tailwind CSS Gray 100 */
+  }
+  
+  /* กำหนดให้จัดวาง Element ชิดขวา */
+  .justify-end {
+    justify-content: flex-end;
+  }
+  
+  /* Style สำหรับปุ่ม Submit */
+  .submit-button {
+    background-color: #28a745; /* สีเขียว */
+    color: white; /* สีข้อความขาว */
+    border: none; /* ลบขอบ */
+    border-radius: 4px; /* ขอบโค้งเล็กน้อย */
+    padding: 10px 15px; /* Padding ภายในปุ่ม */
+    cursor: pointer; /* เปลี่ยน Cursor เป็นรูปมือเมื่อ Hover */
+  }
+  
+  /* Style สำหรับปุ่ม Submit เมื่อถูก Disable */
+  .submit-button:disabled {
+    background-color: #ccc; /* สีเทาอ่อน */
+    cursor: not-allowed; /* เปลี่ยน Cursor เป็นรูปห้ามคลิก */
+  }

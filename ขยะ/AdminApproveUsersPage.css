@@ -1,0 +1,90 @@
+/* AdminApproveUsersPage.css */
+
+/* กำหนดพื้นหลังของหน้า */
+.admin-approve-users-page {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* ข้อความที่แจ้งสถานะการทำงาน */
+.message {
+  color: #d9534f; /* สีแดงสำหรับข้อผิดพลาด */
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* ส่วนตาราง */
+.admin-approve-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.admin-approve-container th,
+.admin-approve-container td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.admin-approve-container th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.admin-approve-container tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.admin-approve-container tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* ปุ่มอนุมัติและปฏิเสธ */
+.approve,
+.reject {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.approve {
+  background-color: #5bc0de; /* สีฟ้า */
+  color: white;
+}
+
+.reject {
+  background-color: #d9534f; /* สีแดง */
+  color: white;
+}
+
+.approve:hover {
+  background-color: #31b0d5;
+}
+
+.reject:hover {
+  background-color: #c9302c;
+}
+
+/* สำหรับการแสดงข้อความว่าไม่มีผู้ใช้ที่รออนุมัติ */
+.admin-approve-container p {
+  font-size: 16px;
+  color: #777;
+  font-style: italic;
+}
+
+/* สำหรับการตั้งค่าอุปกรณ์มือถือ */
+@media (max-width: 768px) {
+  .admin-approve-container table {
+    font-size: 14px;
+  }
+
+  .admin-approve-container th, 
+  .admin-approve-container td {
+    padding: 8px;
+  }
+}
