@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import useLogout from "../hooks/useLogout";
 
 const API_URL = process.env.REACT_APP_API;
 
@@ -10,12 +10,18 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(localStorage.getItem("token") || null);
   const [loadingUser, setLoadingUser] = useState(true);
-  const logoutAndNavigate = useLogout();
+  const navigate = useNavigate();
 
-  const logout = () => {
-    logoutAndNavigate();
+  const logout = async () => {
+    try {
+      await axios.post(`${API_URL}/api/auth/logout`, {}, { withCredentials: true });
+    } catch (err) {
+      console.error("Logout error:", err.message);
+    }
+    localStorage.removeItem("token");
     setAccessToken(null);
     setUser(null);
+    navigate("/login");
   };
 
   const refreshAccessTokenAndLoadUser = async () => {
@@ -30,7 +36,14 @@ export const UserProvider = ({ children }) => {
       const userRes = await axios.get(`${API_URL}/api/user/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUser(userRes.data.profile);
+
+      // ✅ เพิ่ม full URL ให้กับรูปภาพหากมี
+      const profile = userRes.data.profile;
+      if (profile.picture) {
+        profile.picture = `${API_URL}/api/user/uploads/${profile.picture}`;
+      }
+
+      setUser(profile);
     } catch (err) {
       console.error("โหลด token หรือผู้ใช้ล้มเหลว:", err.message);
       logout();
@@ -44,6 +57,9 @@ export const UserProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const isAdmin = user?.role === "admin";
+  const isUser = user?.role === "user";
+
   return (
     <UserContext.Provider
       value={{
@@ -53,6 +69,8 @@ export const UserProvider = ({ children }) => {
         setAccessToken,
         logout,
         loadingUser,
+        isAdmin,
+        isUser,
       }}
     >
       {children}

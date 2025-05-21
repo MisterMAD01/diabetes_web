@@ -44,11 +44,11 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     setMessage("");
-    const loginData = {
-      username: formData.identifier,
-      email: formData.identifier,
-      password: formData.password,
-    };
+const loginData = {
+  identifier: formData.identifier,
+  password: formData.password,
+};
+
 
     try {
       const response = await axios.post(

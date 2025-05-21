@@ -1,11 +1,14 @@
 // src/routes/ProtectedRoute.js
-import React from "react";
+import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
+  const { user, loadingUser } = useContext(UserContext);
 
-  if (!token) {
+  if (loadingUser) return null; // หรือ <Spinner /> หากต้องการ
+
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 
