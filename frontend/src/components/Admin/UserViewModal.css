@@ -1,0 +1,183 @@
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.7rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: color .15s;
+}
+.modal-close-btn:hover { color: #dc2626; }
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  justify-content: flex-end;
+}
+
+.submit-btn {
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.05rem;
+  padding: 0.57rem 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.17s;
+}
+.submit-btn:hover { background: #16a34a; }
+
+.edit-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.05rem;
+  padding: 0.57rem 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.edit-btn:hover { background: #1d4ed8; }
+
+.revoke-btn {
+  background: #f59e42;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.05rem;
+  padding: 0.57rem 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.17s;
+}
+.revoke-btn:hover { background: #ef4444; }
+
+.cancel-btn {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1.05rem;
+  padding: 0.57rem 1.15rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .15s, color .18s;
+}
+.cancel-btn:hover {
+  background: #e5e7eb;
+  color: #dc2626;
+}
+
+/* ----------- USER SUMMARY ----------- */
+.user-summary-box {
+  background: #f1f7fe;
+  border-radius: 18px;
+  padding: 1.1em 1.3em;
+  margin-bottom: 1.1em;
+  margin-top: 0.3em;
+}
+
+.user-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 1.3em;
+  position: relative;
+}
+
+.user-avatar-img, .user-avatar-placeholder {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #e5e7eb;
+  font-size: 1.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-avatar-placeholder {
+  background: #bae6fd;
+  color: #0e7490;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.user-realname {
+  font-weight: bold;
+  font-size: 1.12rem;
+  color: #22223b;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.user-username {
+  font-size: 0.98rem;
+  color: #475569;
+  margin-top: 0.11em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* badge สถานะ */
+.status-badge {
+  margin-left: auto;
+  display: inline-block;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.18em 1.3em;
+}
+.status-badge.approved {
+  background: #bbf7d0;
+  color: #166534;
+}
+.status-badge.pending {
+  background: #fde68a;
+  color: #7c5200;
+}
+
+/* Provider badge */
+.provider-badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.12em 0.75em;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-left: 0.25em;
+}
+.provider-badge.google {
+  background: #4285f4;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+.provider-badge.local {
+  background: #94a3b8;
+  color: #fff;
+}
+
+.google-icon {
+  font-size: 1.1em;
+  margin-right: 0.18em;
+  vertical-align: middle;
+}

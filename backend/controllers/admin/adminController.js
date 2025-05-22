@@ -5,12 +5,28 @@ const jwt = require('jsonwebtoken');
 // แสดงบัญชีทั้งหมด
 exports.getAllAccounts = async (req, res) => {
   try {
-    const [accounts] = await pool.execute("SELECT id, username, email,role ,approved FROM users"); // ใช้ pool แทน db
+    // เพิ่ม updated_at กับ google_id ใน SELECT
+    const [accounts] = await pool.execute(
+      `SELECT 
+         id, 
+         username,
+         name, 
+         email, 
+         role, 
+         approved, 
+         google_id, 
+         updated_at,
+         created_at ,
+         picture
+       FROM users`
+    );
     res.status(200).json({ accounts });
   } catch (error) {
+    console.error("Failed to fetch accounts:", error);
     res.status(500).json({ message: "Failed to fetch accounts", error: error.message });
   }
 };
+
 
 
 // อนุมัติบัญชีผู้ใช้

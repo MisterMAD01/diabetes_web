@@ -1,76 +1,92 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEdit, faTrashAlt, faClock, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { formatDateShortThai } from "../utils";
 import "./UserTable.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEye,
+  faEdit,
+  faTrashAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { formatDateShortThai } from "../../components/utils";
 
-const getInitialLetter = (name) => (name && name.trim() ? name.trim().charAt(0).toUpperCase() : "");
+// Utility: get initial from username
+const getInitials = (name) => {
+  if (!name || !name.trim()) return "";
+  return name.trim().charAt(0).toUpperCase();
+};
 
-function UserTable({ users, onViewUser, onEditUser, onDeleteUser }) {
-  const [confirmDeleteUser, setConfirmDeleteUser] = useState(null);
+const UserTable = ({ users, handleView, handleEdit, handleDelete }) => {
+  const [deleteUser, setDeleteUser] = useState(null);
 
-  const handleConfirmDelete = () => {
-    onDeleteUser(confirmDeleteUser.id);
-    setConfirmDeleteUser(null);
+  const confirmDelete = () => {
+    handleDelete(deleteUser.id);
+    setDeleteUser(null);
   };
 
   return (
-    <div className="user-table-container">
+    <div className="table-wrapper">
       <table className="user-table">
         <thead>
-          <tr className="user-table__header">
-            <th>#</th>
-            <th>ชื่อผู้ใช้</th>
-            <th>อีเมล</th>
-            <th>สิทธิ์การใช้งาน</th>
-            <th>สถานะ</th>
-            <th>เชื่อมต่อกับ</th>
-            <th>อัปเดตเมื่อ</th>
-            <th>การจัดการ</th>
+          <tr>
+            <th className="col-avatar">#</th>
+            <th className="col-username">ชื่อผู้ใช้</th>
+            <th className="col-email">อีเมล</th>
+            <th className="col-role">สิทธิ์การใช้งาน</th>
+            <th className="col-status">สถานะ</th>
+            <th className="col-connection">เชื่อมต่อกับ</th>
+            <th className="col-updated">อัปเดตเมื่อ</th>
+            <th className="col-actions">การจัดการ</th>
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
-            <tr key={user.id} className="user-table__row">
-              <td className="user-table__cell">
-                <div className="user-table__avatar">
-                  {getInitialLetter(user.username)}
+          {users.map((u) => (
+            <tr key={u.id}>
+              <td data-label="#">
+                <div className="avatar-circle">
+                  {getInitials(u.username)}
                 </div>
               </td>
-              <td className="user-table__cell">{user.username}</td>
-              <td className="user-table__cell">{user.email}</td>
-              <td className="user-table__cell">{user.role}</td>
-              <td className="user-table__cell">
-                {user.approved ? (
-                  <span className="user-table__status--approved">
-                    <FontAwesomeIcon icon={faCheckCircle} /> อนุมัติแล้ว
-                  </span>
+              <td data-label="ชื่อผู้ใช้">{u.username}</td>
+              <td data-label="อีเมล">{u.email}</td>
+              <td data-label="สิทธิ์การใช้งาน">{u.role}</td>
+              <td data-label="สถานะ">
+                <span className={`status-badge ${u.approved ? "approved" : "pending"}`}>
+                  {u.approved ? "อนุมัติแล้ว" : "รออนุมัติ"}
+                </span>
+              </td>
+              <td data-label="เชื่อมต่อกับ">
+                {u.google_id ? (
+                  <>
+                    <FontAwesomeIcon icon={faGoogle} className="icon-google" /> Google
+                  </>
                 ) : (
-                  <span className="user-table__status--pending">
-                    <FontAwesomeIcon icon={faClock} /> รออนุมัติ
-                  </span>
+                  "-"
                 )}
               </td>
-              <td className="user-table__cell">
-                {user.google_id ? (
-                  <>
-                    <FontAwesomeIcon icon={faGoogle} /> Google
-                  </>
-                ) : "-"}
+              <td data-label="อัปเดตเมื่อ">
+                {u.updated_at ? formatDateShortThai(u.updated_at) : "-"}
               </td>
-              <td className="user-table__cell">
-                {user.updated_at ? formatDateShortThai(user.updated_at) : "-"}
-              </td>
-              <td className="user-table__cell">
-                <button className="user-table__action-btn" onClick={() => onViewUser(user)} title="ดูรายละเอียด">
+              <td data-label="การจัดการ" className="action-group">
+                <button
+                  onClick={() => handleView(u)}
+                  title="ดูรายละเอียด"
+                  className="action-btn view"
+                >
                   <FontAwesomeIcon icon={faEye} />
                 </button>
-                <button className="user-table__action-btn" onClick={() => onEditUser(user)} title="แก้ไข">
+                <button
+                  onClick={() => handleEdit(u)}
+                  title="แก้ไข"
+                  className="action-btn edit"
+                >
                   <FontAwesomeIcon icon={faEdit} />
                 </button>
-                <button className="user-table__action-btn" onClick={() => setConfirmDeleteUser(user)} title="ลบ">
+                <button
+                  onClick={() => setDeleteUser(u)}
+                  title="ลบ"
+                  className="action-btn delete"
+                >
                   <FontAwesomeIcon icon={faTrashAlt} />
                 </button>
               </td>
@@ -78,33 +94,42 @@ function UserTable({ users, onViewUser, onEditUser, onDeleteUser }) {
           ))}
         </tbody>
       </table>
-      {/* Confirm Delete Modal */}
-      {confirmDeleteUser && (
-        <div className="user-form-modal__overlay">
-          <div className="user-form-modal">
-            <div className="user-form-modal__header">
-              <h3>ยืนยันการลบผู้ใช้</h3>
-              <button className="user-form-modal__close-btn" onClick={() => setConfirmDeleteUser(null)}>×</button>
+
+      {/* Confirmation Modal */}
+      {deleteUser && (
+        <div className="modal-overlay">
+          <div className="modal small">
+            <div className="modal-icon warning">
+              <i className="fas fa-exclamation-triangle"></i>
             </div>
-            <div style={{ margin: "1rem 0" }}>
-              คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้ “{confirmDeleteUser.username}”?
-            </div>
-            <div className="user-form-modal__actions">
-              <button className="user-form-modal__cancel-btn" onClick={() => setConfirmDeleteUser(null)}>ยกเลิก</button>
-              <button className="user-form-modal__submit-btn" onClick={handleConfirmDelete}>ลบ</button>
+            <h3>ยืนยันการลบผู้ใช้</h3>
+            <p>
+              คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้ "
+              {deleteUser.username}"? การกระทำนี้ไม่สามารถย้อนกลับได้
+            </p>
+            <div className="modal-actions">
+              <button
+                onClick={() => setDeleteUser(null)}
+                className="cancel-btn"
+              >
+                ยกเลิก
+              </button>
+              <button onClick={confirmDelete} className="delete-btn confirm">
+                ลบผู้ใช้
+              </button>
             </div>
           </div>
         </div>
       )}
     </div>
   );
-}
+};
 
 UserTable.propTypes = {
   users: PropTypes.array.isRequired,
-  onViewUser: PropTypes.func.isRequired,
-  onEditUser: PropTypes.func.isRequired,
-  onDeleteUser: PropTypes.func.isRequired
+  handleView: PropTypes.func.isRequired,
+  handleEdit: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
 };
 
 export default UserTable;
