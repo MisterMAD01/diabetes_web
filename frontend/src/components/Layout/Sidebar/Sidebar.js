@@ -34,7 +34,7 @@ const Sidebar = () => {
         <button onClick={() => navigate("/appointments")}>
           <i className="fas fa-calendar-alt"></i> การนัดหมาย
         </button>
-        <button onClick={() => navigate("/risk-groups")}>
+        <button onClick={() => navigate("/risk-group")}>
           <i className="fas fa-exclamation-triangle"></i> กลุ่มเสี่ยง
         </button>
         <button onClick={() => navigate("/reports")}>
