@@ -1,7 +1,5 @@
-/* TopHeader.css */
-
-.top-header {
-  position: sticky; /* เปลี่ยนจาก fixed เป็น sticky */
+.header-bar {
+  position: sticky;
   top: 0;
   height: 60px;
   background-color: #1e3a8a;
@@ -10,34 +8,35 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 1.5rem;
-  z-index: 900; /* ต่ำกว่า sidebar (1000) ถ้าใช้ fixed */
+  z-index: 900;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-family: 'Sarabun', sans-serif;
 }
 
-
-/* โลโก้ด้านซ้าย */
-.logo-header {
+/* วันที่/เวลาซ้าย */
+.header-date {
   font-size: 1.1rem;
   font-weight: bold;
   color: #ffffff;
 }
 
-/* กลุ่มข้อมูลผู้ใช้งาน */
-.user-info1 {
+/* กลุ่ม user dropdown ขวา */
+.header-user {
   display: flex;
   align-items: center;
   gap: 1.25rem;
 }
 
-/* เวลาปัจจุบัน */
-.current-time {
-  color: white;
-  font-size: 0.9rem;
+/* อวตารรูป/ตัวอักษร */
+.user-avatar-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
 }
 
-/* อวตารวงกลม */
-.avatar-circle {
+.user-avatar-initial {
   background-color: #2563eb;
   color: white;
   width: 32px;
@@ -48,19 +47,25 @@
   align-items: center;
   justify-content: center;
   font-size: 0.9rem;
+  cursor: pointer;
 }
 
-/* dropdown และปุ่ม */
-.dropdown {
+/* ชื่อผู้ใช้ */
+.user-displayname {
+  font-size: 0.98rem;
+}
+
+/* Dropdown กลุ่ม profile */
+.user-dropdown {
   position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.95rem;
-  cursor: pointer;
 }
 
-.dropdown-btn {
+/* ปุ่ม caret */
+.dropdown-toggle-btn {
   background: none;
   border: none;
   color: white;
@@ -69,7 +74,7 @@
 }
 
 /* เมนู dropdown */
-.dropdown-menu {
+.user-dropdown-menu {
   position: absolute;
   top: 130%;
   right: 0;
@@ -82,7 +87,7 @@
   z-index: 1001;
 }
 
-.dropdown-menu button {
+.user-dropdown-menu button {
   width: 100%;
   padding: 0.75rem 1rem;
   border: none;
@@ -93,6 +98,6 @@
   cursor: pointer;
 }
 
-.dropdown-menu button:hover {
+.user-dropdown-menu button:hover {
   background-color: #cbd5e1;
 }

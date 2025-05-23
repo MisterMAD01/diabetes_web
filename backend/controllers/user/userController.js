@@ -152,3 +152,14 @@ exports.changePassword = async (req, res) => {
     });
   }
 };
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const [rows] = await pool.execute(
+      'SELECT id FROM users'
+    );
+    res.status(200).json(rows); // rows คือ array ของ user
+  } catch (err) {
+    res.status(500).json({ message: 'เกิดข้อผิดพลาด', error: err.message });
+  }
+};
