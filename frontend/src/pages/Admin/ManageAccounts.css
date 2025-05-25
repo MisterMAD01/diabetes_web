@@ -99,20 +99,3 @@
     min-width: 100%;
   }
 }
-/* เพิ่มวงกลมสีพร้อมตัวอักษรแรก */
-.user-table .avatar-circle,
-.userlist-table .userlist-avatar-circle {
-  width: 36px;
-  height: 36px;
-  background-color: #3b82f6;   /* สีน้ำเงินตามดีไซน์ */
-  color: #ffffff;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 0.9rem;
-  margin-right: 0.75rem;
-}
-
-/* หากใช้ wrapper ชื่อแตกต่าง ให้ปรับชื่อ class ให้ตรง เช่น .userlist-avatar-circle */
