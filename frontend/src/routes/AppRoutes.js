@@ -20,6 +20,7 @@ import UserProfile from "../pages/UserProfile/UserProfile";
 
 // 🔒 หน้าเฉพาะ admin
 import ManageAccounts from "../pages/Admin/ManageAccounts";
+import Datamanagement from "../pages/Admin/Datamanagement"
 
 const AppRoutes = () => (
   <Routes>
@@ -55,7 +56,9 @@ const AppRoutes = () => (
     <Route path="/manage-users" element={
       <AdminRoute><ManageAccounts /></AdminRoute>
     } />
-
+    <Route path="/data-management" element={
+      <AdminRoute><Datamanagement /></AdminRoute>
+    } />
   </Routes>
 );
 
