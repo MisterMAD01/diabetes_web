@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import UserForm from "./UserForm";
-import UserEditForm from "./UserEditForm";
-import UserTable from "./UserTable";
+import UserForm from "../../components/Admin/UserFormModal";
+import UserEditForm from "../../components/Admin/UserEditFormModal";
+import UserViewModal from "../../components/Admin/UserViewModal";
+import UserTable from "../../components/Admin/UserTable";
 import "./ManageAccounts.css";
 
-// Font Awesome Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
   faArrowLeft,
   faUserCog,
-  faCheckCircle,
-  faTimesCircle,
-  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 
-// 🔧 ดึง BASE API URL จาก .env
 const API_URL = process.env.REACT_APP_API;
 
 function ManageAccounts() {
   const [accounts, setAccounts] = useState([]);
   const [isAddingUser, setIsAddingUser] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+  const [viewingUser, setViewingUser] = useState(null);
 
   useEffect(() => {
     fetchAccounts();
@@ -35,16 +32,13 @@ function ManageAccounts() {
         alert("กรุณาเข้าสู่ระบบเพื่อดำเนินการ");
         return;
       }
-
       const currentUser = JSON.parse(atob(token.split(".")[1]));
       const response = await axios.get(`${API_URL}/api/admin/accounts`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       const filteredAccounts = response.data.accounts.filter(
         (account) => account.id !== currentUser.id
       );
-
       setAccounts(filteredAccounts);
     } catch (error) {
       alert("ไม่สามารถดึงข้อมูลบัญชีได้!");
@@ -129,6 +123,10 @@ function ManageAccounts() {
     }
   };
 
+  const handleView = (user) => {
+    setViewingUser(user);
+  };
+
   return (
     <div className="manage-accounts-container">
       <h1>
@@ -158,10 +156,25 @@ function ManageAccounts() {
       {!isAddingUser && !editingUser && (
         <UserTable
           users={accounts}
+          handleView={handleView}
           handleEdit={handleEdit}
           handleDelete={handleDelete}
           handleApprove={handleApprove}
           handleRevoke={handleRevoke}
+        />
+      )}
+
+      {/* View modal */}
+      {viewingUser && (
+        <UserViewModal
+          user={viewingUser}
+          onClose={() => setViewingUser(null)}
+          onApprove={handleApprove}
+          onRevoke={handleRevoke}
+          onEdit={(user) => {
+            setViewingUser(null);
+            setEditingUser(user);
+          }}
         />
       )}
     </div>

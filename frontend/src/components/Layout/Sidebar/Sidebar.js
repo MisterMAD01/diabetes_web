@@ -23,11 +23,17 @@ const Sidebar = () => {
         <button onClick={() => navigate("/home")}>
           <i className="fas fa-home"></i> หน้าหลัก
         </button>
-        {role === "admin" && (
-          <button onClick={() => navigate("/manage-users")}>
-            <i className="fas fa-user-cog"></i> จัดการผู้ใช้
-          </button>
-        )}
+{role === "admin" && (
+  <>
+    <button onClick={() => navigate("/manage-users")}>
+      <i className="fas fa-user-cog"></i> จัดการผู้ใช้
+    </button>
+    <button onClick={() => navigate("/data-management")}>
+      <i className="fas fa-database"></i> จัดการข้อมูล
+    </button>
+  </>
+)}
+
         <button onClick={() => navigate("/patients")}>
           <i className="fas fa-notes-medical"></i> ข้อมูลผู้ป่วย
         </button>

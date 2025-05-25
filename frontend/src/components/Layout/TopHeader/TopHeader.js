@@ -28,48 +28,70 @@ const TopHeader = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
+  // ปิด dropdown เมื่อเลือกเมนู
+  const handleManageAccount = () => {
+    setIsDropdownOpen(false);
+    navigate("/user/profile");
   };
 
-  const handleManageAccount = () => {
-    navigate("/user/profile");
+  const handleLogout = () => {
+    setIsDropdownOpen(false);
+    logout();
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
   };
 
   const getInitial = (name) => {
     return name ? name.trim().charAt(0).toUpperCase() : "?";
   };
 
-  return (
-    <div className="top-header">
-      <div className="logo-header">
-        <span>{currentTime}</span>
-      </div>
+  // ปิด dropdown เมื่อคลิกข้างนอก (optional/เพิ่มความสมบูรณ์)
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const dropdown = document.querySelector(".user-dropdown");
+      if (
+        isDropdownOpen &&
+        dropdown &&
+        !dropdown.contains(event.target)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
-      <div className="user-info1">
-        <div className="dropdown">
+  return (
+    <div className="header-bar">
+      <div className="header-date">{currentTime}</div>
+      <div className="header-user">
+        <div className="user-dropdown">
           {user?.picture ? (
             <img
               src={user.picture}
               alt="avatar"
-              className="user-avatar-mini"
+              className="user-avatar-img"
               onClick={toggleDropdown}
             />
           ) : (
-            <div className="avatar-circle" onClick={toggleDropdown}>
+            <div className="user-avatar-initial" onClick={toggleDropdown}>
               {loadingUser ? "?" : getInitial(user?.name)}
             </div>
           )}
-
-          <span>{loadingUser ? "" : user?.name || "ไม่พบข้อมูล"}</span>
-          <button className="dropdown-btn" onClick={toggleDropdown}>
+          <span className="user-displayname">{loadingUser ? "" : user?.name || "ไม่พบข้อมูล"}</span>
+          <button className="dropdown-toggle-btn" onClick={toggleDropdown}>
             <FontAwesomeIcon icon={isDropdownOpen ? faCaretUp : faCaretDown} />
           </button>
-
           {isDropdownOpen && (
-            <div className="dropdown-menu">
+            <div className="user-dropdown-menu">
               <button onClick={handleManageAccount}>โปรไฟล์ของฉัน</button>
-              <button onClick={logout}>ออกจากระบบ</button>
+              <button onClick={handleLogout}>ออกจากระบบ</button>
             </div>
           )}
         </div>

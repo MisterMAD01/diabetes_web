@@ -21,3 +21,5 @@ router.post(
   userController.changePassword
 );
 module.exports = router;
+
+router.get('/', userController.getAllUsers);

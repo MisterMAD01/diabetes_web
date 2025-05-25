@@ -7,7 +7,7 @@ import {
   UserIcon,
 } from '@heroicons/react/solid';
 import './DashboardOverview.css';
-import { getLocalISODate } from '../../components/utils';
+import { getLocalISODate } from '../utils';
 
 const DashboardOverview = () => {
   const [stats, setStats] = useState({
@@ -20,29 +20,48 @@ const DashboardOverview = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
+        // 1. ดึง token จาก localStorage
+        const token = localStorage.getItem("token");
+        const config = {
+          headers: { Authorization: `Bearer ${token}` }
+        };
+
+        // 2. ส่ง token ไปกับทุก request
         const [patientsRes, appointmentsRes, usersRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/appointments/patients'),
-          axios.get('http://localhost:5000/api/appointments'),
-          axios.get('http://localhost:5000/api/user'), // 🔗 เปลี่ยน path ถ้าคุณใช้ route อื่น
+          axios.get('http://localhost:5000/api/appointments/patients', config),
+          axios.get('http://localhost:5000/api/appointments', config),
+          axios.get('http://localhost:5000/api/user', config) // เปลี่ยน path ตาม API จริง
         ]);
 
-        const totalPatients = patientsRes.data.length;
+        // 3. จัดการข้อมูลตามเดิม
+        const totalPatients = Array.isArray(patientsRes.data) ? patientsRes.data.length : 0;
 
-        const highRisk = patientsRes.data.filter(
-          (p) => p.Risk_Level === 'สูง' || p.Risk_Level === 'High'
-        ).length;
+        // ถ้าไม่มี Risk_Level ให้เซตเป็น 0
+        const highRisk = Array.isArray(patientsRes.data)
+          ? patientsRes.data.filter(
+              (p) => p.Risk_Level === 'สูง' || p.Risk_Level === 'High'
+            ).length
+          : 0;
 
         const today = getLocalISODate(new Date());
 
-        const todayAppointments = appointmentsRes.data.filter(
-          (a) => getLocalISODate(a.Appointment_Date) === today
-        ).length;
+        const todayAppointments = Array.isArray(appointmentsRes.data)
+          ? appointmentsRes.data.filter(
+              (a) => getLocalISODate(a.Appointment_Date) === today
+            ).length
+          : 0;
 
-        const totalUsers = usersRes.data.length;
+        const totalUsers = Array.isArray(usersRes.data) ? usersRes.data.length : 0;
 
         setStats({ totalPatients, highRisk, todayAppointments, totalUsers });
       } catch (err) {
         console.error('โหลดข้อมูล overview ล้มเหลว:', err);
+        setStats({
+          totalPatients: 0,
+          highRisk: 0,
+          todayAppointments: 0,
+          totalUsers: 0,
+        });
       }
     };
 
@@ -97,6 +116,7 @@ const DashboardOverview = () => {
             <UserIcon className="icon-size green" />
           </div>
           <div>
+            
             <h3 className="label">ผู้ใช้งานทั้งหมด</h3>
             <p className="value">{stats.totalUsers}</p>
           </div>
