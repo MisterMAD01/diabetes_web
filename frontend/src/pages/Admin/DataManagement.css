@@ -1,15 +1,31 @@
 .data-container {
-  max-width: 700px;
+  max-width: 800px;
   margin: auto;
-  padding: 24px;
+  padding: 20px;
   font-family: "Segoe UI", sans-serif;
-  background: #f9f9f9;
+  background-color: #f9f9f9;
   border-radius: 8px;
 }
 
-h2 {
-  font-size: 24px;
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
+}
+
+.import-page-button {
+  background-color: #10b981;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.import-page-button:hover {
+  background-color: #059669;
 }
 
 .date-filters {
@@ -26,7 +42,7 @@ h2 {
 
 .input-group label {
   display: block;
-  font-weight: 600;
+  font-weight: bold;
   margin-bottom: 4px;
 }
 
@@ -36,29 +52,55 @@ h2 {
   font-size: 14px;
 }
 
-.button-group {
+.checkbox-group {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 16px;
+}
+
+.checkbox-item svg {
+  font-size: 20px;
+}
+
+.checkbox-item:hover {
+  background-color: #e5e7eb;
+}
+
+.checkbox-item input[type="checkbox"] {
+  transform: scale(1.3);
+  accent-color: #2563eb;
+}
+
+.export-button {
+  background-color: #2563eb;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 30px;
 }
 
-.button-group button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.button-group button:hover {
-  background-color: #1d4ed8;
+.export-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
 }
 
 .log-section {
@@ -83,4 +125,131 @@ h2 {
 .log-empty {
   font-size: 14px;
   color: #999;
+}
+
+/* 🪟 Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal h3 {
+  margin-top: 0;
+}
+
+.modal ul {
+  padding-left: 20px;
+  margin: 12px 0;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  padding: 8px 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.modal-buttons button:first-child {
+  background-color: #2563eb;
+  color: white;
+}
+
+.modal-buttons button:last-child {
+  background-color: #e5e7eb;
+  color: #111827;
+}
+.log-item {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #444;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 1000;
+}
+
+.modal.import-modal {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+form label {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+form input[type="file"] {
+  margin-top: 0.5rem;
+}
+
+form select {
+  margin-left: 0.5rem;
+  padding: 0.25rem;
+}
+
+.message {
+  margin: 10px 0;
+  color: #dc2626; /* สีแดงสำหรับ error */
+}
+
+button[type="submit"] {
+  background-color: #2563eb;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+}
+
+button[type="submit"]:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
 }
