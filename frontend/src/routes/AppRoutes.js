@@ -17,7 +17,7 @@ import Report from "../pages/Report/ReportPage";
 import Export from "../pages/Export/Exportpage";
 import Patients from "../pages/Patients/Patient/Patient";
 import UserProfile from "../pages/UserProfile/UserProfile";
-
+import RiskGroup from "../pages/Riskgroup/Riskgroup";
 // 🔒 หน้าเฉพาะ admin
 import ManageAccounts from "../pages/Admin/ManageAccounts";
 import Datamanagement from "../pages/Admin/Datamanagement"
@@ -41,6 +41,9 @@ const AppRoutes = () => (
     } />
     <Route path="/reports" element={
       <ProtectedRoute><Report /></ProtectedRoute>
+    } />
+    <Route path="/risk-group" element={
+      <ProtectedRoute><RiskGroup /></ProtectedRoute>
     } />
     <Route path="/export" element={
       <ProtectedRoute><Export /></ProtectedRoute>

@@ -9,7 +9,6 @@ const path = require('path');
 const patientRoutes = require('./routes/Patient/PatientRoutes');
 const authRoutes = require('./routes/Auth/authRoutes');
 const appointmentRoutes = require('./routes/appointment/appointmentRoutes');
-const riskRoutes = require('./routes/riskRoutes');
 const reportRoute = require('./routes/report/reportRoutes');
 const errorHandler = require('./middleware/errorHandler');
 const userRoutes = require('./routes/user/userRoutes');
@@ -17,7 +16,6 @@ const adminRoutes = require('./routes/admin/adminRoutes');
 const healthRecordRoutes = require('./routes/healthRecord/healthRecordRoutes');
 const exportRoutes = require('./routes/Export/exportRoutes');
 const dataManagementRoutes = require('./routes/dataManagement/dataManagementRoutes');
-const historyDownloadRoutes = require('./routes/dataManagement/historyDownloadRoutes');
 
 const CVSRoutes = require('./routes/CVS/CVSRoutes');
 
@@ -64,8 +62,6 @@ app.use('/api/healthRecordRoutes', healthRecordRoutes);
 app.use('/api/cvs', CVSRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/data', dataManagementRoutes);
-app.use('/api/history', historyDownloadRoutes);
-
 
 // ให้ React หรือเบราว์เซอร์ดาวน์โหลดไฟล์จาก /files
 app.use('/files', express.static(path.join(__dirname, 'Export')));

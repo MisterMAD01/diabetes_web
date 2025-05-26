@@ -1,0 +1,34 @@
+import React from 'react';
+import '../../components/PopupColor/Popup.css';
+
+const YellowPopup = ({ onClose, patients }) => (
+  <div className="popup-overlay">
+    <div className="popup-content yellow-popup">
+      <button className="close-btn" onClick={onClose}>✖</button>
+      <h2 className="popup-title">กลุ่มสีเหลือง</h2>
+      <div className="symbol-circle symbol-circle-Yellow"></div>
+      <p className="popup-description">กลุ่มผู้ป่วยที่เริ่มมีภาวะเสี่ยง</p>
+      <p className="patient-summary">จำนวนทั้งหมด: <strong>{patients.length}</strong> คน</p>
+      <div className="patient-table-container">
+        <table className="patient-table">
+          <thead>
+            <tr><th>ลำดับ</th><th>ID</th><th>ชื่อ</th><th>เบอร์</th><th>อายุ</th></tr>
+          </thead>
+          <tbody>
+            {patients.map((p, index) => (
+              <tr key={p.id}>
+                <td>{(index + 1).toString().padStart(3, '0')}</td>
+                <td>{p.id}</td>
+                <td>{p.fullname}</td>
+                <td>{p.phone}</td>
+                <td>{p.age}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
+
+export default YellowPopup;
