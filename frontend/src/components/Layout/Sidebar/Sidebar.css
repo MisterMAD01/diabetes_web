@@ -15,9 +15,13 @@
 /* Header Section */
 .sidebar-header {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
+  flex-direction: column;       /* ซ้อนแนวตั้ง */
+  align-items: center;          /* จัดแนวนอนตรงกลาง */
+  justify-content: center;      /* จัดแนวตั้งตรงกลาง */
+  gap: 0.5rem;
+  padding: 0 1rem;
+  padding-top:1rem;
+  text-align: center;           /* ให้ข้อความอยู่ตรงกลางด้วย */
 }
 
 .sidebar-logo {
@@ -71,7 +75,7 @@
 }
 
 .sidebar-menu .active {
-  background-color: #1e40af;
+  background-color: #1d4ed8;
   color: white;
 }
 

@@ -61,22 +61,22 @@
   
   /* ปิงปองจราจร 7 สี */
   .ping-pong-green {
-    background-color: #38a169;
+    background-color: #056f00;
   }
   .ping-pong-yellow {
-    background-color: #ecc94b;
+    background-color: #fdd835;
   }
   .ping-pong-orange {
-    background-color: #ed8936;
+    background-color: #ef6c00;
+  }
+  .ping-pong-light-green {
+    background-color: #72d572;
   }
   .ping-pong-red {
-    background-color: #e53e3e;
-  }
-  .ping-pong-red-dark {
-    background-color: #9b2c2c;
+    background-color: #c41411;
   }
   .ping-pong-black {
-    background-color: #2d3748;
+    background-color: #212121;
   }
   .ping-pong-white {
     background-color: #edf2f7;

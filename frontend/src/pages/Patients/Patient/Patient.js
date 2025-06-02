@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AddPatientForm from './AddPatient';
 import AddHealthData from './AddhealthData';
 import './Patient.css';
@@ -7,6 +8,7 @@ const API_URL = process.env.REACT_APP_API;
 
 
 const AllPatients = () => {
+  const navigate = useNavigate();
   const [patients, setPatients] = useState([]);
   const [showAddPopup, setShowAddPopup] = useState(false);
   const [showHealthPopup, setShowHealthPopup] = useState(false);
@@ -63,7 +65,6 @@ const AllPatients = () => {
   const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
 
   return (
-    <div className="app-layout">
       <div className="main-area">
         <div className="all-patients-wrapper">
           <div className="page-header">
@@ -111,18 +112,24 @@ const AllPatients = () => {
                   </span>
                 </div>
                 <div>
-                  <button className="details-btn">ดูข้อมูล</button>
-                  <button
-                    className="details-btn"
-                    style={{ marginLeft: '8px', backgroundColor: '#28a745' }}
-                    onClick={() => {
-                      setSelectedPatientId(patient.id);
-                      setShowHealthPopup(true);
-                    }}
-                  >
-                    อัปเดต
-                  </button>
-                </div>
+  <button
+    className="details-btn"
+    onClick={() => navigate(`/report/${patient.id}`)}
+  >
+    ดูข้อมูล
+  </button>
+  <button
+    className="details-btn"
+    style={{ marginLeft: '8px', backgroundColor: '#28a745' }}
+    onClick={() => {
+      setSelectedPatientId(patient.id);
+      setShowHealthPopup(true);
+    }}
+  >
+    อัปเดต
+  </button>
+</div>
+
               </div>
             ))}
           </div>
@@ -173,7 +180,6 @@ const AllPatients = () => {
           )}
         </div>
       </div>
-    </div>
   );
 };
 

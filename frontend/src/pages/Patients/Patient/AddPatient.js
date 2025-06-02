@@ -72,27 +72,27 @@ const AddPatientForm = ({ onSuccess, closePopup }) => {
   };
 
   return (
-    <div className="popup-overlay">
-      <div className="popup-content">
-        <button className="close-btn" onClick={closePopup}>✖</button>
-        <div className="form-container">
+    <div className="add-patient-popup-overlay">
+      <div className="add-patient-popup-content">
+        <button className="add-patient-close-btn" onClick={closePopup}>✖</button>
+        <div className="add-patient-form-container">
           <h2>เพิ่มข้อมูลผู้ป่วย</h2>
           <form onSubmit={handleSubmit}>
-            <div className="form-row">
+            <div className="add-patient-form-row">
               <input type="text" name="name" placeholder="ชื่อ" value={formData.name} onChange={handleChange} required />
               <input type="text" name="lastname" placeholder="นามสกุล" value={formData.lastname} onChange={handleChange} required />
             </div>
 
             <input type="text" name="address" placeholder="ที่อยู่" value={formData.address} onChange={handleChange} required />
 
-            <div className="form-row">
+            <div className="add-patient-form-row">
               <input type="text" name="village" placeholder="หมู่" value={formData.village} onChange={handleChange} required />
               <input type="text" name="subdistrict" placeholder="ตำบล" value={formData.subdistrict} onChange={handleChange} required />
               <input type="text" name="district" placeholder="อำเภอ" value={formData.district} onChange={handleChange} required />
               <input type="text" name="province" placeholder="จังหวัด" value={formData.province} onChange={handleChange} required />
             </div>
 
-            <div className="form-row">
+            <div className="add-patient-form-row">
               <input type="date" name="birthdate" value={formData.birthdate} onChange={handleChange} required />
               <select name="gender" value={formData.gender} onChange={handleChange} required>
                 <option value="">เพศ</option>
@@ -103,12 +103,12 @@ const AddPatientForm = ({ onSuccess, closePopup }) => {
               <input type="text" name="phone" placeholder="เบอร์โทรติดต่อ" value={formData.phone} onChange={handleChange} required />
             </div>
 
-            <div className="form-row">
+            <div className="add-patient-form-row">
               <input type="text" name="age" placeholder="อายุ" value={formData.age} onChange={handleChange} disabled />
               <input type="text" name="disease" placeholder="โรคประจำตัว" value={formData.disease} onChange={handleChange} />
             </div>
 
-            <button className="submit-btn" type="submit">บันทึกข้อมูล</button>
+            <button className="add-patient-submit-btn" type="submit">บันทึกข้อมูล</button>
           </form>
         </div>
       </div>

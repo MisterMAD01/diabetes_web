@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import './ReportPage.css';
 import dayjs from 'dayjs';
@@ -15,43 +16,46 @@ const API_URL = process.env.REACT_APP_API;
 dayjs.extend(buddhistEra);
 dayjs.locale('th');
 
+const colorMap = {
+  'สีแดง': '#ff4d4f',
+  'สีเหลือง': '#fadb14',
+  'สีเขียว': '#52c41a',
+  'สีส้ม': '#fa8c16',
+  'สีดำ': '#595959',
+  'สีขาว': '#d9d9d9',
+};
+
 const ReportPage = () => {
+  const { id } = useParams();
   const [patients, setPatients] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [lineData, setLineData] = useState([]);
   const [riskColor, setRiskColor] = useState('#ff4d4f');
 
-  const colorMap = {
-    'สีแดง': '#ff4d4f',
-    'สีเหลือง': '#fadb14',
-    'สีเขียว': '#52c41a'
-  };
-
   useEffect(() => {
     axios.get(`${API_URL}/api/reports/patients`)
       .then(res => {
         setPatients(res.data);
-        if (res.data.length > 0) {
-          const randomPatient = res.data[Math.floor(Math.random() * res.data.length)];
-          setSelectedPatientId(randomPatient.Patient_ID);
+        if (id) {
+          setSelectedPatientId(id);
+        } else if (res.data.length > 0) {
+          setSelectedPatientId(res.data[0].Patient_ID);
         }
       });
-  }, []);
+  }, [id]);
 
   useEffect(() => {
-    if (selectedPatientId === null || selectedPatientId === undefined) return;
+    if (!selectedPatientId) return;
 
     const fetchData = async () => {
       try {
-const patientRes = await axios.get(`${API_URL}/api/reports/patient/${selectedPatientId}`);
-const trendRes = await axios.get(`${API_URL}/api/reports/healthTrends/${selectedPatientId}`);
-
+        const patientRes = await axios.get(`${API_URL}/api/reports/patient/${selectedPatientId}`);
+        const trendRes = await axios.get(`${API_URL}/api/reports/healthTrends/${selectedPatientId}`);
 
         const patientData = patientRes.data;
         setSelectedPatient(patientData);
-
-        setRiskColor(colorMap[patientData["กลุ่มเสี่ยงปิงปองจราจร 7 สี"]] || '#ff4d4f');
+        setRiskColor(colorMap[patientData.color_level] || '#ff4d4f');
 
         const trends = trendRes.data;
         const mergedData = trends.bloodSugar.map((item, idx) => ({
@@ -93,6 +97,16 @@ const trendRes = await axios.get(`${API_URL}/api/reports/healthTrends/${selected
 
           <div className="info-main">
             <PatientDetails patient={selectedPatient} />
+            <span style={{
+  backgroundColor: riskColor,
+  color: '#fff',
+  padding: '6px 12px',
+  borderRadius: '20px',
+  fontWeight: 'bold'
+}}>
+  {selectedPatient.color_level}
+</span>
+
             <RiskPieChart
               data={complicationData}
               riskPercent={selectedPatient["%โอกาสเกิดโรคแทรกซ้อน"]}

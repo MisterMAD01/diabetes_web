@@ -74,7 +74,7 @@ const RiskGroup = () => {
           </div>
         ))}
       </div>
-      {popupColor && getPopupComponent()}
+      {getPopupComponent()}
     </div>
   );
 };

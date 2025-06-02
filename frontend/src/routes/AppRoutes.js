@@ -48,6 +48,9 @@ const AppRoutes = () => (
     <Route path="/export" element={
       <ProtectedRoute><Export /></ProtectedRoute>
     } />
+    <Route path="/report/:id" element={
+    <ProtectedRoute><Report /></ProtectedRoute>
+  } />
     <Route path="/patients" element={
       <ProtectedRoute><Patients /></ProtectedRoute>
     } />
