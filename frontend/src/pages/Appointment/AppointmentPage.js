@@ -3,6 +3,7 @@ import axios from 'axios';
 import AppointmentFormModal from './AppointmentFormModal';
 import AppointmentDetailModal from './AppointmentDetailModal';
 import AppointmentTable from './AppointmentTable';
+import AddDoctor from '../../components/AddDoctor'; // อย่าลืมนำเข้า
 import './AppointmentPage.css';
 import { getLocalISODate } from '../../components/utils';
 
@@ -19,12 +20,26 @@ const AppointmentPage = () => {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [appointmentToDelete, setAppointmentToDelete] = useState(null);
+  const [showDoctorModal, setShowDoctorModal] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState('');
+  const [doctors, setDoctors] = useState([]);
+
 
   const today = getLocalISODate(new Date());
 
   useEffect(() => {
     fetchAppointments();
+    fetchDoctors();
   }, []);
+
+  const fetchDoctors = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/api/doctors`);
+    setDoctors(res.data);
+  } catch (err) {
+    console.error('โหลดรายชื่อแพทย์ล้มเหลว:', err);
+  }
+}
 
   const fetchAppointments = async () => {
     try {
@@ -52,7 +67,10 @@ const AppointmentPage = () => {
         ? appointmentDate === selectedDate
         : true;
 
-    return matchesSearch && matchesDate;
+        const matchesDoctor =
+    selectedDoctor === '' || String(appt.Doctor_ID) === selectedDoctor;
+
+    return matchesSearch && matchesDate && matchesDoctor;
   });
 
   const confirmDelete = (appt) => {
@@ -80,6 +98,7 @@ const AppointmentPage = () => {
       time: appt.Appointment_Time?.slice(0, 5),
       note: appt.Reason,
       status: appt.Status,
+      doctor: appt.Doctor_Name,
     });
     setShowDetailModal(true);
   };
@@ -94,6 +113,7 @@ const AppointmentPage = () => {
       time: appt.Appointment_Time?.slice(0, 5),
       note: appt.Reason,
       status: appt.Status,
+      Doctor_ID: appt.Doctor_ID
     });
     setShowModal(true);
   };
@@ -123,15 +143,23 @@ const AppointmentPage = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button
-          className="add-btn"
-          onClick={() => {
-            setEditAppointment(null);
-            setShowModal(true);
-          }}
-        >
-          + เพิ่มการนัดหมาย
-        </button>
+        <div className="button-group">
+          <button
+            className="add-btn1"
+            onClick={() => {
+              setEditAppointment(null);
+              setShowModal(true);
+              }}
+              >
+              + เพิ่มการนัดหมาย
+          </button>
+          <button
+            className="add-btn2"
+          onClick={() => setShowDoctorModal(true)}
+          >
+          + เพิ่มแพทย์
+          </button>
+        </div>
       </div>
 
       <div className="filter-row">
@@ -149,6 +177,7 @@ const AppointmentPage = () => {
             ทั้งหมด
           </button>
         </div>
+        <div className="date-doctor-dropdown">
         <div className="date-picker">
           <label>เลือกวันที่:</label>
           <input
@@ -160,6 +189,21 @@ const AppointmentPage = () => {
             }}
           />
         </div>
+        <div className="doctor-filter">
+          <label>เลือกแพทย์:</label>
+          <select
+              value={selectedDoctor}
+              onChange={(e) => setSelectedDoctor(e.target.value)}
+            >
+          <option value="">ทั้งหมด</option>
+          {doctors.map((doc) => (
+             <option key={doc.Doctor_ID} value={doc.Doctor_ID}>
+             {doc.D_Name}
+          </option>
+          ))}
+          </select>
+        </div>
+      </div>
       </div>
 
       <AppointmentTable
@@ -209,6 +253,10 @@ const AppointmentPage = () => {
           </div>
         </div>
       )}
+      {showDoctorModal && (
+  <AddDoctor onClose={() => setShowDoctorModal(false)} />
+)}
+
     </div>
   );
 };

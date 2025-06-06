@@ -97,16 +97,6 @@ const ReportPage = () => {
 
           <div className="info-main">
             <PatientDetails patient={selectedPatient} />
-            <span style={{
-  backgroundColor: riskColor,
-  color: '#fff',
-  padding: '6px 12px',
-  borderRadius: '20px',
-  fontWeight: 'bold'
-}}>
-  {selectedPatient.color_level}
-</span>
-
             <RiskPieChart
               data={complicationData}
               riskPercent={selectedPatient["%โอกาสเกิดโรคแทรกซ้อน"]}

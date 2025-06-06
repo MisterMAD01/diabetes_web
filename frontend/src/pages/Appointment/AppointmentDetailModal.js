@@ -35,6 +35,10 @@ const AppointmentDetailModal = ({ appointment, onClose, onStatusChange, onEdit }
           </div>
           <div className="modal-grid">
             <div>
+  <label>แพทย์ผู้ดูแล</label>
+  <p>{appointment.doctor || '-'}</p>
+</div>
+            <div>
               <label>วันที่</label>
               <p>{formatDateThai(appointment.date)}</p>
             </div>

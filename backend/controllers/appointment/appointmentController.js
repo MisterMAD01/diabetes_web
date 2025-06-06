@@ -2,12 +2,12 @@ const pool = require("../../config/db");
 
 // เพิ่มการนัดหมายใหม่
 exports.createAppointment = async (req, res) => {
-  const { Patient_ID, Appointment_Date, Appointment_Time, Reason, Status } = req.body;
+  const { Patient_ID, Appointment_Date, Appointment_Time, Reason, Doctor_ID, Status } = req.body;
 
   try {
     await pool.execute(
-      "INSERT INTO appointments (Patient_ID, Appointment_Date, Appointment_Time, Reason, Status) VALUES (?, ?, ?, ?, ?)",
-      [Patient_ID, Appointment_Date, Appointment_Time, Reason, Status || "Scheduled"]
+      "INSERT INTO appointments (Patient_ID, Appointment_Date, Appointment_Time, Reason, Doctor_ID, Status) VALUES (?, ?, ?, ?, ?, ?)",
+      [Patient_ID, Appointment_Date, Appointment_Time, Reason, Doctor_ID ?? null, Status || "Scheduled"]
     );
     res.status(201).json({ message: "Appointment created successfully" }); // ส่งสถานะ 201
   } catch (error) {
@@ -23,13 +23,16 @@ exports.getAppointments = async (req, res) => {
       `SELECT 
          a.Appointment_ID,
          a.Patient_ID,
+         a.Doctor_ID, 
          p.P_Name AS Patient_Name,
          a.Appointment_Date,
          a.Appointment_Time,
          a.Reason,
-         a.Status
+         a.Status,
+         d.D_Name AS Doctor_Name
        FROM appointments a
-       LEFT JOIN patient p ON a.Patient_ID = p.Patient_ID`
+       LEFT JOIN patient p ON a.Patient_ID = p.Patient_ID
+       LEFT JOIN doctors d ON a.Doctor_ID = d.Doctor_ID`
     );
     res.status(200).json(rows);
   } catch (error) {

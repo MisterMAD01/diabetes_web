@@ -8,6 +8,8 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [hn, setHn] = useState('');
+  const [doctors, setDoctors] = useState([]);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
 
   useEffect(() => {
     axios.get(`${API_URL}/api/appointments/patients`)
@@ -27,6 +29,23 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
       .catch(err => console.error('โหลดรายชื่อผู้ป่วยล้มเหลว:', err));
   }, [editAppointment]);
 
+  useEffect(() => {
+  axios.get(`${API_URL}/api/doctors`)
+    .then(res => {
+      const options = res.data.map(d => ({
+        value: d.Doctor_ID,
+        label: `${d.D_Name} (${d.specialty})`,
+      }));
+      setDoctors(options);
+
+      if (editAppointment) {
+        const match = options.find(opt => opt.value === editAppointment.Doctor_ID);
+        setSelectedDoctor(match || null);
+      }
+    })
+    .catch(err => console.error('โหลดรายชื่อหมอล้มเหลว:', err));
+}, [editAppointment]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -36,6 +55,7 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
       Appointment_Date: form.date.value,
       Appointment_Time: form.time.value,
       Reason: form.note.value,
+      Doctor_ID: selectedDoctor?.value,
       Status: 'รอพบแพทย์'
     };
 
@@ -116,6 +136,17 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
               <label>รหัสผู้ป่วย (HN)</label>
               <input type="text" name="hn" value={hn} disabled />
             </div>
+            <div>
+  <label>เลือกแพทย์</label>
+  <Select
+    options={doctors}
+    value={selectedDoctor}
+    onChange={(selected) => setSelectedDoctor(selected)}
+    placeholder="ค้นหาแพทย์..."
+    isSearchable
+  />
+</div>
+
             <div>
               <label>วันที่</label>
               <input name="date" type="date" required defaultValue={editAppointment?.date} />

@@ -32,6 +32,7 @@ const statusClass = (status) => {
         <tr>
           <th>HN</th>
           <th>ชื่อ-สกุล</th>
+          <th>แพทย์</th>
           <th>เวลา</th>
           <th>วันที่</th>
           <th>สถานะ</th>
@@ -43,6 +44,7 @@ const statusClass = (status) => {
           <tr key={idx}>
             <td>{appt.Patient_ID}</td>
             <td>{appt.Patient_Name}</td>
+            <td>{appt.Doctor_Name || '[ไม่มีชื่อหมอ]'}</td>
             <td>{formatTimeThai(appt.Appointment_Time)}</td>
 <td>{formatDateThai(appt.Appointment_Date)}</td>
 
