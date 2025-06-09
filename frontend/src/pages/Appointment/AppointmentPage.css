@@ -109,19 +109,31 @@
   font-weight: bold;
 }
 
-.date-picker {
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
-}
-
 .date-doctor-dropdown{
   display: flex;
   justify-content: right;
   align-items: center;
   gap: 0.5rem;
+}
+
+.date-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.date-picker label {
+  white-space: nowrap;  
+}
+
+.doctor-filter{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.doctor-filter label{
+  white-space: nowrap;
 }
 
 .doctor-filter select{
@@ -475,16 +487,6 @@
 .badge-cancelled {
   background-color: #f8d7da;
   color: #721c24;
-}
-.date-picker {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.date-picker label {
-  white-space: nowrap;  
-  padding-top: 0.2px;
 }
 
 .modal.small {

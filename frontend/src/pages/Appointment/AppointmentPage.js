@@ -190,7 +190,7 @@ const AppointmentPage = () => {
           />
         </div>
         <div className="doctor-filter">
-          <label>เลือกแพทย์:</label>
+          <label>แพทย์ผู้ดูแล:</label>
           <select
               value={selectedDoctor}
               onChange={(e) => setSelectedDoctor(e.target.value)}
