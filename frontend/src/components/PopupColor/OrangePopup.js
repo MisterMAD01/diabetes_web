@@ -10,9 +10,9 @@ const OrangePopup = ({ onClose, patients }) => (
       <p className="popup-description">กลุ่มผู้ป่วยที่มีความเสี่ยงสูง</p>
       <p className="patient-summary">จำนวนทั้งหมด: <strong>{patients.length}</strong> คน</p>
       <div className="patient-table-container">
-        <table className="patient-table">
+        <table className="patient-table-popup">
           <thead>
-            <tr><th>ลำดับ</th><th>ID</th><th>ชื่อ</th><th>เบอร์</th><th>อายุ</th></tr>
+            <tr><th>ลำดับ</th><th>HN</th><th>ชื่อ</th><th>เบอร์</th><th>อายุ</th></tr>
           </thead>
           <tbody>
             {patients.map((p, index) => (

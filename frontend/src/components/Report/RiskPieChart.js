@@ -1,17 +1,10 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-const RiskLegend = ({ color, label }) => (
-  <div className="risk-legend-wrapper">
-    <div className="risk-legend-circle" style={{ backgroundColor: color }}></div>
-    <span className="risk-legend-text">{label}</span>
-  </div>
-);
-
 const RiskPieChart = ({ data, riskPercent, riskColor }) => (
   <div className="info-right">
     <div className="risk-pie-row">
-      <RiskLegend color={riskColor} label="กลุ่มความเสี่ยง" />
+      {/* ลบ RiskLegend ตรงนี้ */}
       <div className="pie-chart-box">
         <ResponsiveContainer width={140} height={140}>
           <PieChart>

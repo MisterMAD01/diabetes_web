@@ -12,9 +12,9 @@
 }
 
 .popup-content {
-  width: 75vw;
-  max-width: 1000px;
-  height: 75vh;
+  width: 60vw;
+  max-width: 800px;
+  height: 60vh;
   background-color: #fff;
   border-radius: 16px;
   padding: 2rem;
@@ -23,7 +23,7 @@
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-  animation: fadeIn 0.25s ease-out;
+  animation: fadeIn 0.1s ease-out;
 }
 
 @keyframes fadeIn {
@@ -67,6 +67,41 @@
   border: 1px solid #ccc;
 }
 
+.symbol-circle-Black {
+  background-color: #212121;
+  border: 1px solid #ccc;
+}
+
+.symbol-circle-Red {
+  background-color: #c41411;
+  border: 1px solid #ccc;
+}
+
+.symbol-circle-LightGreen {
+  background-color: #72d572;
+  border: 1px solid #ccc;
+}
+
+.symbol-circle-DarkGreen {
+  background-color: #056f00;
+  border: 1px solid #ccc;
+}
+
+.symbol-circle-Orange {
+  background-color: #ef6c00;
+  border: 1px solid #ccc;
+}
+.symbol-circle-Yellow {
+  background-color: #fdd835;
+  border: 1px solid #ccc;
+}
+
+.popup-description {
+  text-align: center;
+  font-size: 1rem;
+  color: #444;
+}
+
 .patient-summary {
   text-align: center;
   font-size: 1rem;
@@ -82,7 +117,7 @@
   justify-content: center;
 }
 
-.patient-table {
+.patient-table-popup {
   width: 100%;
   max-width: 100%;
   table-layout: auto;
@@ -94,20 +129,20 @@
   border-radius: 8px;
 }
 
-.patient-table th,
-.patient-table td {
+.patient-table-popup th,
+.patient-table-popup td {
   padding: 12px 16px;
   border-bottom: 1px solid #eaeaea;
   text-align: center;
   white-space: nowrap;
 }
 
-.patient-table td:nth-child(3),
-.patient-table th:nth-child(3) {
+.patient-table-popup td:nth-child(3),
+.patient-table-popup th:nth-child(3) {
   text-align: left;
 }
 
-.patient-table thead {
+.patient-table-popup thead {
   background-color: #f5f5f5;
   position: sticky;
   top: 0;
