@@ -9,17 +9,16 @@ const WhitePopup = ({ onClose, patients }) => {
         <h2 className="popup-title">กลุ่มสีขาว</h2>
         <div className="symbol-circle symbol-circle-White"></div>
         <p className="popup-description">กลุ่มผู้ป่วยที่ไม่พบความเสี่ยง</p>
-
         <p className="patient-summary">
           จำนวนทั้งหมด: <strong>{patients.length}</strong> คน
         </p>
 
         <div className="patient-table-container">
-          <table className="patient-table">
+          <table className="patient-table-popup">
             <thead>
               <tr>
                 <th>ลำดับ</th>
-                <th>ID</th>
+                <th>HN</th>
                 <th>ชื่อ</th>
                 <th>เบอร์</th>
                 <th>อายุ</th>
