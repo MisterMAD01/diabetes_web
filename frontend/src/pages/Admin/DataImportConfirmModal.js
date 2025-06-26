@@ -1,9 +1,8 @@
 import React, { useState } from "react";
+import "./DataImportConfirmModal.css";
 
 const DataImportConfirmModal = ({ data, onClose, onConfirm }) => {
-  const [checkedRows, setCheckedRows] = useState(
-    data.map(() => true) // เริ่มเลือกทุกแถว
-  );
+  const [checkedRows, setCheckedRows] = useState(data.map(() => true));
 
   const toggleRow = (idx) => {
     setCheckedRows((prev) => {

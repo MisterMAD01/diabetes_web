@@ -20,11 +20,10 @@ import UserProfile from "../pages/UserProfile/UserProfile";
 import RiskGroup from "../pages/Riskgroup/Riskgroup";
 // 🔒 หน้าเฉพาะ admin
 import ManageAccounts from "../pages/Admin/ManageAccounts";
-import Datamanagement from "../pages/Admin/Datamanagement"
+import Datamanagement from "../pages/Admin/Datamanagement";
 
 const AppRoutes = () => (
   <Routes>
-
     {/* 🔓 Public Routes */}
     <Route path="/" element={<WelcomePage />} />
     <Route path="/register" element={<Register />} />
@@ -33,38 +32,88 @@ const AppRoutes = () => (
     <Route path="/cvs" element={<CVDRiskCalculator />} />
 
     {/* 🔐 Protected Routes (Login Required) */}
-    <Route path="/home" element={
-      <ProtectedRoute><HomePage /></ProtectedRoute>
-    } />
-    <Route path="/appointments" element={
-      <ProtectedRoute><Appointment /></ProtectedRoute>
-    } />
-    <Route path="/reports" element={
-      <ProtectedRoute><Report /></ProtectedRoute>
-    } />
-    <Route path="/risk-group" element={
-      <ProtectedRoute><RiskGroup /></ProtectedRoute>
-    } />
-    <Route path="/export" element={
-      <ProtectedRoute><Export /></ProtectedRoute>
-    } />
-    <Route path="/report/:id" element={
-    <ProtectedRoute><Report /></ProtectedRoute>
-  } />
-    <Route path="/patients" element={
-      <ProtectedRoute><Patients /></ProtectedRoute>
-    } />
-    <Route path="/user/profile" element={
-      <ProtectedRoute><UserProfile /></ProtectedRoute>
-    } />
+    <Route
+      path="/home"
+      element={
+        <ProtectedRoute>
+          <HomePage />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/appointments"
+      element={
+        <ProtectedRoute>
+          <Appointment />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/reports"
+      element={
+        <ProtectedRoute>
+          <Report />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/risk-group"
+      element={
+        <ProtectedRoute>
+          <RiskGroup />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/export"
+      element={
+        <ProtectedRoute>
+          <Export />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/report/:id"
+      element={
+        <ProtectedRoute>
+          <Report />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/patients"
+      element={
+        <ProtectedRoute>
+          <Patients />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/user/profile"
+      element={
+        <ProtectedRoute>
+          <UserProfile />
+        </ProtectedRoute>
+      }
+    />
 
     {/* 🔒 Admin Only */}
-    <Route path="/manage-users" element={
-      <AdminRoute><ManageAccounts /></AdminRoute>
-    } />
-    <Route path="/data-management" element={
-      <AdminRoute><Datamanagement /></AdminRoute>
-    } />
+    <Route
+      path="/manage-users"
+      element={
+        <AdminRoute>
+          <ManageAccounts />
+        </AdminRoute>
+      }
+    />
+    <Route
+      path="/data-management"
+      element={
+        <AdminRoute>
+          <Datamanagement />
+        </AdminRoute>
+      }
+    />
   </Routes>
 );
 

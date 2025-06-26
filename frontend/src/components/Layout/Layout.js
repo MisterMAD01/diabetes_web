@@ -21,7 +21,13 @@ const Layout = ({ children }) => {
     }
   }, []);
 
-  const excludedPaths = ["/", "/login", "/register", "/additional-info", "/cvs"];
+  const excludedPaths = [
+    "/",
+    "/login",
+    "/register",
+    "/additional-info",
+    "/cvs",
+  ];
   const showLayout = !excludedPaths.includes(location.pathname);
 
   return (
@@ -33,7 +39,6 @@ const Layout = ({ children }) => {
       </div>
     </div>
   );
-  
 };
 
 export default Layout;
