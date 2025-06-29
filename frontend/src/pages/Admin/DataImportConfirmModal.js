@@ -19,8 +19,8 @@ const DataImportConfirmModal = ({ data, onClose, onConfirm }) => {
 
   if (!data || data.length === 0)
     return (
-      <div className="modal-overlay">
-        <div className="modal">
+      <div className="admin-modal-overlay">
+        <div className="admin-modal">
           <p>ไม่มีข้อมูลในไฟล์ CSV</p>
           <button onClick={onClose}>ปิด</button>
         </div>
@@ -28,8 +28,8 @@ const DataImportConfirmModal = ({ data, onClose, onConfirm }) => {
     );
 
   return (
-    <div className="modal-overlay">
-      <div className="modal" style={{ maxHeight: "80vh", overflowY: "auto" }}>
+    <div className="admin-modal-overlay">
+      <div className="admin-modal" style={{ maxHeight: "80vh", overflowY: "auto" }}>
         <h3>เลือกแถวข้อมูลที่จะนำเข้า</h3>
         <table>
           <thead>
@@ -58,7 +58,7 @@ const DataImportConfirmModal = ({ data, onClose, onConfirm }) => {
             ))}
           </tbody>
         </table>
-        <div className="modal-buttons">
+        <div className="admin-modal-buttons">
           <button onClick={handleConfirm}>ยืนยัน</button>
           <button onClick={onClose}>ยกเลิก</button>
         </div>
