@@ -1,6 +1,6 @@
 const pool = require("../../config/db");
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 // แสดงบัญชีทั้งหมด
 exports.getAllAccounts = async (req, res) => {
@@ -23,11 +23,11 @@ exports.getAllAccounts = async (req, res) => {
     res.status(200).json({ accounts });
   } catch (error) {
     console.error("Failed to fetch accounts:", error);
-    res.status(500).json({ message: "Failed to fetch accounts", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch accounts", error: error.message });
   }
 };
-
-
 
 // อนุมัติบัญชีผู้ใช้
 exports.approveAccount = async (req, res) => {
@@ -48,7 +48,10 @@ exports.editAccount = async (req, res) => {
 
   try {
     // เช็คว่าผู้ใช้ที่ต้องการแก้ไขมีอยู่ในระบบหรือไม่
-    const [userExists] = await pool.execute("SELECT * FROM users WHERE id = ?", [userId]);
+    const [userExists] = await pool.execute(
+      "SELECT * FROM users WHERE id = ?",
+      [userId]
+    );
     if (userExists.length === 0) {
       return res.status(404).json({ message: "ไม่พบผู้ใช้ที่ต้องการแก้ไข" });
     }
