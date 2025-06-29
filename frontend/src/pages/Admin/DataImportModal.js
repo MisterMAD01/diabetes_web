@@ -95,7 +95,7 @@ const DataImportModal = ({ onClose, apiUrl }) => {
   };
 
   return (
-    <div className="modal-overlay">
+    <div className="admin-modal-overlay">
       <div className="modal import-modal">
         <div className="modal-header">
           <h3>นำเข้าข้อมูล CSV</h3>
