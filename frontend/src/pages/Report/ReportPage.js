@@ -23,7 +23,41 @@ const colorMap = {
   'สีส้ม': '#fa8c16',
   'สีดำ': '#595959',
   'สีขาว': '#d9d9d9',
+  'สีเขียวอ่อน': '#b7f0b1',
+  'สีเขียวเข้ม': '#4caf50',
 };
+
+const ColorBadge = ({ colorName }) => {
+  const bg = colorMap[colorName?.trim()] || '#ccc';
+  const textColor = (bg === '#ffeb3b' || bg === '#ffffff' || bg === '#fadb14') ? '#000' : '#fff';
+
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <div
+        style={{
+          width: '140px',
+          height: '140px',
+          borderRadius: '50%',
+          backgroundColor: bg,
+          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '0.95rem',
+          fontWeight: 600,
+          color: textColor,
+        }}
+      >
+        {colorName || 'ไม่ระบุ'}
+      </div>
+      <div style={{ marginTop: '8px', fontSize: '0.95rem', fontWeight: '500' }}>
+        กลุ่มความเสี่ยง
+      </div>
+    </div>
+  );
+};
+
+
 
 const ReportPage = () => {
   const { id } = useParams();
@@ -55,17 +89,17 @@ const ReportPage = () => {
 
         const patientData = patientRes.data;
         setSelectedPatient(patientData);
-        setRiskColor(colorMap[patientData.color_level] || '#ff4d4f');
+        setRiskColor(colorMap[patientData["กลุ่มเสี่ยงปิงปองจราจร 7 สี"]?.trim()] || '#ff4d4f');
 
-        const trends = trendRes.data;
-        const mergedData = trends.bloodSugar.map((item, idx) => ({
-          date: dayjs(item.date).format('MMM'),
-          sugar: parseFloat(item.value),
-          systolic: trends.pressure[idx]?.value || 0,
-          diastolic: (trends.pressure[idx]?.value || 0) - 45,
-          weight: parseFloat(trends.weight[idx]?.value || 0),
-          waist: parseFloat(trends.waist[idx]?.value || 0),
-        }));
+const trends = trendRes.data;
+      const mergedData = trends.bloodSugar.map((item, idx) => ({
+        date: item.date, // ต้องเป็นวันที่เต็ม เช่น 2025-06-29
+        sugar: parseFloat(item.value),
+        systolic: trends.pressure[idx]?.value || 0,
+        diastolic: (trends.pressure[idx]?.value || 0) - 45,
+        weight: parseFloat(trends.weight[idx]?.value || 0),
+        waist: parseFloat(trends.waist[idx]?.value || 0),
+      }));
 
         setLineData(mergedData);
       } catch (err) {
@@ -97,11 +131,16 @@ const ReportPage = () => {
 
           <div className="info-main">
             <PatientDetails patient={selectedPatient} />
-            <RiskPieChart
-              data={complicationData}
-              riskPercent={selectedPatient["%โอกาสเกิดโรคแทรกซ้อน"]}
-              riskColor={riskColor}
-            />
+
+            {/* ✅ แสดงปุ่มสี + วงกลม */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+              <ColorBadge colorName={selectedPatient["กลุ่มเสี่ยงปิงปองจราจร 7 สี"]} />
+              <RiskPieChart
+                data={complicationData}
+                riskPercent={selectedPatient["%โอกาสเกิดโรคแทรกซ้อน"]}
+                riskColor={riskColor}
+              />
+            </div>
           </div>
 
           <HealthChartGroup data={lineData} />
