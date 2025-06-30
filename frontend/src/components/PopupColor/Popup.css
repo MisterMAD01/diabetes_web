@@ -132,14 +132,9 @@
 .patient-table-popup th,
 .patient-table-popup td {
   padding: 12px 16px;
-  border-bottom: 1px solid #eaeaea;
+  border: 1px solid #ddd;
   text-align: center;
   white-space: nowrap;
-}
-
-.patient-table-popup td:nth-child(3),
-.patient-table-popup th:nth-child(3) {
-  text-align: left;
 }
 
 .patient-table-popup thead {
