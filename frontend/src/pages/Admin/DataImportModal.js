@@ -97,7 +97,7 @@ const DataImportModal = ({ onClose, apiUrl }) => {
   return (
     <div className="admin-modal-overlay">
       <div className="modal import-modal">
-        <div className="modal-header">
+        <div className="admin-modal-header">
           <h3>นำเข้าข้อมูล CSV</h3>
           <button onClick={onClose}>✖</button>
         </div>
@@ -119,7 +119,7 @@ const DataImportModal = ({ onClose, apiUrl }) => {
         </label>
 
         {file && <p>ไฟล์ที่เลือก: {file.name}</p>}
-        {message && <p className="message">{message}</p>}
+        {message && <p className="admin-message">{message}</p>}
 
         <button onClick={handleImportSubmit} disabled={loading}>
           {loading ? "กำลังนำเข้า..." : "นำเข้า"}
