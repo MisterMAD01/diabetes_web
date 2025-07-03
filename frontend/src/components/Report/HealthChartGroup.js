@@ -1,71 +1,157 @@
-import React from 'react';
-import dayjs from 'dayjs';
-import 'dayjs/locale/th';
-import buddhistEra from 'dayjs/plugin/buddhistEra';
-
+// src/components/Report/HealthChartGroup.jsx
+import React from "react";
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import buddhistEra from "dayjs/plugin/buddhistEra";
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend
-} from 'recharts';
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Cell,
+} from "recharts"; // ตัด Legend ออก
+import "./HealthChartGroup.css";
 
+// ตั้งค่า dayjs ให้รองรับ พ.ศ.
 dayjs.extend(buddhistEra);
-dayjs.locale('th');
+dayjs.locale("th");
 
-const formatDateLabel = (label) => {
-  return dayjs(label).format('D MMMM BBBB'); // เช่น 29 มิถุนายน 2568
+const metricConfigs = {
+  sugar: {
+    title: "ระดับน้ำตาลในเลือด",
+    key: "sugar",
+    color: "#9966FF",
+    unit: "mg/dL",
+  },
+  pressure: {
+    title: "ความดันโลหิต",
+    key: "systolic",
+    color: "#FF6384",
+    unit: "mmHg",
+  },
+  weight: { title: "น้ำหนัก", key: "weight", color: "#FF9F40", unit: "kg" },
+  waist: { title: "รอบเอว", key: "waist", color: "#FFCD56", unit: "cm" },
 };
 
-const HealthChartGroup = ({ data }) => (
-  <div className="health-charts">
+const formatMonthTick = (val) => dayjs(val).format("MMM BBBB");
+const formatYearTick = (val) => dayjs(val).format("BBBB");
+const formatDateLabel = (label) => dayjs(label).format("D MMMM BBBB");
 
-    <div className="chart-box">
-      <h4>ระดับน้ำตาลในเลือด</h4>
-      <LineChart width={300} height={200} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" tickFormatter={(d) => dayjs(d).format('MMM')} />
-        <YAxis domain={[100, 160]} />
-        <Tooltip labelFormatter={formatDateLabel} />
-        <Legend />
-        <Line type="monotone" dataKey="sugar" stroke="#9966FF" strokeWidth={2} />
-      </LineChart>
-    </div>
+const HealthChartGroup = ({ data, selectedCharts, chartType, filterType }) => {
+  const isYearly = filterType === "year";
+  const intervalX = isYearly ? data.length - 1 : 0;
 
-    <div className="chart-box">
-      <h4>ความดันโลหิต</h4>
-      <LineChart width={300} height={200} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" tickFormatter={(d) => dayjs(d).format('MMM')} />
-        <YAxis domain={[60, 160]} />
-        <Tooltip labelFormatter={formatDateLabel} />
-        <Legend />
-        <Line type="monotone" dataKey="systolic" stroke="#FF6384" strokeWidth={2} />
-        <Line type="monotone" dataKey="diastolic" stroke="#4BC0C0" strokeWidth={2} />
-      </LineChart>
-    </div>
+  const renderChart = ({ title, key, color, unit }) => (
+    <ResponsiveContainer width="100%" height={220}>
+      {chartType === "bar" ? (
+        <BarChart
+          data={data}
+          margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="date"
+            tickFormatter={isYearly ? formatYearTick : formatMonthTick}
+            interval={intervalX}
+          />
+          <YAxis />
+          <Tooltip
+            labelFormatter={formatDateLabel}
+            formatter={(value) => `${value} ${unit}`}
+          />
+          <Bar dataKey={key} fill={color} />
+        </BarChart>
+      ) : chartType === "pie" ? (
+        <PieChart margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+          <Tooltip formatter={(value) => `${value} ${unit}`} />
+          <Pie
+            data={data.map((item) => ({
+              name: isYearly
+                ? dayjs(item.date).format("BBBB")
+                : dayjs(item.date).format("D MMM"),
+              value: item[key],
+            }))}
+            dataKey="value"
+            nameKey="name"
+            outerRadius={80}
+            label={({ name, value }) => `${name}: ${value} ${unit}`}
+          >
+            {data.map((_, idx) => (
+              <Cell key={idx} fill={color} />
+            ))}
+          </Pie>
+        </PieChart>
+      ) : (
+        <LineChart
+          data={data}
+          margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="date"
+            tickFormatter={isYearly ? formatYearTick : formatMonthTick}
+            interval={intervalX}
+          />
+          <YAxis />
+          <Tooltip
+            labelFormatter={formatDateLabel}
+            formatter={(value) => `${value} ${unit}`}
+          />
+          <Line
+            type="monotone"
+            dataKey={key}
+            stroke={color}
+            dot={false}
+            strokeWidth={2}
+          />
+        </LineChart>
+      )}
+    </ResponsiveContainer>
+  );
 
-    <div className="chart-box">
-      <h4>น้ำหนัก</h4>
-      <LineChart width={300} height={200} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" tickFormatter={(d) => dayjs(d).format('MMM')} />
-        <YAxis domain={[60, 80]} />
-        <Tooltip labelFormatter={formatDateLabel} />
-        <Legend />
-        <Line type="monotone" dataKey="weight" stroke="#FF9F40" strokeWidth={2} />
-      </LineChart>
+  return (
+    <div className="health-charts">
+      {selectedCharts.sugar && (
+        <div className="chart-box">
+          <h4>
+            {metricConfigs.sugar.title} ({metricConfigs.sugar.unit})
+          </h4>
+          {renderChart(metricConfigs.sugar)}
+        </div>
+      )}
+      {selectedCharts.pressure && (
+        <div className="chart-box">
+          <h4>
+            {metricConfigs.pressure.title} ({metricConfigs.pressure.unit})
+          </h4>
+          {renderChart(metricConfigs.pressure)}
+        </div>
+      )}
+      {selectedCharts.weight && (
+        <div className="chart-box">
+          <h4>
+            {metricConfigs.weight.title} ({metricConfigs.weight.unit})
+          </h4>
+          {renderChart(metricConfigs.weight)}
+        </div>
+      )}
+      {selectedCharts.waist && (
+        <div className="chart-box">
+          <h4>
+            {metricConfigs.waist.title} ({metricConfigs.waist.unit})
+          </h4>
+          {renderChart(metricConfigs.waist)}
+        </div>
+      )}
     </div>
-
-    <div className="chart-box">
-      <h4>รอบเอว</h4>
-      <LineChart width={300} height={200} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" tickFormatter={(d) => dayjs(d).format('MMM')} />
-        <YAxis domain={[80, 100]} />
-        <Tooltip labelFormatter={formatDateLabel} />
-        <Legend />
-        <Line type="monotone" dataKey="waist" stroke="#FFCD56" strokeWidth={2} />
-      </LineChart>
-    </div>
-  </div>
-);
+  );
+};
 
 export default HealthChartGroup;

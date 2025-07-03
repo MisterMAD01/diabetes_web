@@ -1,0 +1,132 @@
+/* Wrapper (ถ้ามีใช้ที่อื่น) */
+.chart-controls-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  background: #fff;
+  margin-top: 1.5rem;
+}
+
+/* ChartControls */
+.chart-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chart-controls__filter-section,
+.chart-controls__type-toggle {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chart-controls__filter-section label,
+.chart-controls__type-toggle label {
+  font-weight: 500;
+  color: #333;
+}
+
+.chart-controls__filter-section select,
+.chart-controls__filter-section input,
+.chart-controls__type-toggle select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 0.95rem;
+  flex: 1;
+}
+
+.chart-controls__custom-input {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  min-width: 8rem;
+}
+
+.chart-controls__error-text {
+  color: #d9534f;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+/* HealthChartGroup */
+.health-chart-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.health-chart-group__box {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* CombinedChart */
+.combined-chart__container {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.combined-chart__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* datepicker overrides */
+.react-datepicker__header {
+  background: #fafafa;
+  border-bottom: 1px solid #ddd;
+}
+
+.react-datepicker__current-month {
+  font-weight: 600;
+  color: #333;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 4px;
+}
+
+/* Custom header */
+.rdp-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.rdp-header button {
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}

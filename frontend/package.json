@@ -30,6 +30,7 @@
     "antd": "^5.24.9",
     "axios": "^1.8.4",
     "chart.js": "^4.4.9",
+    "chartjs-adapter-date-fns": "^3.0.0",
     "class-variance-authority": "^0.7.1",
     "cookie-parser": "^1.4.7",
     "date-fns": "^4.1.0",
