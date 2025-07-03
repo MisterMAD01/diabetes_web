@@ -1,63 +1,68 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import './ReportPage.css';
-import dayjs from 'dayjs';
-import 'dayjs/locale/th';
-import buddhistEra from 'dayjs/plugin/buddhistEra';
+// src/pages/ReportPage.js
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import "./ReportPage.css";
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import buddhistEra from "dayjs/plugin/buddhistEra";
 
-import PatientSelector from '../../components/Report/PatientSelector';
-import { PatientInfoCard, PatientDetails } from '../../components/Report/PatientInfoCard';
-import RiskPieChart from '../../components/Report/RiskPieChart';
-import HealthChartGroup from '../../components/Report/HealthChartGroup';
-
-const API_URL = process.env.REACT_APP_API;
+import PatientSelector from "../../components/Report/PatientSelector";
+import {
+  PatientInfoCard,
+  PatientDetails,
+} from "../../components/Report/PatientInfoCard";
+import RiskPieChart from "../../components/Report/RiskPieChart";
+import CombinedChart from "../../components/Report/CombinedChart";
+import ChartControls from "../../components/Report/ChartControls";
+import HealthChartGroup from "../../components/Report/HealthChartGroup";
+import SummaryMetricCard from "../../components/Report/SummaryMetricCard";
 
 dayjs.extend(buddhistEra);
-dayjs.locale('th');
+dayjs.locale("th");
 
 const colorMap = {
-  'สีแดง': '#ff4d4f',
-  'สีเหลือง': '#fadb14',
-  'สีเขียว': '#52c41a',
-  'สีส้ม': '#fa8c16',
-  'สีดำ': '#595959',
-  'สีขาว': '#d9d9d9',
-  'สีเขียวอ่อน': '#b7f0b1',
-  'สีเขียวเข้ม': '#4caf50',
+  สีแดง: "#ff4d4f",
+  สีเหลือง: "#fadb14",
+  สีเขียว: "#52c41a",
+  สีส้ม: "#fa8c16",
+  สีดำ: "#595959",
+  สีขาว: "#d9d9d9",
+  สีเขียวอ่อน: "#b7f0b1",
+  สีเขียวเข้ม: "#4caf50",
 };
 
 const ColorBadge = ({ colorName }) => {
-  const bg = colorMap[colorName?.trim()] || '#ccc';
-  const textColor = (bg === '#ffeb3b' || bg === '#ffffff' || bg === '#fadb14') ? '#000' : '#fff';
+  const bg = colorMap[colorName?.trim()] || "#ccc";
+  const textColor = ["#ffeb3b", "#ffffff", "#fadb14"].includes(bg)
+    ? "#000"
+    : "#fff";
 
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div style={{ textAlign: "center" }}>
       <div
         style={{
-          width: '140px',
-          height: '140px',
-          borderRadius: '50%',
+          width: 140,
+          height: 140,
+          borderRadius: "50%",
           backgroundColor: bg,
-          margin: '0 auto',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '0.95rem',
+          margin: "0 auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "0.95rem",
           fontWeight: 600,
           color: textColor,
         }}
       >
-        {colorName || 'ไม่ระบุ'}
+        {colorName || "ไม่ระบุ"}
       </div>
-      <div style={{ marginTop: '8px', fontSize: '0.95rem', fontWeight: '500' }}>
+      <div style={{ marginTop: 8, fontSize: "0.95rem", fontWeight: 500 }}>
         กลุ่มความเสี่ยง
       </div>
     </div>
   );
 };
-
-
 
 const ReportPage = () => {
   const { id } = useParams();
@@ -65,11 +70,29 @@ const ReportPage = () => {
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [lineData, setLineData] = useState([]);
-  const [riskColor, setRiskColor] = useState('#ff4d4f');
+  const [riskColor, setRiskColor] = useState("#ff4d4f");
 
+  // Chart controls state
+  const [filterType, setFilterType] = useState("month");
+  const [selectedMonth, setSelectedMonth] = useState(dayjs().format("YYYY-MM"));
+  const [selectedYear, setSelectedYear] = useState(dayjs().year().toString());
+  const [customRange, setCustomRange] = useState({
+    from: dayjs().startOf("month").format("YYYY-MM-DD"),
+    to: dayjs().endOf("month").format("YYYY-MM-DD"),
+  });
+  const [selectedCharts, setSelectedCharts] = useState({
+    sugar: true,
+    pressure: true,
+    weight: true,
+    waist: true,
+  });
+  const [chartType, setChartType] = useState("line");
+
+  // Fetch patient list
   useEffect(() => {
-    axios.get(`${API_URL}/api/reports/patients`)
-      .then(res => {
+    axios
+      .get(`${process.env.REACT_APP_API}/api/reports/patients`)
+      .then((res) => {
         setPatients(res.data);
         if (id) {
           setSelectedPatientId(id);
@@ -79,41 +102,105 @@ const ReportPage = () => {
       });
   }, [id]);
 
+  // Fetch selected patient & trends
   useEffect(() => {
     if (!selectedPatientId) return;
 
     const fetchData = async () => {
       try {
-        const patientRes = await axios.get(`${API_URL}/api/reports/patient/${selectedPatientId}`);
-        const trendRes = await axios.get(`${API_URL}/api/reports/healthTrends/${selectedPatientId}`);
+        const { data: pd } = await axios.get(
+          `${process.env.REACT_APP_API}/api/reports/patient/${selectedPatientId}`
+        );
+        setSelectedPatient(pd);
+        setRiskColor(
+          colorMap[pd["กลุ่มเสี่ยงปิงปองจราจร 7 สี"]?.trim()] || "#ff4d4f"
+        );
 
-        const patientData = patientRes.data;
-        setSelectedPatient(patientData);
-        setRiskColor(colorMap[patientData["กลุ่มเสี่ยงปิงปองจราจร 7 สี"]?.trim()] || '#ff4d4f');
-
-const trends = trendRes.data;
-      const mergedData = trends.bloodSugar.map((item, idx) => ({
-        date: item.date, // ต้องเป็นวันที่เต็ม เช่น 2025-06-29
-        sugar: parseFloat(item.value),
-        systolic: trends.pressure[idx]?.value || 0,
-        diastolic: (trends.pressure[idx]?.value || 0) - 45,
-        weight: parseFloat(trends.weight[idx]?.value || 0),
-        waist: parseFloat(trends.waist[idx]?.value || 0),
-      }));
-
-        setLineData(mergedData);
+        const { data: trends } = await axios.get(
+          `${process.env.REACT_APP_API}/api/reports/healthTrends/${selectedPatientId}`
+        );
+        const merged = trends.bloodSugar.map((item, idx) => ({
+          date: item.date,
+          sugar: parseFloat(item.value),
+          systolic: trends.pressure[idx]?.value || 0,
+          diastolic: (trends.pressure[idx]?.value || 0) - 45,
+          weight: parseFloat(trends.weight[idx]?.value || 0),
+          waist: parseFloat(trends.waist[idx]?.value || 0),
+        }));
+        setLineData(merged);
       } catch (err) {
-        console.error('Error fetching data:', err);
+        console.error("Error fetching data:", err);
       }
     };
 
     fetchData();
   }, [selectedPatientId]);
 
-  const complicationData = selectedPatient ? [
-    { name: 'กลุ่มความเสี่ยง', value: selectedPatient["%โอกาสเกิดโรคแทรกซ้อน"] ?? 0 },
-    { name: 'ปลอดภัย', value: 100 - (selectedPatient["%โอกาสเกิดโรคแทรกซ้อน"] ?? 0) },
-  ] : [];
+  // Filtered data for HealthChartGroup
+  const filteredData = lineData.filter((item) => {
+    const date = dayjs(item.date);
+    if (filterType === "month") {
+      return date.format("YYYY-MM") === selectedMonth;
+    }
+    if (filterType === "year") {
+      return date.year().toString() === selectedYear;
+    }
+    if (filterType === "custom") {
+      return (
+        date.isAfter(dayjs(customRange.from).subtract(1, "day")) &&
+        date.isBefore(dayjs(customRange.to).add(1, "day"))
+      );
+    }
+    return true;
+  });
+
+  // Pie chart data
+  const complicationData = selectedPatient
+    ? [
+        {
+          name: "กลุ่มความเสี่ยง",
+          value: selectedPatient["%โอกาสเกิดโรคแทรกซ้อน"] ?? 0,
+        },
+        {
+          name: "ปลอดภัย",
+          value: 100 - (selectedPatient["%โอกาสเกิดโรคแทรกซ้อน"] ?? 0),
+        },
+      ]
+    : [];
+
+  // Summary metrics (latest vs previous)
+  const last = lineData[lineData.length - 1] || {};
+  const prev = lineData[lineData.length - 2] || {};
+  const summaryMetrics = [
+    {
+      metricKey: "sugar",
+      title: "ระดับน้ำตาลในเลือด",
+      value: last.sugar,
+      unit: "mg/dL",
+      prevValue: prev.sugar,
+    },
+    {
+      metricKey: "pressure",
+      title: "ความดันโลหิต",
+      value: last.systolic,
+      unit: "mmHg",
+      prevValue: prev.systolic,
+    },
+    {
+      metricKey: "weight",
+      title: "น้ำหนัก",
+      value: last.weight,
+      unit: "kg",
+      prevValue: prev.weight,
+    },
+    {
+      metricKey: "waist",
+      title: "รอบเอว",
+      value: last.waist,
+      unit: "cm",
+      prevValue: prev.waist,
+    },
+  ];
 
   return (
     <div className="report-page">
@@ -131,10 +218,16 @@ const trends = trendRes.data;
 
           <div className="info-main">
             <PatientDetails patient={selectedPatient} />
-
-            {/* ✅ แสดงปุ่มสี + วงกลม */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-              <ColorBadge colorName={selectedPatient["กลุ่มเสี่ยงปิงปองจราจร 7 สี"]} />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 20,
+              }}
+            >
+              <ColorBadge
+                colorName={selectedPatient["กลุ่มเสี่ยงปิงปองจราจร 7 สี"]}
+              />
               <RiskPieChart
                 data={complicationData}
                 riskPercent={selectedPatient["%โอกาสเกิดโรคแทรกซ้อน"]}
@@ -143,7 +236,46 @@ const trends = trendRes.data;
             </div>
           </div>
 
-          <HealthChartGroup data={lineData} />
+          <div className="summary-metrics">
+            {summaryMetrics.map((m) => (
+              <SummaryMetricCard
+                key={m.metricKey}
+                metricKey={m.metricKey}
+                title={m.title}
+                value={m.value}
+                unit={m.unit}
+                prevValue={m.prevValue}
+              />
+            ))}
+          </div>
+
+          <div className="chart-controls-wrapper">
+            {/* CombinedChart: full-year overview */}
+            <CombinedChart data={lineData} />
+
+            {/* Controls for filtering HealthChartGroup */}
+            <ChartControls
+              filterType={filterType}
+              setFilterType={setFilterType}
+              selectedMonth={selectedMonth}
+              setSelectedMonth={setSelectedMonth}
+              selectedYear={selectedYear}
+              setSelectedYear={setSelectedYear}
+              customRange={customRange}
+              setCustomRange={setCustomRange}
+              selectedCharts={selectedCharts}
+              setSelectedCharts={setSelectedCharts}
+              chartType={chartType}
+              setChartType={setChartType}
+            />
+
+            {/* Filtered health charts */}
+            <HealthChartGroup
+              data={filteredData}
+              selectedCharts={selectedCharts}
+              chartType={chartType}
+            />
+          </div>
         </div>
       )}
     </div>

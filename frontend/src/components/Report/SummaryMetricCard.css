@@ -1,0 +1,98 @@
+/* SummaryMetricCard.css */
+
+/* Container: ใช้ CSS Grid สี่คอลัมน์เต็มพื้นที่ */
+.summary-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 คอลัมน์ */
+  gap: 1rem; /* ลดช่องว่างเหลือ 1rem */
+  width: 100%;
+  align-items: stretch;
+}
+
+/* การ์ดแต่ละใบ */
+.summary-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.25rem; /* หรือปรับน้อยลงถ้าต้องการ */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* ลดช่องว่างภายในการ์ด */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  /* เอา min-height ออก เพื่อให้การ์ดยืดตามเนื้อหา */
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+}
+
+/* HEADER: flex จัดไอคอนชิดซ้าย ข้อความตามมา */
+.summary-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* ลดระยะระหว่างไอคอนกับข้อความ */
+}
+
+.summary-icon {
+  font-size: 1.8rem; /* ปรับขนาดไอคอน */
+  color: #4a5568;
+  flex-shrink: 0;
+}
+
+.summary-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* ชื่อ metric */
+.summary-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ค่าปัจจุบัน */
+.summary-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.unit {
+  font-size: 0.85rem;
+  color: #666;
+  margin-left: 0.25rem;
+}
+
+/* แนวโน้มการเปลี่ยนแปลง */
+.summary-trend {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.summary-trend.up {
+  color: #f5222d;
+}
+
+.summary-trend.down {
+  color: #52c41a;
+}
+
+/* Responsive: หน้าจอเล็กกว่า 800px ให้เป็น 2 คอลัมน์หรือ 1 คอลัมน์ */
+@media (max-width: 1200px) {
+  .summary-metrics {
+    grid-template-columns: repeat(
+      2,
+      1fr
+    ); /* ถ้าหน้าจอระหว่าง 800–1200px ให้ 2 คอลัมน์ */
+  }
+}
+@media (max-width: 800px) {
+  .summary-metrics {
+    grid-template-columns: 1fr; /* บนมือถือ 1 คอลัมน์ */
+    gap: 0.75rem;
+    margin: 0 auto;
+  }
+}

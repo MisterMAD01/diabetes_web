@@ -1,0 +1,10 @@
+.header-row {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.patient-select {
+  min-width: 250px;
+  font-size: 1rem;
+}

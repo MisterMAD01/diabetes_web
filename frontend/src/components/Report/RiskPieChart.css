@@ -1,0 +1,34 @@
+.info-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.risk-pie-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pie-chart-box {
+  text-align: center;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.pie-label {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Responsive tweak */
+@media (max-width: 768px) {
+  .pie-chart-box {
+    padding: 8px;
+  }
+}
