@@ -1,5 +1,6 @@
 // AppointmentDetailModal.jsx
 import React from 'react';
+import './AppointmentDetailModal';
 
 const AppointmentDetailModal = ({ appointment, onClose, onStatusChange, onEdit }) => {
   const formatDateThai = (dateStr) => {

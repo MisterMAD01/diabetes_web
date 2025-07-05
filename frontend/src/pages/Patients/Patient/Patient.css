@@ -28,11 +28,11 @@
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
-  transition: background-color 0.2s ease-in-out;
   }
   
   .add-button:hover{
       background-color: #059669;
+      transition: background-color 0.2s ease-in-out;
   }
   /* ช่องค้นหา */
   .search-input {
@@ -69,17 +69,6 @@
   .patient-row > div {
     flex: 1;
   }
-  
-  .details-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-  
   /* ป้ายกลุ่มเสี่ยง */
   .risk-tag {
     padding: 6px 12px;
@@ -163,3 +152,35 @@
   margin-bottom: 1rem;
   gap: 1rem;
   }
+
+.p-view-btn,.p-update-btn,.p-edit-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin: 0 6px;
+  font-size: 18px;
+  transition: transform 0.2s;
+}
+
+.p-view-btn:hover {
+  transform: scale(1.2);
+}
+
+.p-update-btn:hover {
+  transform: scale(1.2);
+}
+
+.p-edit-btn:hover {
+  transform: scale(1.2);
+}
+
+.p-action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.p-action-buttons .p-view-btn { color: #2563eb; }
+.p-action-buttons .p-update-btn { color: #f59e0b; }
+.p-action-buttons .p-edit-btn { color: #ef4444; }

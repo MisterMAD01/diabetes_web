@@ -3,7 +3,7 @@ import axios from 'axios';
 import AppointmentFormModal from './AppointmentFormModal';
 import AppointmentDetailModal from './AppointmentDetailModal';
 import AppointmentTable from './AppointmentTable';
-import AddDoctor from '../../components/AddDoctor'; // อย่าลืมนำเข้า
+import AddDoctor from '../../components/AddDoctor/AddDoctor'; // อย่าลืมนำเข้า
 import './AppointmentPage.css';
 import { getLocalISODate } from '../../components/utils';
 

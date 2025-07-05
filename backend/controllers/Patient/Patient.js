@@ -68,27 +68,3 @@ exports.getAllPatients = async (req, res) => {
     return res.status(500).json({ message: '❌ ดึงข้อมูลล้มเหลว', error: err.message });
   }
 };
-
-// ✅ ลบผู้ป่วย
-exports.deletePatient = (req, res) => {
-  const { id } = req.params;
-
-  // ตรวจสอบว่าได้รับ ID หรือไม่
-  if (!id) {
-    return res.status(400).json({ message: '❌ ต้องระบุ ID ผู้ป่วยเพื่อทำการลบ' });
-  }
-
-  const sql = 'DELETE FROM Patient WHERE Patient_ID = ?';
-
-  db.query(sql, [id], (err, result) => {
-    if (err) {
-      return res.status(500).json({ message: '❌ ลบข้อมูลล้มเหลว' });
-    }
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: '❗ ไม่พบผู้ป่วยที่ต้องการลบ' });
-    }
-
-    res.status(200).json({ message: '✅ ลบข้อมูลสำเร็จ', deletedId: id });
-  });
-};

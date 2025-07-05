@@ -18,6 +18,7 @@ const exportRoutes = require('./routes/Export/exportRoutes');
 const dataManagementRoutes = require('./routes/dataManagement/dataManagementRoutes');
 const riskRoutes = require('./routes/getRiskColorRoutes/getRiskColorRoutes');
 const doctorRoutes = require('./routes/doctorRoutes/doctorRoutes');
+const EditpatientRoutes = require('./routes/Editpatient/EditpatientRoutes');
 
 
 const CVSRoutes = require('./routes/CVS/CVSRoutes');
@@ -66,6 +67,7 @@ app.use('/api/cvs', CVSRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/data', dataManagementRoutes);
 app.use('/api/doctors', doctorRoutes);
+app.use('/api/patient-edit', EditpatientRoutes);
 
 // ให้ React หรือเบราว์เซอร์ดาวน์โหลดไฟล์จาก /files
 app.use('/files', express.static(path.join(__dirname, 'Export')));
