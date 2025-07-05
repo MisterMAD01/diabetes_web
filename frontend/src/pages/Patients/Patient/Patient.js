@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddPatientForm from './AddPatient';
 import AddHealthData from './AddhealthData';
+import { FaEye, FaEdit, FaNotesMedical } from 'react-icons/fa';
 import './Patient.css';
 
 const API_URL = process.env.REACT_APP_API;
@@ -112,24 +113,37 @@ const AllPatients = () => {
                   </span>
                 </div>
                 <div>
+<div className="p-action-buttons">
   <button
-    className="details-btn"
+    className="p-view-btn"
     onClick={() => navigate(`/report/${patient.id}`)}
+    title="ดูข้อมูล"
   >
-    ดูข้อมูล
+    <FaEye />
   </button>
+
   <button
-    className="details-btn"
-    style={{ marginLeft: '8px', backgroundColor: '#28a745' }}
+    className="p-update-btn"
     onClick={() => {
       setSelectedPatientId(patient.id);
       setShowHealthPopup(true);
     }}
+    title="อัปเดตสุขภาพ"
   >
-    อัปเดต
+    <FaNotesMedical />
   </button>
-</div>
 
+<button
+  className="p-edit-btn"
+  onClick={() => navigate(`/edit-patient/${patient.id}`)}
+  title="แก้ไขข้อมูล"
+>
+  <FaEdit />
+</button>
+
+</div>
+</div>
+  
               </div>
             ))}
           </div>

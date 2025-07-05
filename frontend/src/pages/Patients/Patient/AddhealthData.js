@@ -7,16 +7,24 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
   const [formData, setFormData] = useState({
     Systolic_BP: '', Diastolic_BP: '', Blood_Sugar: '',
     Height: '', Weight: '', Waist: '',
-    Note: '', Diabetes_Mellitus: '', Smoke: '',
+    Note: '', Diabetes_Mellitus: 'ไม่ป่วยเป็นเบาหวาน', Smoke: 'ไม่สูบ',
   });
 
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
+
     if (type === 'checkbox') {
-      setFormData(prev => ({
-        ...prev,
-        [name]: checked ? (name === "Diabetes_Mellitus" ? "เป็นเบาหวาน" : "สูบบุหรี่") : ""
-      }));
+      if (name === "Diabetes_Mellitus") {
+        setFormData(prev => ({
+          ...prev,
+          [name]: checked ? "ป่วยเป็นเบาหวาน" : "ไม่ป่วยเป็นเบาหวาน"
+        }));
+      } else if (name === "Smoke") {
+        setFormData(prev => ({
+          ...prev,
+          [name]: checked ? "สูบ" : "ไม่สูบ"
+        }));
+      }
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -40,8 +48,8 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
       Weight: parseFloat(formData.Weight) || 0,
       Waist: parseFloat(formData.Waist) || 0,
       Note: formData.Note,
-      Diabetes_Mellitus: formData.Diabetes_Mellitus || "",
-      Smoke: formData.Smoke || "",
+      Diabetes_Mellitus: formData.Diabetes_Mellitus,
+      Smoke: formData.Smoke,
       Blood_Pressure: `${systolic}/${diastolic}`,
     };
 
@@ -85,10 +93,21 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
             </div>
 
             <label className="add-patient-checkbox">
-              <input type="checkbox" name="Diabetes_Mellitus" checked={formData.Diabetes_Mellitus === "เป็นเบาหวาน"} onChange={handleChange} /> เป็นเบาหวาน
+              <input
+                type="checkbox"
+                name="Diabetes_Mellitus"
+                checked={formData.Diabetes_Mellitus === "ป่วยเป็นเบาหวาน"}
+                onChange={handleChange}
+              /> เป็นเบาหวาน
             </label>
+
             <label className="add-patient-checkbox">
-              <input type="checkbox" name="Smoke" checked={formData.Smoke === "สูบบุหรี่"} onChange={handleChange} /> สูบบุหรี่
+              <input
+                type="checkbox"
+                name="Smoke"
+                checked={formData.Smoke === "สูบ"}
+                onChange={handleChange}
+              /> สูบบุหรี่
             </label>
 
             <textarea name="Note" placeholder="หมายเหตุ" onChange={handleChange} className="add-patient-textarea" />

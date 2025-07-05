@@ -18,6 +18,7 @@ import Export from "../pages/Export/Exportpage";
 import Patients from "../pages/Patients/Patient/Patient";
 import UserProfile from "../pages/UserProfile/UserProfile";
 import RiskGroup from "../pages/Riskgroup/Riskgroup";
+import EditPatientPage from '../components/EditPatientPopup/EditPatientPage';
 // 🔒 หน้าเฉพาะ admin
 import ManageAccounts from "../pages/Admin/ManageAccounts";
 import Datamanagement from "../pages/Admin/Datamanagement";
@@ -96,6 +97,14 @@ const AppRoutes = () => (
         </ProtectedRoute>
       }
     />
+<Route 
+  path="/edit-patient/:id"
+  element={
+    <ProtectedRoute>
+      <EditPatientPage />
+    </ProtectedRoute>
+  }
+/>
 
     {/* 🔒 Admin Only */}
     <Route
