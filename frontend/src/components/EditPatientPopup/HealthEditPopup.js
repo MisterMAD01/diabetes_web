@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './EditPateintPage.css';
+import { formatDateThai } from '../utils';
+import './HealthEditPopup.css';
 
 const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
   const [formData, setFormData] = useState(record || {});
@@ -29,123 +30,76 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
   };
 
   return (
-    <div className="popup-overlay">
-      <div className="popup large-popup">
+    <div className="health-popup-overlay">
+      <div className="health-popup-content">
         <h2>📝 แก้ไขข้อมูลสุขภาพ</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>วันที่บันทึก</label>
-            <input
-              type="date"
-              name="Date_Recorded"
-              value={formData.Date_Recorded || ''}
-              readOnly
-              disabled
-            />
+        <form onSubmit={handleSubmit} className="health-popup-form">
+
+          <div className="health-popup-row">
+            <div className="health-popup-group full">
+              <label>วันที่บันทึก</label>
+              <div>{formatDateThai(formData.Date_Recorded)}</div>
+            </div>
           </div>
 
-          <div className="form-group">
-            <label>ระดับน้ำตาล</label>
-            <input
-              type="number"
-              step="0.1"
-              name="Blood_Sugar"
-              value={formData.Blood_Sugar || ''}
-              onChange={handleChange}
-            />
+          <div className="health-popup-row">
+            <div className="health-popup-group">
+              <label>ระดับน้ำตาล</label>
+              <input type="number" step="0.1" name="Blood_Sugar" value={formData.Blood_Sugar || ''} onChange={handleChange} />
+            </div>
+            <div className="health-popup-group">
+              <label>ความดันโลหิตบน</label>
+              <input type="number" name="Systolic_BP" value={formData.Systolic_BP || ''} onChange={handleChange} />
+            </div>
+            <div className="health-popup-group">
+              <label>ความดันโลหิตล่าง</label>
+              <input type="number" name="Diastolic_BP" value={formData.Diastolic_BP || ''} onChange={handleChange} />
+            </div>
           </div>
 
-          <div className="form-group">
-            <label>ความดันโลหิตบน</label>
-            <input
-              type="number"
-              name="Systolic_BP"
-              value={formData.Systolic_BP || ''}
-              onChange={handleChange}
-            />
+          <div className="health-popup-row">
+            <div className="health-popup-group">
+              <label>น้ำหนัก (kg)</label>
+              <input type="number" step="0.1" name="Weight" value={formData.Weight || ''} onChange={handleChange} />
+            </div>
+            <div className="health-popup-group">
+              <label>ส่วนสูง (cm)</label>
+              <input type="number" name="Height" value={formData.Height || ''} onChange={handleChange} />
+            </div>
+            <div className="health-popup-group">
+              <label>รอบเอว (cm)</label>
+              <input type="number" step="0.1" name="Waist" value={formData.Waist || ''} onChange={handleChange} />
+            </div>
           </div>
 
-          <div className="form-group">
-            <label>ความดันโลหิตล่าง</label>
-            <input
-              type="number"
-              name="Diastolic_BP"
-              value={formData.Diastolic_BP || ''}
-              onChange={handleChange}
-            />
+          <div className="health-popup-row">
+            <div className="health-popup-group">
+              <label>สูบบุหรี่</label>
+              <select name="Smoke" value={formData.Smoke || 'ไม่สูบ'} onChange={handleChange}>
+                <option value="ไม่สูบ">ไม่สูบ</option>
+                <option value="สูบ">สูบ</option>
+              </select>
+            </div>
+
+            <div className="health-popup-group">
+              <label>สถานะเบาหวาน</label>
+              <select name="Diabetes_Mellitus" value={formData.Diabetes_Mellitus || 'ไม่ป่วยเป็นเบาหวาน'} onChange={handleChange}>
+                <option value="ไม่ป่วยเป็นเบาหวาน">ไม่ป่วยเป็นเบาหวาน</option>
+                <option value="ป่วยเป็นเบาหวาน">ป่วยเป็นเบาหวาน</option>
+              </select>
+            </div>
           </div>
 
-          <div className="form-group">
-            <label>น้ำหนัก (kg)</label>
-            <input
-              type="number"
-              step="0.1"
-              name="Weight"
-              value={formData.Weight || ''}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>ส่วนสูง (cm)</label>
-            <input
-              type="number"
-              name="Height"
-              value={formData.Height || ''}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>รอบเอว (cm)</label>
-            <input
-              type="number"
-              step="0.1"
-              name="Waist"
-              value={formData.Waist || ''}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>สูบบุหรี่</label>
-            <select name="Smoke" value={formData.Smoke || 'ไม่สูบ'} onChange={handleChange}>
-              <option value="ไม่สูบ">ไม่สูบ</option>
-              <option value="สูบ">สูบ</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>สถานะเบาหวาน</label>
-            <select
-              name="Diabetes_Mellitus"
-              value={formData.Diabetes_Mellitus || 'ไม่ป่วยเป็นเบาหวาน'}
-              onChange={handleChange}
-            >
-              <option value="ไม่ป่วยเป็นเบาหวาน">ไม่ป่วยเป็นเบาหวาน</option>
-              <option value="ป่วยเป็นเบาหวาน">ป่วยเป็นเบาหวาน</option>
-              <option value="เสี่ยงเป็นเบาหวาน">เสี่ยงเป็นเบาหวาน</option>
-            </select>
-          </div>
-
-          <div className="form-group">
+          <div className="health-popup-group full">
             <label>หมายเหตุ</label>
             <textarea name="Note" value={formData.Note || ''} onChange={handleChange} />
           </div>
 
-          <div className="popup-buttons">
-            <button type="button" onClick={onClose}>
-              ปิด
-            </button>
-            <button type="submit">บันทึก</button>
-            <button
-              type="button"
-              onClick={handleDelete}
-              style={{ backgroundColor: 'red', color: 'white', marginLeft: '8px' }}
-            >
-              ลบข้อมูลสุขภาพ
-            </button>
-          </div>
+          <div className="health-popup-buttons">
+  <button type="button" className="health-popup-cancel-btn" onClick={onClose}>ปิด</button>
+  <button type="submit" className="health-popup-submit-btn">บันทึก</button>
+  <button type="button" className="health-popup-danger-btn" onClick={handleDelete}>ลบข้อมูลสุขภาพ</button>
+</div>
         </form>
       </div>
     </div>

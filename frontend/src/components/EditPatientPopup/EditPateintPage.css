@@ -1,79 +1,125 @@
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.popup.large-popup {
+.edit-patient-page {
   background: #fff;
-  padding: 24px;
+  padding: 2rem;
   border-radius: 12px;
-  width: 90%;
-  max-width: 1200px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  max-height: 90vh;
-  overflow-y: auto;
+  max-width: 850px;
+  margin: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-.popup h2 {
-  margin-top: 0;
-  font-size: 24px;
-  border-bottom: 2px solid #0e84b5;
-  padding-bottom: 10px;
-}
-
-.health-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.health-table th,
-.health-table td {
-  border: 1px solid #ccc;
-  padding: 8px 12px;
+.edit-patient-page h2,
+.edit-patient-page h3 {
   text-align: center;
+  margin-bottom: 1.5rem;
 }
 
-.health-table th {
-  background-color: #f0f8ff;
-  font-weight: bold;
+.edit-patient-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.health-table input {
-  width: 100%;
-  padding: 6px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
+.edit-patient-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
 }
 
-.popup-buttons {
-  margin-top: 16px;
-  text-align: right;
+.edit-patient-group label {
+  font-weight: 500;
+  margin-bottom: 0.3rem;
 }
 
-.popup-buttons button {
-  background-color: #0e84b5;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  font-weight: bold;
+.edit-patient-group input,
+.edit-patient-group select {
+  padding: 0.6rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
   border-radius: 6px;
+  background: #fff;
+}
+
+.edit-patient-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.edit-patient-buttons button,
+.health-popup-buttons button {
+  height: 44px;
+  min-width: 120px;
+  padding: 0 1.5rem;
+  font-size: 1rem;
+  font-family: 'Sarabun', sans-serif;
+  font-weight: 600;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
   cursor: pointer;
-  transition: background 0.3s ease;
 }
 
-.popup-buttons button:hover {
-  background-color: #096a91;
+/* ปุ่มบันทึก */
+.edit-patient-submit-btn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+}
+.edit-patient-submit-btn:hover {
+  background-color: #1d4ed8;
 }
 
-.scroll-table {
-  overflow-x: auto;
+/* ปุ่มย้อนกลับ */
+.edit-patient-cancel-btn {
+  background-color: white;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+}
+.edit-patient-cancel-btn:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+/* ปุ่มลบ */
+.edit-patient-danger-btn {
+  background-color: #dc2626;
+  color: white;
+  border: none;
+}
+.edit-patient-danger-btn:hover {
+  background-color: #b91c1c;
+}
+
+
+.card-list {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.health-card {
+  padding: 0.8rem 1.2rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.health-card:hover {
+  background-color: #e2e8f0;
+}
+
+.loading,
+.error {
+  text-align: center;
+  padding: 1rem;
+  font-weight: bold;
+  color: #dc2626;
 }

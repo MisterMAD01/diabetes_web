@@ -20,7 +20,15 @@ const [rows] = await db.query('SELECT * FROM patient WHERE Patient_ID = ?', [id]
 
 exports.updatePatient = async (req, res) => {
   const { id } = req.params;
-  const { name, age, phone, Underlying_Disease, address } = req.body;
+  const {
+    P_Name,
+    Age,
+    Birthdate,
+    Phone_Number,
+    Underlying_Disease,
+    Address,
+    Gender
+  } = req.body;
 
   try {
     const query = `
@@ -28,13 +36,15 @@ exports.updatePatient = async (req, res) => {
       SET 
         P_Name = ?,
         Age = ?,
+        Birthdate = ?,
         Phone_Number = ?,
         Underlying_Disease = ?,
-        Address = ?
+        Address = ?,
+        Gender = ?
       WHERE Patient_ID = ?
     `;
 
-    const values = [name, age, phone, Underlying_Disease, address, id];
+    const values = [P_Name, Age, Birthdate, Phone_Number, Underlying_Disease, Address, Gender, id];
 
     await db.query(query, values);
 
@@ -44,6 +54,7 @@ exports.updatePatient = async (req, res) => {
     res.status(500).json({ error: 'ไม่สามารถอัปเดตข้อมูลได้' });
   }
 };
+
 
 exports.deletePatient = async (req, res) => {
   const { id } = req.params;

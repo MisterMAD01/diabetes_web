@@ -1,0 +1,117 @@
+.health-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.health-popup-content {
+  background: white;
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
+}
+
+.health-popup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.health-popup-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.health-popup-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+.health-popup-group.full {
+  width: 100%;
+}
+
+.health-popup-group label {
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+}
+
+.health-popup-group input,
+.health-popup-group select,
+.health-popup-group textarea {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.health-popup-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.health-popup-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+.health-popup-buttons button {
+  height: 44px;
+  min-width: 120px;
+  padding: 0 1.5rem;
+  font-size: 1rem;
+  font-family: 'Sarabun', sans-serif;
+  font-weight: 600;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* ปุ่มปิด */
+.health-popup-cancel-btn {
+  background-color: white;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+}
+.health-popup-cancel-btn:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+/* ปุ่มบันทึก */
+.health-popup-submit-btn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+}
+.health-popup-submit-btn:hover {
+  background-color: #1d4ed8;
+}
+
+/* ปุ่มลบ */
+.health-popup-danger-btn {
+  background-color: #dc2626;
+  color: white;
+  border: none;
+}
+.health-popup-danger-btn:hover {
+  background-color: #b91c1c;
+}

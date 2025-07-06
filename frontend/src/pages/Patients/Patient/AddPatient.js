@@ -13,26 +13,6 @@ const AddPatientForm = ({ onSuccess, closePopup }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-
-    // คำนวณอายุเมื่อเกิดการเปลี่ยนแปลงในวันเกิด
-    if (name === "birthdate") {
-      const birthdate = new Date(value);
-      const today = new Date();
-      let age = today.getFullYear() - birthdate.getFullYear();
-      let monthDifference = today.getMonth() - birthdate.getMonth();
-      let dayDifference = today.getDate() - birthdate.getDate();
-
-      // ถ้าหน้าเดือนเกิดยังไม่ถึงในปีนี้ ให้ลดอายุลง 1 ปี
-      if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-        age--;
-      }
-
-      // คำนวณเดือนที่เหลือ
-      let months = today.getMonth() - birthdate.getMonth();
-      if (months < 0) months += 12;
-
-      setFormData(prev => ({ ...prev, age: `${age} ปี ${months} เดือน` }));
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -104,7 +84,7 @@ const AddPatientForm = ({ onSuccess, closePopup }) => {
             </div>
 
             <div className="add-patient-form-row">
-              <input type="text" name="age" placeholder="อายุ" value={formData.age} onChange={handleChange} disabled />
+              <input type="text" name="age" placeholder="อายุ" value={formData.age} onChange={handleChange} required />
               <input type="text" name="disease" placeholder="โรคประจำตัว" value={formData.disease} onChange={handleChange} />
             </div>
 
