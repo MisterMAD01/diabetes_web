@@ -42,3 +42,11 @@ export function formatDateShortThai(dateString) {
 
   return `${day}/${month}/${year}`;
 }
+
+// สำหรับแปลง date ให้ใช้กับ input[type="date"]
+export const toDateInputValue = (dateStr) => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().split("T")[0]; // ได้รูปแบบ yyyy-MM-dd
+};

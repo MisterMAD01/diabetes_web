@@ -16,7 +16,7 @@ exports.getReportByPatientId = async (id) => {
       p.P_Name,
       p.Address,
       p.Phone_Number AS Phone,
-      TIMESTAMPDIFF(YEAR, p.Birthdate, CURDATE()) AS Age,
+      p.Age AS Age,
       p.Gender,
       p.Birthdate AS Birthday,
       p.Risk AS Risk_Percentage,
