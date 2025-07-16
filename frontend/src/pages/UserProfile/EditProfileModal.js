@@ -1,5 +1,3 @@
-// src/pages/UserProfile/EditProfileModal.js
-
 import React, {
   useRef,
   useState,
@@ -20,6 +18,8 @@ import {
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../../components/Utils/cropImage";
 import { UserContext } from "../../contexts/UserContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./EditProfileModal.css";
 
 const API_URL = process.env.REACT_APP_API;
@@ -41,21 +41,19 @@ export default function EditProfileModal({
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
   const [showCropperModal, setShowCropperModal] = useState(false);
+  const [loadingSave, setLoadingSave] = useState(false);
 
-  // Load preview, now prioritizing deleteAvatar flag
+  // Load preview image or placeholder
   useEffect(() => {
-    // 1) ถ้ามีคำสั่งลบรูป ให้ล้าง preview ทันที
     if (formData.deleteAvatar === "true") {
       setPreviewImage(null);
       return;
     }
-    // 2) ถ้ามีไฟล์ใหม่ ให้โชว์ preview จากไฟล์
     if (formData.avatarFile) {
       const url = URL.createObjectURL(formData.avatarFile);
       setPreviewImage(url);
       return () => URL.revokeObjectURL(url);
     }
-    // 3) ถ้าไม่มีไฟล์ใหม่ ให้ fallback ไปที่ user.picture
     if (user?.picture) {
       setPreviewImage(
         user.picture.startsWith("http")
@@ -83,13 +81,9 @@ export default function EditProfileModal({
     fileInputRef.current.click();
   };
 
-  // ลบ preview ใน modal และตั้ง flag deleteAvatar
   const handleRemoveAvatar = () => {
-    // เคลียร์ preview
     setPreviewImage(null);
-    // ตั้ง flag ให้ลบตอนบันทึก
     onChange({ target: { name: "deleteAvatar", value: "true" } });
-    // ล้าง avatarFile ด้วย
     onChange({ target: { name: "avatarFile", files: [] } });
   };
 
@@ -105,13 +99,26 @@ export default function EditProfileModal({
       setShowCropperModal(false);
     } catch (e) {
       console.error(e);
+      toast.error("เกิดข้อผิดพลาดในการครอปรูปภาพ");
     }
   };
 
-  // ป้องกันปิด modal โดยกด backdrop/esc
   const handleModalClose = (_, reason) => {
     if (reason === "backdropClick" || reason === "escapeKeyDown") return;
     onClose();
+  };
+
+  const handleSaveClick = async () => {
+    setLoadingSave(true);
+    try {
+      await onSave();
+      toast.success("บันทึกข้อมูลสำเร็จ");
+      onClose();
+    } catch (error) {
+      toast.error("บันทึกข้อมูลไม่สำเร็จ");
+    } finally {
+      setLoadingSave(false);
+    }
   };
 
   return (
@@ -208,12 +215,27 @@ export default function EditProfileModal({
               margin="normal"
             />
 
-            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1, mt: 3 }}>
-              <Button variant="outlined" onClick={onClose}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 1,
+                mt: 3,
+              }}
+            >
+              <Button
+                variant="outlined"
+                onClick={onClose}
+                disabled={loadingSave}
+              >
                 ยกเลิก
               </Button>
-              <Button variant="contained" onClick={onSave}>
-                บันทึกข้อมูล
+              <Button
+                variant="contained"
+                onClick={handleSaveClick}
+                disabled={loadingSave}
+              >
+                {loadingSave ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
               </Button>
             </Box>
           </Box>
@@ -255,7 +277,9 @@ export default function EditProfileModal({
               value={zoom}
               onChange={(e, z) => setZoom(z)}
             />
-            <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}
+            >
               <Button onClick={() => setShowCropperModal(false)}>
                 ยกเลิกการครอป
               </Button>
@@ -266,6 +290,9 @@ export default function EditProfileModal({
           </Box>
         </Fade>
       </Modal>
+
+      {/* Toast container for notifications */}
+      <ToastContainer position="top-right" autoClose={3000} />
     </>
   );
 }

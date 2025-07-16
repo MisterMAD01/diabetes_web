@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import './UserFormModal.css';
-
-const API_URL = process.env.REACT_APP_API;
+import "./UserFormModal.css";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const UserForm = ({ handleSave, handleCancel }) => {
   const [formData, setFormData] = useState({
@@ -19,47 +19,28 @@ const UserForm = ({ handleSave, handleCancel }) => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("กรุณาเข้าสู่ระบบเพื่อดำเนินการ");
-        return;
-      }
-      // ใช้ endpoint ที่คุณใช้จริง
-      const response = await fetch(`${API_URL}/api/admin/accounts/add`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "เกิดข้อผิดพลาด");
-
-      alert(result.message);
-
-      if (handleSave) handleSave();
-
-      setFormData({
-        username: "",
-        name: "",
-        email: "",
-        password: "",
-        role: "user",
-      });
-    } catch (error) {
-      alert(error.message || "เกิดข้อผิดพลาดในการเพิ่มข้อมูล");
+    if (
+      !formData.username ||
+      !formData.name ||
+      !formData.email ||
+      !formData.password
+    ) {
+      toast.error("กรุณากรอกข้อมูลให้ครบถ้วน");
+      return;
+    }
+    if (handleSave) {
+      handleSave(formData);
     }
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <button className="modal-close-btn" onClick={handleCancel}>×</button>
+    <div className="user-form-overlay">
+      <div className="user-form-modal">
+        <button className="user-form-close-btn" onClick={handleCancel}>
+          ×
+        </button>
         <form className="user-form" onSubmit={handleSubmit}>
           <h2>เพิ่มผู้ใช้ใหม่</h2>
           <label>
@@ -109,9 +90,11 @@ const UserForm = ({ handleSave, handleCancel }) => {
               <option value="user">User</option>
             </select>
           </label>
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-            <button type="submit">💾 เพิ่มผู้ใช้</button>
-            <button type="button" className="cancel-btn" onClick={handleCancel}>ยกเลิก</button>
+          <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+            <button type="submit">เพิ่มผู้ใช้</button>
+            <button type="button" className="cancel-btn" onClick={handleCancel}>
+              ยกเลิก
+            </button>
           </div>
         </form>
       </div>

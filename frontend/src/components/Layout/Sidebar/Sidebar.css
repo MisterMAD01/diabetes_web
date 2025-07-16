@@ -1,5 +1,5 @@
 /* === Sidebar Container === */
-.sidebar {
+.sb-wrapper {
   width: 250px;
   background-color: #1e3a8a;
   color: white;
@@ -9,41 +9,39 @@
   flex-direction: column;
   box-shadow: 2px 0 6px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
-  font-family: 'Sarabun', sans-serif;
+  font-family: "Sarabun", sans-serif;
 }
 
 /* Header Section */
-.sidebar-header {
+.sb-header {
   display: flex;
-  flex-direction: column;       /* ซ้อนแนวตั้ง */
-  align-items: center;          /* จัดแนวนอนตรงกลาง */
-  justify-content: center;      /* จัดแนวตั้งตรงกลาง */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0 1rem;
-  padding-top:1rem;
-  text-align: center;           /* ให้ข้อความอยู่ตรงกลางด้วย */
+  padding: 1rem;
+  text-align: center;
 }
 
-.sidebar-logo {
+.sb-logo {
   width: 50px;
   height: 50px;
   object-fit: contain;
 }
 
-
-.sidebar-header h1 {
+.sb-title {
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 0.25rem;
 }
 
-.sidebar-sub {
+.sb-subtitle {
   font-size: 0.875rem;
   color: #93c5fd;
 }
 
 /* Menu Items */
-.sidebar-menu {
+.sb-menu {
   display: flex;
   flex-direction: column;
   padding: 1rem;
@@ -51,8 +49,8 @@
   flex-grow: 1;
 }
 
-.sidebar-menu button,
-.sidebar-menu a {
+.sb-menu button,
+.sb-menu a {
   background: none;
   border: none;
   color: #bfdbfe;
@@ -68,26 +66,26 @@
   text-decoration: none;
 }
 
-.sidebar-menu button:hover,
-.sidebar-menu a:hover {
+.sb-menu button:hover,
+.sb-menu a:hover {
   background-color: #1d4ed8;
   color: white;
 }
 
-.sidebar-menu .active {
+.sb-active {
   background-color: #1d4ed8;
   color: white;
 }
 
-/* Logout button or footer menu */
-.sidebar-footer {
+/* Footer (เช่น ปุ่ม logout) */
+.sb-footer {
   padding: 1rem;
   border-top: 1px solid #3b82f6;
 }
 
 /* Responsive for mobile/tablet */
 @media (max-width: 768px) {
-  .sidebar {
+  .sb-wrapper {
     width: 100%;
     height: auto;
     flex-direction: row;
@@ -96,17 +94,17 @@
     white-space: nowrap;
   }
 
-  .sidebar-header {
+  .sb-header {
     display: none;
   }
 
-  .sidebar-menu {
+  .sb-menu {
     flex-direction: row;
     gap: 0.5rem;
     padding: 0;
   }
 
-  .sidebar-menu button {
+  .sb-menu button {
     padding: 0.5rem;
     font-size: 0.875rem;
   }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import './UserEditFormModal.css';
+import "./UserEditFormModal.css";
 
 const UserEditForm = ({ user, handleSave, handleCancel }) => {
   const [formData, setFormData] = useState({ ...user });
@@ -19,7 +19,9 @@ const UserEditForm = ({ user, handleSave, handleCancel }) => {
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <button className="modal-close-btn" onClick={handleCancel}>×</button>
+        <button className="modal-close-btn" onClick={handleCancel}>
+          ×
+        </button>
         <form className="user-edit-form" onSubmit={handleSubmit}>
           <h2>แก้ไขข้อมูลผู้ใช้</h2>
           <label>
@@ -54,14 +56,22 @@ const UserEditForm = ({ user, handleSave, handleCancel }) => {
           </label>
           <label>
             สิทธิ์การใช้งาน:
-            <select name="role" value={formData.role || ""} onChange={handleChange}>
+            <select
+              name="role"
+              value={formData.role || ""}
+              onChange={handleChange}
+            >
               <option value="admin">Admin</option>
               <option value="user">User</option>
             </select>
           </label>
           <div className="modal-actions">
-            <button type="submit" className="submit-btn">✅ บันทึก</button>
-            <button type="button" className="cancel-btn" onClick={handleCancel}>❌ ยกเลิก</button>
+            <button type="submit" className="submit-btn">
+              บันทึก
+            </button>
+            <button type="button" className="cancel-btn" onClick={handleCancel}>
+              ยกเลิก
+            </button>
           </div>
         </form>
       </div>

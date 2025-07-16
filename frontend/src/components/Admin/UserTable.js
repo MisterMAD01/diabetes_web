@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "./UserTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEye,
-  faEdit,
-  faTrashAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { formatDateShortThai } from "../../components/utils";
 
@@ -16,12 +12,23 @@ const getInitials = (name) => {
   return name.trim().charAt(0).toUpperCase();
 };
 
-const UserTable = ({ users, handleView, handleEdit, handleDelete }) => {
+const UserTable = ({
+  users,
+  handleView,
+  handleEdit,
+  handleDelete,
+  onDeleteSuccess,
+}) => {
   const [deleteUser, setDeleteUser] = useState(null);
 
-  const confirmDelete = () => {
-    handleDelete(deleteUser.id);
-    setDeleteUser(null);
+  const confirmDelete = async () => {
+    try {
+      await handleDelete(deleteUser.id);
+      setDeleteUser(null);
+      onDeleteSuccess?.(); // toast จาก parent component
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
   };
 
   return (
@@ -43,22 +50,25 @@ const UserTable = ({ users, handleView, handleEdit, handleDelete }) => {
           {users.map((u) => (
             <tr key={u.id}>
               <td data-label="#">
-                <div className="avatar-circle">
-                  {getInitials(u.username)}
-                </div>
+                <div className="avatar-circle">{getInitials(u.username)}</div>
               </td>
               <td data-label="ชื่อผู้ใช้">{u.username}</td>
               <td data-label="อีเมล">{u.email}</td>
               <td data-label="สิทธิ์การใช้งาน">{u.role}</td>
               <td data-label="สถานะ">
-                <span className={`status-badge ${u.approved ? "approved" : "pending"}`}>
+                <span
+                  className={`status-badge ${
+                    u.approved ? "approved" : "pending"
+                  }`}
+                >
                   {u.approved ? "อนุมัติแล้ว" : "รออนุมัติ"}
                 </span>
               </td>
               <td data-label="เชื่อมต่อกับ">
                 {u.google_id ? (
                   <>
-                    <FontAwesomeIcon icon={faGoogle} className="icon-google" /> Google
+                    <FontAwesomeIcon icon={faGoogle} className="icon-google" />{" "}
+                    Google
                   </>
                 ) : (
                   "-"
@@ -104,8 +114,8 @@ const UserTable = ({ users, handleView, handleEdit, handleDelete }) => {
             </div>
             <h3>ยืนยันการลบผู้ใช้</h3>
             <p>
-              คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้ "
-              {deleteUser.username}"? การกระทำนี้ไม่สามารถย้อนกลับได้
+              คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้ "{deleteUser.username}"?
+              การกระทำนี้ไม่สามารถย้อนกลับได้
             </p>
             <div className="modal-actions">
               <button
@@ -130,6 +140,7 @@ UserTable.propTypes = {
   handleView: PropTypes.func.isRequired,
   handleEdit: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
+  onDeleteSuccess: PropTypes.func,
 };
 
 export default UserTable;

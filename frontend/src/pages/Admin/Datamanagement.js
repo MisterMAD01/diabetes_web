@@ -167,7 +167,8 @@ const DataManagement = () => {
               <FontAwesomeIcon icon={faExclamationTriangle} /> ยืนยันการส่งออก
             </h3>
             <p>
-              <FontAwesomeIcon icon={faList} /> คุณกำลังจะส่งออกข้อมูลดังต่อไปนี้:
+              <FontAwesomeIcon icon={faList} />{" "}
+              คุณกำลังจะส่งออกข้อมูลดังต่อไปนี้:
             </p>
             <ul>
               {selectedTables.map((key) => {
@@ -180,8 +181,8 @@ const DataManagement = () => {
               })}
             </ul>
             <p>
-              <FontAwesomeIcon icon={faCalendarAlt} /> ช่วงวันที่: {startDate || "-"} ถึง{" "}
-              {endDate || "-"}
+              <FontAwesomeIcon icon={faCalendarAlt} /> ช่วงวันที่:{" "}
+              {startDate || "-"} ถึง {endDate || "-"}
             </p>
             <div className="modal-buttons">
               <button onClick={handleExport}>ยืนยัน</button>

@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import AppointmentFormModal from './AppointmentFormModal';
-import AppointmentDetailModal from './AppointmentDetailModal';
-import AppointmentTable from './AppointmentTable';
-import AddDoctor from '../../components/AddDoctor/AddDoctor'; // อย่าลืมนำเข้า
-import './AppointmentPage.css';
-import { getLocalISODate } from '../../components/utils';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify"; // <-- import toast
+import AppointmentFormModal from "./AppointmentFormModal";
+import AppointmentDetailModal from "./AppointmentDetailModal";
+import AppointmentTable from "./AppointmentTable";
+import AddDoctor from "../../components/AddDoctor/AddDoctor";
+import "./AppointmentPage.css";
+import { getLocalISODate } from "../../components/utils";
 
-const API_URL = process.env.REACT_APP_API; // ✅ ใช้ค่าจาก .env
+const API_URL = process.env.REACT_APP_API;
 
 const AppointmentPage = () => {
   const [appointments, setAppointments] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
-  const [filterMode, setFilterMode] = useState('today');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [filterMode, setFilterMode] = useState("today");
   const [showModal, setShowModal] = useState(false);
   const [editAppointment, setEditAppointment] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -21,9 +22,8 @@ const AppointmentPage = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [appointmentToDelete, setAppointmentToDelete] = useState(null);
   const [showDoctorModal, setShowDoctorModal] = useState(false);
-  const [selectedDoctor, setSelectedDoctor] = useState('');
+  const [selectedDoctor, setSelectedDoctor] = useState("");
   const [doctors, setDoctors] = useState([]);
-
 
   const today = getLocalISODate(new Date());
 
@@ -33,20 +33,22 @@ const AppointmentPage = () => {
   }, []);
 
   const fetchDoctors = async () => {
-  try {
-    const res = await axios.get(`${API_URL}/api/doctors`);
-    setDoctors(res.data);
-  } catch (err) {
-    console.error('โหลดรายชื่อแพทย์ล้มเหลว:', err);
-  }
-}
+    try {
+      const res = await axios.get(`${API_URL}/api/doctors`);
+      setDoctors(res.data);
+    } catch (err) {
+      console.error("โหลดรายชื่อแพทย์ล้มเหลว:", err);
+      toast.error("โหลดรายชื่อแพทย์ล้มเหลว");
+    }
+  };
 
   const fetchAppointments = async () => {
     try {
       const res = await axios.get(`${API_URL}/api/appointments`);
       setAppointments(res.data);
     } catch (err) {
-      console.error('โหลดนัดหมายล้มเหลว:', err);
+      console.error("โหลดนัดหมายล้มเหลว:", err);
+      toast.error("โหลดนัดหมายล้มเหลว");
     }
   };
 
@@ -61,14 +63,14 @@ const AppointmentPage = () => {
     const appointmentDate = toLocalISODate(appt.Appointment_Date);
 
     const matchesDate =
-      filterMode === 'today'
+      filterMode === "today"
         ? appointmentDate === today
-        : filterMode === 'date'
+        : filterMode === "date"
         ? appointmentDate === selectedDate
         : true;
 
-        const matchesDoctor =
-    selectedDoctor === '' || String(appt.Doctor_ID) === selectedDoctor;
+    const matchesDoctor =
+      selectedDoctor === "" || String(appt.Doctor_ID) === selectedDoctor;
 
     return matchesSearch && matchesDate && matchesDoctor;
   });
@@ -80,12 +82,15 @@ const AppointmentPage = () => {
 
   const handleConfirmedDelete = async () => {
     try {
-      await axios.delete(`${API_URL}/api/appointments/${appointmentToDelete.Appointment_ID}`);
+      await axios.delete(
+        `${API_URL}/api/appointments/${appointmentToDelete.Appointment_ID}`
+      );
+      toast.success("ลบนัดหมายเรียบร้อย");
       setShowConfirmModal(false);
       fetchAppointments();
     } catch (err) {
-      console.error('ลบล้มเหลว:', err);
-      alert('เกิดข้อผิดพลาด');
+      console.error("ลบล้มเหลว:", err);
+      toast.error("เกิดข้อผิดพลาดในการลบนัดหมาย");
     }
   };
 
@@ -94,11 +99,12 @@ const AppointmentPage = () => {
       id: appt.Appointment_ID,
       hn: appt.Patient_ID,
       name: appt.Patient_Name,
-      date: appt.Appointment_Date,
+      date: appt.Appointment_Date?.split("T")[0],
       time: appt.Appointment_Time?.slice(0, 5),
       note: appt.Reason,
       status: appt.Status,
       doctor: appt.Doctor_Name,
+      Doctor_ID: appt.Doctor_ID,
     });
     setShowDetailModal(true);
   };
@@ -109,11 +115,11 @@ const AppointmentPage = () => {
       id: appt.Appointment_ID,
       hn: appt.Patient_ID,
       name: appt.Patient_Name,
-      date: appt.Appointment_Date?.split('T')[0],
+      date: appt.Appointment_Date?.split("T")[0],
       time: appt.Appointment_Time?.slice(0, 5),
       note: appt.Reason,
       status: appt.Status,
-      Doctor_ID: appt.Doctor_ID
+      Doctor_ID: appt.Doctor_ID,
     });
     setShowModal(true);
   };
@@ -124,11 +130,12 @@ const AppointmentPage = () => {
         Appointment_ID: appointmentId,
         Status: newStatus,
       });
-      alert('อัปเดตสถานะเรียบร้อย');
+      toast.success("อัปเดตสถานะเรียบร้อย");
       setShowDetailModal(false);
       fetchAppointments();
     } catch (error) {
-      console.error('อัปเดตสถานะล้มเหลว:', error);
+      console.error("อัปเดตสถานะล้มเหลว:", error);
+      toast.error("อัปเดตสถานะล้มเหลว");
     }
   };
 
@@ -149,15 +156,12 @@ const AppointmentPage = () => {
             onClick={() => {
               setEditAppointment(null);
               setShowModal(true);
-              }}
-              >
-              + เพิ่มการนัดหมาย
-          </button>
-          <button
-            className="add-btn2"
-          onClick={() => setShowDoctorModal(true)}
+            }}
           >
-          + เพิ่มแพทย์
+            + เพิ่มการนัดหมาย
+          </button>
+          <button className="add-btn2" onClick={() => setShowDoctorModal(true)}>
+            + เพิ่มแพทย์
           </button>
         </div>
       </div>
@@ -165,45 +169,45 @@ const AppointmentPage = () => {
       <div className="filter-row">
         <div className="filter-toggle">
           <button
-            className={filterMode === 'today' ? 'active' : ''}
-            onClick={() => setFilterMode('today')}
+            className={filterMode === "today" ? "active" : ""}
+            onClick={() => setFilterMode("today")}
           >
             นัดหมายวันนี้
           </button>
           <button
-            className={filterMode === 'all' ? 'active' : ''}
-            onClick={() => setFilterMode('all')}
+            className={filterMode === "all" ? "active" : ""}
+            onClick={() => setFilterMode("all")}
           >
             ทั้งหมด
           </button>
         </div>
         <div className="date-doctor-dropdown">
-        <div className="date-picker">
-          <label>เลือกวันที่:</label>
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => {
-              setFilterMode('date');
-              setSelectedDate(e.target.value);
-            }}
-          />
-        </div>
-        <div className="doctor-filter">
-          <label>แพทย์ผู้ดูแล:</label>
-          <select
+          <div className="date-picker">
+            <label>เลือกวันที่:</label>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => {
+                setFilterMode("date");
+                setSelectedDate(e.target.value);
+              }}
+            />
+          </div>
+          <div className="doctor-filter">
+            <label>แพทย์ผู้ดูแล:</label>
+            <select
               value={selectedDoctor}
               onChange={(e) => setSelectedDoctor(e.target.value)}
             >
-          <option value="">ทั้งหมด</option>
-          {doctors.map((doc) => (
-             <option key={doc.Doctor_ID} value={doc.Doctor_ID}>
-             {doc.D_Name}
-          </option>
-          ))}
-          </select>
+              <option value="">ทั้งหมด</option>
+              {doctors.map((doc) => (
+                <option key={doc.Doctor_ID} value={doc.Doctor_ID}>
+                  {doc.D_Name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
       </div>
 
       <AppointmentTable
@@ -245,18 +249,28 @@ const AppointmentPage = () => {
               <i className="fas fa-exclamation-triangle"></i>
             </div>
             <h3>ยืนยันการลบนัดหมาย</h3>
-            <p>คุณแน่ใจหรือไม่ว่าต้องการลบนัดหมายนี้? การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+            <p>
+              คุณแน่ใจหรือไม่ว่าต้องการลบนัดหมายนี้?
+              การกระทำนี้ไม่สามารถย้อนกลับได้
+            </p>
             <div className="modal-actions">
-              <button onClick={() => setShowConfirmModal(false)} className="cancel-btn">ยกเลิก</button>
-              <button onClick={handleConfirmedDelete} className="delete-btn">ลบนัดหมาย</button>
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="cancel-btn"
+              >
+                ยกเลิก
+              </button>
+              <button onClick={handleConfirmedDelete} className="delete-btn">
+                ลบนัดหมาย
+              </button>
             </div>
           </div>
         </div>
       )}
-      {showDoctorModal && (
-  <AddDoctor onClose={() => setShowDoctorModal(false)} />
-)}
 
+      {showDoctorModal && (
+        <AddDoctor onClose={() => setShowDoctorModal(false)} />
+      )}
     </div>
   );
 };
