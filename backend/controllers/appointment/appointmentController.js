@@ -2,12 +2,26 @@ const pool = require("../../config/db");
 
 // เพิ่มการนัดหมายใหม่
 exports.createAppointment = async (req, res) => {
-  const { Patient_ID, Appointment_Date, Appointment_Time, Reason, Doctor_ID, Status } = req.body;
+  const {
+    Patient_ID,
+    Appointment_Date,
+    Appointment_Time,
+    Reason,
+    Doctor_ID,
+    Status,
+  } = req.body;
 
   try {
     await pool.execute(
       "INSERT INTO appointments (Patient_ID, Appointment_Date, Appointment_Time, Reason, Doctor_ID, Status) VALUES (?, ?, ?, ?, ?, ?)",
-      [Patient_ID, Appointment_Date, Appointment_Time, Reason, Doctor_ID ?? null, Status || "Scheduled"]
+      [
+        Patient_ID,
+        Appointment_Date,
+        Appointment_Time,
+        Reason,
+        Doctor_ID ?? null,
+        Status || "Scheduled",
+      ]
     );
     res.status(201).json({ message: "Appointment created successfully" }); // ส่งสถานะ 201
   } catch (error) {
@@ -41,8 +55,6 @@ exports.getAppointments = async (req, res) => {
   }
 };
 
-
-
 // อัปเดตสถานะการนัดหมาย
 exports.updateAppointmentStatus = async (req, res) => {
   const { Appointment_ID, Status } = req.body;
@@ -52,7 +64,9 @@ exports.updateAppointmentStatus = async (req, res) => {
       "UPDATE appointments SET Status = ? WHERE Appointment_ID = ?",
       [Status, Appointment_ID]
     );
-    res.status(200).json({ message: "Appointment status updated successfully" });
+    res
+      .status(200)
+      .json({ message: "Appointment status updated successfully" });
   } catch (error) {
     console.error("Error updating appointment status:", error);
     res.status(500).json({ message: "Failed to update appointment status" });
@@ -64,7 +78,9 @@ exports.deleteAppointment = async (req, res) => {
   const { Appointment_ID } = req.params;
 
   try {
-    await pool.execute("DELETE FROM appointments WHERE Appointment_ID = ?", [Appointment_ID]);
+    await pool.execute("DELETE FROM appointments WHERE Appointment_ID = ?", [
+      Appointment_ID,
+    ]);
     res.status(200).json({ message: "Appointment deleted successfully" });
   } catch (error) {
     console.error("Error deleting appointment:", error);
@@ -74,12 +90,26 @@ exports.deleteAppointment = async (req, res) => {
 
 // อัปเดตการนัดหมาย
 exports.updateAppointment = async (req, res) => {
-  const { Appointment_ID, Appointment_Date, Appointment_Time, Reason, Status } = req.body;
+  const {
+    Appointment_ID,
+    Appointment_Date,
+    Appointment_Time,
+    Reason,
+    Status,
+    Doctor_ID,
+  } = req.body;
 
   try {
     await pool.execute(
-      "UPDATE appointments SET Appointment_Date = ?, Appointment_Time = ?, Reason = ?, Status = ? WHERE Appointment_ID = ?",
-      [Appointment_Date, Appointment_Time, Reason, Status, Appointment_ID]
+      "UPDATE appointments SET Appointment_Date = ?, Appointment_Time = ?, Reason = ?, Status = ?, Doctor_ID = ? WHERE Appointment_ID = ?",
+      [
+        Appointment_Date,
+        Appointment_Time,
+        Reason,
+        Status,
+        Doctor_ID,
+        Appointment_ID,
+      ]
     );
     res.status(200).json({ message: "Appointment updated successfully" });
   } catch (error) {
@@ -87,7 +117,6 @@ exports.updateAppointment = async (req, res) => {
     res.status(500).json({ message: "Failed to update appointment" });
   }
 };
-
 
 exports.getPatients = async (req, res) => {
   try {

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify"; // <-- import toast
+import { toast } from "react-toastify";
 import AppointmentFormModal from "./AppointmentFormModal";
 import AppointmentDetailModal from "./AppointmentDetailModal";
 import AppointmentTable from "./AppointmentTable";
 import AddDoctor from "../../components/AddDoctor/AddDoctor";
 import "./AppointmentPage.css";
 import { getLocalISODate } from "../../components/utils";
+import ManageDoctorModal from "./ManageDoctorModal";
 
 const API_URL = process.env.REACT_APP_API;
 
@@ -24,8 +25,17 @@ const AppointmentPage = () => {
   const [showDoctorModal, setShowDoctorModal] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [doctors, setDoctors] = useState([]);
+  const [showManageDoctorModal, setShowManageDoctorModal] = useState(false);
 
   const today = getLocalISODate(new Date());
+
+  // ✅ แปลงวันที่จากฐานข้อมูลให้เหมาะกับ input type="date"
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const tzOffset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() - tzOffset).toISOString().split("T")[0];
+  };
 
   useEffect(() => {
     fetchAppointments();
@@ -99,7 +109,7 @@ const AppointmentPage = () => {
       id: appt.Appointment_ID,
       hn: appt.Patient_ID,
       name: appt.Patient_Name,
-      date: appt.Appointment_Date?.split("T")[0],
+      date: formatDateForInput(appt.Appointment_Date),
       time: appt.Appointment_Time?.slice(0, 5),
       note: appt.Reason,
       status: appt.Status,
@@ -115,7 +125,7 @@ const AppointmentPage = () => {
       id: appt.Appointment_ID,
       hn: appt.Patient_ID,
       name: appt.Patient_Name,
-      date: appt.Appointment_Date?.split("T")[0],
+      date: formatDateForInput(appt.Appointment_Date), // ✅ แปลงตรงนี้
       time: appt.Appointment_Time?.slice(0, 5),
       note: appt.Reason,
       status: appt.Status,
@@ -162,6 +172,12 @@ const AppointmentPage = () => {
           </button>
           <button className="add-btn2" onClick={() => setShowDoctorModal(true)}>
             + เพิ่มแพทย์
+          </button>
+          <button
+            className="add-btn2"
+            onClick={() => setShowManageDoctorModal(true)}
+          >
+            จัดการแพทย์
           </button>
         </div>
       </div>
@@ -217,6 +233,13 @@ const AppointmentPage = () => {
         onDelete={confirmDelete}
         onView={handleView}
       />
+      {showManageDoctorModal && (
+        <ManageDoctorModal
+          doctors={doctors}
+          onClose={() => setShowManageDoctorModal(false)}
+          onRefresh={fetchDoctors}
+        />
+      )}
 
       {showModal && (
         <AppointmentFormModal
