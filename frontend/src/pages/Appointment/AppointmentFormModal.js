@@ -1,51 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import Select from 'react-select';
-import axios from 'axios';
-import './AppointmentFormModal.css';
+import React, { useEffect, useState } from "react";
+import Select from "react-select";
+import axios from "axios";
+import { toast } from "react-toastify"; // ✅ เพิ่ม import toast
+import "./AppointmentFormModal.css";
 
-const API_URL = process.env.REACT_APP_API; // 🔧 ดึง API URL จาก .env
+const API_URL = process.env.REACT_APP_API;
 
 const AppointmentFormModal = ({ onClose, editAppointment }) => {
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [hn, setHn] = useState('');
+  const [hn, setHn] = useState("");
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
   useEffect(() => {
-    axios.get(`${API_URL}/api/appointments/patients`)
-      .then(res => {
-        const options = res.data.map(p => ({
+    axios
+      .get(`${API_URL}/api/appointments/patients`)
+      .then((res) => {
+        const options = res.data.map((p) => ({
           value: p.Patient_ID,
           label: p.P_Name,
         }));
         setPatients(options);
 
         if (editAppointment) {
-          const match = options.find(opt => opt.value === editAppointment.hn);
+          const match = options.find((opt) => opt.value === editAppointment.hn);
           setSelectedPatient(match || null);
           setHn(editAppointment.hn);
         }
       })
-      .catch(err => console.error('โหลดรายชื่อผู้ป่วยล้มเหลว:', err));
+      .catch((err) => console.error("โหลดรายชื่อผู้ป่วยล้มเหลว:", err));
   }, [editAppointment]);
 
   useEffect(() => {
-  axios.get(`${API_URL}/api/doctors`)
-    .then(res => {
-      const options = res.data.map(d => ({
-        value: d.Doctor_ID,
-        label: `${d.D_Name} (${d.specialty})`,
-      }));
-      setDoctors(options);
+    axios
+      .get(`${API_URL}/api/doctors`)
+      .then((res) => {
+        const options = res.data.map((d) => ({
+          value: d.Doctor_ID,
+          label: `${d.D_Name} (${d.specialty})`,
+        }));
+        setDoctors(options);
 
-      if (editAppointment) {
-        const match = options.find(opt => opt.value === editAppointment.Doctor_ID);
-        setSelectedDoctor(match || null);
-      }
-    })
-    .catch(err => console.error('โหลดรายชื่อหมอล้มเหลว:', err));
-}, [editAppointment]);
+        if (editAppointment) {
+          const match = options.find(
+            (opt) => opt.value === editAppointment.Doctor_ID
+          );
+          setSelectedDoctor(match || null);
+        }
+      })
+      .catch((err) => console.error("โหลดรายชื่อหมอล้มเหลว:", err));
+  }, [editAppointment]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,7 +62,7 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
       Appointment_Time: form.time.value,
       Reason: form.note.value,
       Doctor_ID: selectedDoctor?.value,
-      Status: 'รอพบแพทย์'
+      Status: "รอพบแพทย์",
     };
 
     try {
@@ -66,15 +71,17 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
           ...payload,
           Appointment_ID: editAppointment.id,
         });
+        toast.success("แก้ไขนัดหมายสำเร็จ");
       } else {
         await axios.post(`${API_URL}/api/appointments`, payload);
+        toast.success("เพิ่มนัดหมายสำเร็จ");
       }
 
       onClose();
       form.reset();
     } catch (error) {
-      console.error('เกิดข้อผิดพลาด:', error);
-      alert('ไม่สามารถบันทึกนัดหมายได้');
+      console.error("เกิดข้อผิดพลาด:", error);
+      toast.error("ไม่สามารถบันทึกนัดหมายได้");
     }
   };
 
@@ -87,8 +94,10 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
     <div className="modal-overlay">
       <div className="modal large">
         <div className="modal-header">
-          <h3>{editAppointment ? 'แก้ไขนัดหมาย' : 'สร้างนัดหมายใหม่'}</h3>
-          <button className="close-btn" onClick={onClose}>&times;</button>
+          <h3>{editAppointment ? "แก้ไขนัดหมาย" : "สร้างนัดหมายใหม่"}</h3>
+          <button className="close-btn" onClick={onClose}>
+            &times;
+          </button>
         </div>
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="modal-grid">
@@ -102,30 +111,32 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
                 isSearchable
                 components={{ DropdownIndicator: null }}
                 styles={{
-                  container: (base) => ({ ...base, width: '100%' }),
+                  container: (base) => ({ ...base, width: "100%" }),
                   control: (base, state) => ({
                     ...base,
-                    minHeight: '38px',
-                    height: '38px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    boxShadow: state.isFocused ? '0 0 0 1px #2684FF' : base.boxShadow,
-                    borderColor: state.isFocused ? '#2684FF' : '#ccc',
-                    '&:hover': { borderColor: '#2684FF' },
+                    minHeight: "38px",
+                    height: "38px",
+                    display: "flex",
+                    alignItems: "center",
+                    boxShadow: state.isFocused
+                      ? "0 0 0 1px #2684FF"
+                      : base.boxShadow,
+                    borderColor: state.isFocused ? "#2684FF" : "#ccc",
+                    "&:hover": { borderColor: "#2684FF" },
                   }),
                   valueContainer: (base) => ({
                     ...base,
-                    height: '38px',
-                    padding: '0 8px',
-                    display: 'flex',
-                    alignItems: 'center',
+                    height: "38px",
+                    padding: "0 8px",
+                    display: "flex",
+                    alignItems: "center",
                   }),
                   input: (base) => ({
                     ...base,
                     margin: 0,
                     padding: 0,
                   }),
-                  indicatorsContainer: () => ({ display: 'none' }),
+                  indicatorsContainer: () => ({ display: "none" }),
                   menu: (base) => ({
                     ...base,
                     zIndex: 9999,
@@ -138,19 +149,23 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
               <input type="text" name="hn" value={hn} disabled />
             </div>
             <div>
-  <label>เลือกแพทย์</label>
-  <Select
-    options={doctors}
-    value={selectedDoctor}
-    onChange={(selected) => setSelectedDoctor(selected)}
-    placeholder="ค้นหาแพทย์..."
-    isSearchable
-  />
-</div>
-
+              <label>เลือกแพทย์</label>
+              <Select
+                options={doctors}
+                value={selectedDoctor}
+                onChange={(selected) => setSelectedDoctor(selected)}
+                placeholder="ค้นหาแพทย์..."
+                isSearchable
+              />
+            </div>
             <div>
               <label>วันที่</label>
-              <input name="date" type="date" required defaultValue={editAppointment?.date} />
+              <input
+                name="date"
+                type="date"
+                required
+                defaultValue={editAppointment?.date}
+              />
             </div>
             <div>
               <label>เวลา</label>
@@ -158,18 +173,24 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
                 name="time"
                 type="time"
                 required
-                defaultValue={editAppointment?.time || ''}
+                defaultValue={editAppointment?.time || ""}
               />
             </div>
             <div className="full-width">
               <label>หมายเหตุ</label>
-              <textarea name="note" rows="2" defaultValue={editAppointment?.note || ''} />
+              <textarea
+                name="note"
+                rows="2"
+                defaultValue={editAppointment?.note || ""}
+              />
             </div>
           </div>
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="cancel-btn">ยกเลิก</button>
+            <button type="button" onClick={onClose} className="cancel-btn">
+              ยกเลิก
+            </button>
             <button type="submit" className="submit-btn">
-              {editAppointment ? 'บันทึกการแก้ไข' : 'บันทึกนัดหมาย'}
+              {editAppointment ? "บันทึกการแก้ไข" : "บันทึกนัดหมาย"}
             </button>
           </div>
         </form>

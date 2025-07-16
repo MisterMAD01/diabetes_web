@@ -6,6 +6,8 @@ import EditProfileModal from "./EditProfileModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import { formatDateShortThai } from "../../components/utils";
 import "./UserProfile.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const API_URL = process.env.REACT_APP_API;
 const getInitial = (name) =>
@@ -43,6 +45,7 @@ export default function UserProfile() {
         });
       } catch (error) {
         console.error(error);
+        toast.error("ไม่สามารถโหลดข้อมูลโปรไฟล์ได้");
       } finally {
         setLoading(false);
       }
@@ -97,11 +100,11 @@ export default function UserProfile() {
       setUser((prev) => ({ ...prev, ...updated, picture: fullUrl }));
       setProfile((prev) => ({ ...prev, ...updated, picture: fullUrl }));
 
-      alert("อัปเดตข้อมูลสำเร็จ!");
+      toast.success("อัปเดตข้อมูลสำเร็จ!");
       setOpenProfileModal(false);
     } catch (err) {
       console.error(err);
-      alert("ไม่สามารถอัปเดตข้อมูลได้!");
+      toast.error("ไม่สามารถอัปเดตข้อมูลได้!");
     } finally {
       setLoading(false);
     }
@@ -170,10 +173,10 @@ export default function UserProfile() {
                 {getInitial(profile.name)}
               </Box>
             )}
-            <Typography sx={{ mt: 1 }}>
-              รหัสผู้ใช้ : {profile.id}
+            <Typography sx={{ mt: 1 }}>รหัสผู้ใช้ : {profile.id}</Typography>
+            <Typography>
+              สร้างเมื่อ : {formatDateShortThai(profile.created_at)}
             </Typography>
-            <Typography>สร้างเมื่อ : {formatDateShortThai(profile.created_at)}</Typography>
           </Box>
 
           <Box sx={{ flex: 1, minWidth: 250 }}>
@@ -232,6 +235,9 @@ export default function UserProfile() {
         open={openPasswordModal}
         onClose={() => setOpenPasswordModal(false)}
       />
+
+      {/* Toast container */}
+      <ToastContainer position="top-right" autoClose={3000} />
     </Box>
   );
 }

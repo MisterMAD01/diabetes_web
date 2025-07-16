@@ -1,4 +1,4 @@
-const db = require('../../config/db');
+const db = require("../../config/db");
 
 // ✅ เพิ่มข้อมูลผู้ป่วย
 exports.addPatient = async (req, res) => {
@@ -9,12 +9,14 @@ exports.addPatient = async (req, res) => {
     Age,
     Gender,
     Birthdate,
-    Underlying_Disease
+    Underlying_Disease,
   } = req.body;
 
   // ตรวจสอบข้อมูลที่จำเป็น
   if (!P_Name || !Address || !Phone_Number || !Age || !Gender || !Birthdate) {
-    return res.status(400).json({ message: '❌ ข้อมูลไม่ครบถ้วน โปรดกรอกข้อมูลที่จำเป็น' });
+    return res
+      .status(400)
+      .json({ message: "❌ ข้อมูลไม่ครบถ้วน โปรดกรอกข้อมูลที่จำเป็น" });
   }
 
   const sql = `
@@ -30,15 +32,18 @@ exports.addPatient = async (req, res) => {
     Age,
     Gender,
     Birthdate,
-    Underlying_Disease || null  // หากไม่มีข้อมูลจะใช้ null
+    Underlying_Disease || null, // หากไม่มีข้อมูลจะใช้ null
   ];
 
   try {
     const [result] = await db.execute(sql, values);
-    res.status(201).json({ message: '✅ บันทึกข้อมูลผู้ป่วยสำเร็จ', patientId: result.insertId });
+    res.status(201).json({
+      message: "บันทึกข้อมูลผู้ป่วยสำเร็จ",
+      patientId: result.insertId,
+    });
   } catch (err) {
-    console.error('❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล:', err);
-    return res.status(500).json({ message: 'เกิดข้อผิดพลาดในการบันทึกข้อมูล' });
+    console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", err);
+    return res.status(500).json({ message: "เกิดข้อผิดพลาดในการบันทึกข้อมูล" });
   }
 };
 
@@ -60,11 +65,13 @@ exports.getAllPatients = async (req, res) => {
   try {
     const [results] = await db.execute(sql);
     if (!results || results.length === 0) {
-      return res.status(404).json({ message: '❗ ไม่พบข้อมูลผู้ป่วย' });
+      return res.status(404).json({ message: "ไม่พบข้อมูลผู้ป่วย" });
     }
     res.status(200).json(results);
   } catch (err) {
-    console.error('❌ เกิดข้อผิดพลาดในการดึงข้อมูล:', err);
-    return res.status(500).json({ message: '❌ ดึงข้อมูลล้มเหลว', error: err.message });
+    console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", err);
+    return res
+      .status(500)
+      .json({ message: "ดึงข้อมูลล้มเหลว", error: err.message });
   }
 };

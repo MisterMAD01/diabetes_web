@@ -106,13 +106,10 @@ exports.rejectAccount = async (req, res) => {
     res.status(500).json({ message: "Failed to disapprove account" });
   }
 };
-
-// ฟังก์ชันเพิ่มบัญชี
 exports.AddAccount = async (req, res) => {
   const { username, name, email, password, role } = req.body;
 
   try {
-    // ตรวจสอบว่า Username หรือ Email ซ้ำกันหรือไม่
     const [rows] = await pool.execute(
       "SELECT * FROM users WHERE username = ? OR email = ?",
       [username, email]
@@ -124,18 +121,24 @@ exports.AddAccount = async (req, res) => {
       });
     }
 
-    // เข้ารหัสรหัสผ่าน (Hash Password)
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // เพิ่มผู้ใช้ใหม่ในฐานข้อมูล
     const [insertResult] = await pool.execute(
       "INSERT INTO users (username, name, email, password, role, approved) VALUES (?, ?, ?, ?, ?, ?)",
-      [username, name, email, hashedPassword, role, false] // เริ่มต้นด้วย approved = false
+      [username, name, email, hashedPassword, role, false]
     );
+
+    // ดึงข้อมูล user ใหม่จากฐานข้อมูล
+    const [newUserRows] = await pool.execute(
+      "SELECT id, username, name, email, role, approved, google_id, updated_at, created_at, picture FROM users WHERE id = ?",
+      [insertResult.insertId]
+    );
+
+    const newUser = newUserRows[0];
 
     res.status(201).json({
       message: "เพิ่มบัญชีผู้ใช้สำเร็จ โปรดรอการอนุมัติจาก Admin",
-      userId: insertResult.insertId,
+      user: newUser,
     });
   } catch (error) {
     console.error("Error adding account:", error);

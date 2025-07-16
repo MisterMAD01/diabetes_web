@@ -10,6 +10,8 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { UserContext } from "../../contexts/UserContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./ChangePasswordModal.css";
 
 const API_URL = process.env.REACT_APP_API;
@@ -19,8 +21,8 @@ export default function ChangePasswordModal({ open, onClose }) {
   const [form, setForm] = useState({ oldPassword: "", newPassword: "" });
   const [loading, setLoading] = useState(false);
 
-  const handleChange = e => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async () => {
@@ -29,10 +31,10 @@ export default function ChangePasswordModal({ open, onClose }) {
       await axios.post(`${API_URL}/api/user/change-password`, form, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
-      alert("เปลี่ยนรหัสผ่านสำเร็จ");
+      toast.success("เปลี่ยนรหัสผ่านสำเร็จ");
       onClose();
     } catch {
-      alert("ไม่สามารถเปลี่ยนรหัสผ่านได้");
+      toast.error("ไม่สามารถเปลี่ยนรหัสผ่านได้");
     } finally {
       setLoading(false);
     }
@@ -45,48 +47,55 @@ export default function ChangePasswordModal({ open, onClose }) {
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={handleModalClose}
-      disableEscapeKeyDown
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{ timeout: 500, className: "backdrop-blur" }}
-    >
-      <Fade in={open}>
-        <Box className="modal-box small">
-          <Typography variant="h6" gutterBottom>เปลี่ยนรหัสผ่าน</Typography>
-          <TextField
-            label="รหัสผ่านเดิม"
-            name="oldPassword"
-            type="password"
-            fullWidth
-            margin="normal"
-            onChange={handleChange}
-            disabled={loading}
-          />
-          <TextField
-            label="รหัสผ่านใหม่"
-            name="newPassword"
-            type="password"
-            fullWidth
-            margin="normal"
-            onChange={handleChange}
-            disabled={loading}
-          />
-
-          <Box className="modal-actions">
-            <Button onClick={onClose} disabled={loading}>ยกเลิก</Button>
-            <Button
-              variant="contained"
-              onClick={handleSubmit}
+    <>
+      <Modal
+        open={open}
+        onClose={handleModalClose}
+        disableEscapeKeyDown
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{ timeout: 500, className: "backdrop-blur" }}
+      >
+        <Fade in={open}>
+          <Box className="modal-box small">
+            <Typography variant="h6" gutterBottom>
+              เปลี่ยนรหัสผ่าน
+            </Typography>
+            <TextField
+              label="รหัสผ่านเดิม"
+              name="oldPassword"
+              type="password"
+              fullWidth
+              margin="normal"
+              onChange={handleChange}
               disabled={loading}
-            >
-              {loading ? "กำลังบันทึก..." : "บันทึก"}
-            </Button>
+            />
+            <TextField
+              label="รหัสผ่านใหม่"
+              name="newPassword"
+              type="password"
+              fullWidth
+              margin="normal"
+              onChange={handleChange}
+              disabled={loading}
+            />
+
+            <Box className="modal-actions">
+              <Button onClick={onClose} disabled={loading}>
+                ยกเลิก
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleSubmit}
+                disabled={loading}
+              >
+                {loading ? "กำลังบันทึก..." : "บันทึก"}
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </Fade>
-    </Modal>
+        </Fade>
+      </Modal>
+      <ToastContainer position="top-right" autoClose={3000} />
+    </>
   );
 }

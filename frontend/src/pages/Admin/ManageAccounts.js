@@ -13,6 +13,9 @@ import {
   faUserCog,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const API_URL = process.env.REACT_APP_API;
 
 function ManageAccounts() {
@@ -29,7 +32,7 @@ function ManageAccounts() {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("กรุณาเข้าสู่ระบบเพื่อดำเนินการ");
+        toast.warning("กรุณาเข้าสู่ระบบเพื่อดำเนินการ");
         return;
       }
       const currentUser = JSON.parse(atob(token.split(".")[1]));
@@ -41,21 +44,32 @@ function ManageAccounts() {
       );
       setAccounts(filteredAccounts);
     } catch (error) {
-      alert("ไม่สามารถดึงข้อมูลบัญชีได้!");
+      toast.error("ไม่สามารถดึงข้อมูลบัญชีได้!");
     }
   };
 
   const handleAddUser = async (user) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.post(`${API_URL}/api/admin/accounts`, user, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      fetchAccounts();
+      if (!token) {
+        toast.error("กรุณาเข้าสู่ระบบเพื่อดำเนินการ");
+        return;
+      }
+      const response = await axios.post(
+        `${API_URL}/api/admin/accounts/add`,
+        user,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const newUser = response.data.user;
+
+      setAccounts((prev) => [...prev, newUser]);
       setIsAddingUser(false);
-      alert("เพิ่มผู้ใช้สำเร็จ!");
+      toast.success("เพิ่มผู้ใช้สำเร็จ!");
     } catch (error) {
-      alert("ไม่สามารถเพิ่มผู้ใช้ได้!");
+      toast.error("ไม่สามารถเพิ่มผู้ใช้ได้!");
     }
   };
 
@@ -76,50 +90,56 @@ function ManageAccounts() {
       );
       fetchAccounts();
       setEditingUser(null);
-      alert("แก้ไขข้อมูลสำเร็จ!");
+      toast.success("แก้ไขข้อมูลสำเร็จ!");
     } catch (error) {
-      alert("ไม่สามารถแก้ไขข้อมูลได้!");
+      toast.error("ไม่สามารถแก้ไขข้อมูลได้!");
     }
   };
 
   const handleDelete = async (userId) => {
-    if (window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบบัญชีนี้?")) {
-      try {
-        const token = localStorage.getItem("token");
-        await axios.delete(`${API_URL}/api/admin/accounts/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        fetchAccounts();
-        alert("ลบบัญชีสำเร็จ!");
-      } catch (error) {
-        alert("ไม่สามารถลบบัญชีได้!");
-      }
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`${API_URL}/api/admin/accounts/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchAccounts();
+      toast.success("ลบบัญชีสำเร็จ!");
+    } catch (error) {
+      toast.error("ไม่สามารถลบบัญชีได้!");
     }
   };
 
   const handleApprove = async (userId) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.patch(`${API_URL}/api/admin/accounts/${userId}/approve`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.patch(
+        `${API_URL}/api/admin/accounts/${userId}/approve`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       fetchAccounts();
-      alert("อนุมัติบัญชีสำเร็จ!");
+      toast.success("อนุมัติบัญชีสำเร็จ!");
     } catch (error) {
-      alert("ไม่สามารถอนุมัติบัญชีได้!");
+      toast.error("ไม่สามารถอนุมัติบัญชีได้!");
     }
   };
 
   const handleRevoke = async (userId) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.patch(`${API_URL}/api/admin/accounts/${userId}/reject`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.patch(
+        `${API_URL}/api/admin/accounts/${userId}/reject`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       fetchAccounts();
-      alert("ยกเลิกอนุมัติสำเร็จ!");
+      toast.success("ยกเลิกอนุมัติสำเร็จ!");
     } catch (error) {
-      alert("ไม่สามารถยกเลิกอนุมัติได้!");
+      toast.error("ไม่สามารถยกเลิกอนุมัติได้!");
     }
   };
 
@@ -135,14 +155,17 @@ function ManageAccounts() {
       </h1>
 
       {!editingUser && !isAddingUser && (
-        <button onClick={() => setIsAddingUser((prev) => !prev)}>
-          <FontAwesomeIcon icon={isAddingUser ? faArrowLeft : faPlus} />
-          {isAddingUser ? " ย้อนกลับ" : " เพิ่มผู้ใช้"}
+        <button onClick={() => setIsAddingUser(true)}>
+          <FontAwesomeIcon icon={faPlus} />
+          {" เพิ่มผู้ใช้"}
         </button>
       )}
 
       {isAddingUser && (
-        <UserForm handleSave={handleAddUser} handleCancel={() => setIsAddingUser(false)} />
+        <UserForm
+          handleSave={handleAddUser}
+          handleCancel={() => setIsAddingUser(false)}
+        />
       )}
 
       {editingUser && (
@@ -164,7 +187,6 @@ function ManageAccounts() {
         />
       )}
 
-      {/* View modal */}
       {viewingUser && (
         <UserViewModal
           user={viewingUser}

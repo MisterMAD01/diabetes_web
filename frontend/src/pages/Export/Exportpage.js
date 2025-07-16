@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import './ExportPage.css';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./ExportPage.css";
 
 const API_URL = process.env.REACT_APP_API;
 
 const ExportPage = () => {
   const [patients, setPatients] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [selectedPatients, setSelectedPatients] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,17 +18,18 @@ const ExportPage = () => {
   const itemsPerPage = 8;
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      alert('กรุณาเข้าสู่ระบบเพื่อดำเนินการ');
+      toast.error("กรุณาเข้าสู่ระบบเพื่อดำเนินการ");
       return;
     }
 
-    axios.get(`${API_URL}/api/export/all-patients`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    axios
+      .get(`${API_URL}/api/export/all-patients`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         const mapped = res.data.map((p) => ({
           id: p.ID,
@@ -35,11 +38,16 @@ const ExportPage = () => {
         }));
         setPatients(mapped);
       })
-      .catch((err) => console.error('โหลดผู้ป่วยล้มเหลว', err));
+      .catch((err) => {
+        console.error("โหลดผู้ป่วยล้มเหลว", err);
+        toast.error("โหลดผู้ป่วยล้มเหลว");
+      });
   }, []);
 
   const filteredPatients = patients.filter(
-    (p) => p.name.includes(search) || p.hn.includes(search)
+    (p) =>
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.hn.toLowerCase().includes(search.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
@@ -50,7 +58,7 @@ const ExportPage = () => {
 
   const handleExport = (format) => {
     if (selectedPatients.length === 0) {
-      alert('กรุณาเลือกผู้ป่วยที่ต้องการ export');
+      toast.warn("กรุณาเลือกผู้ป่วยที่ต้องการ export");
       return;
     }
     setExportFormat(format);
@@ -58,15 +66,15 @@ const ExportPage = () => {
   };
 
   const confirmExport = async () => {
-    const queryParam = selectedPatients.join(',');
+    const queryParam = selectedPatients.join(",");
     const url =
-      exportFormat === 'PDF'
+      exportFormat === "PDF"
         ? `${API_URL}/api/export/pdf?id=${queryParam}`
         : `${API_URL}/api/export/excel?ids=${queryParam}`;
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      alert('กรุณาเข้าสู่ระบบเพื่อดำเนินการ');
+      toast.error("กรุณาเข้าสู่ระบบเพื่อดำเนินการ");
       return;
     }
 
@@ -75,19 +83,23 @@ const ExportPage = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        responseType: 'blob',
+        responseType: "blob",
       });
 
       const blob = new Blob([response.data]);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = window.URL.createObjectURL(blob);
-      const date = new Date().toLocaleDateString('th-TH').replace(/\//g, '-');
-      const idsLabel = selectedPatients.join(',');
-      link.download = `${date} ข้อมูลผู้ป่วย ${idsLabel}.${exportFormat === 'PDF' ? 'pdf' : 'xlsx'}`;
+      const date = new Date().toLocaleDateString("th-TH").replace(/\//g, "-");
+      const idsLabel = selectedPatients.join(",");
+      link.download = `${date} ข้อมูลผู้ป่วย ${idsLabel}.${
+        exportFormat === "PDF" ? "pdf" : "xlsx"
+      }`;
       link.click();
+
+      toast.success("ส่งออกข้อมูลสำเร็จ");
     } catch (error) {
-      console.error('Error exporting data:', error);
-      alert('เกิดข้อผิดพลาดในการส่งออกข้อมูล');
+      console.error("Error exporting data:", error);
+      toast.error("เกิดข้อผิดพลาดในการส่งออกข้อมูล");
     }
 
     setIsConfirmingExport(false);
@@ -122,17 +134,19 @@ const ExportPage = () => {
           }}
         />
         <button onClick={handleSelectAll}>
-          {selectAll ? 'ยกเลิกเลือกทั้งหมด' : 'เลือกทั้งหมด'}
+          {selectAll ? "ยกเลิกเลือกทั้งหมด" : "เลือกทั้งหมด"}
         </button>
-        <button onClick={() => handleExport('PDF')}>Export PDF</button>
-        <button onClick={() => handleExport('XLSX')}>Export XLSX</button>
+        <button onClick={() => handleExport("PDF")}>Export PDF</button>
+        <button onClick={() => handleExport("XLSX")}>Export XLSX</button>
       </div>
 
       <div className="patient-cards-grid">
         {paginatedPatients.map((patient) => (
           <div
             key={patient.id}
-            className={`patient-card ${selectedPatients.includes(patient.id) ? 'selected' : ''}`}
+            className={`patient-card ${
+              selectedPatients.includes(patient.id) ? "selected" : ""
+            }`}
           >
             <input
               type="checkbox"
@@ -152,17 +166,23 @@ const ExportPage = () => {
       <div className="pagination">
         หน้าที่ {currentPage} จาก {totalPages}
         <div className="pagination-buttons">
-          <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}>ก่อนหน้า</button>
+          <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}>
+            ก่อนหน้า
+          </button>
           {Array.from({ length: totalPages }, (_, i) => (
             <button
               key={i}
               onClick={() => setCurrentPage(i + 1)}
-              className={currentPage === i + 1 ? 'active' : ''}
+              className={currentPage === i + 1 ? "active" : ""}
             >
               {i + 1}
             </button>
           ))}
-          <button onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}>ถัดไป</button>
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+          >
+            ถัดไป
+          </button>
         </div>
       </div>
 
@@ -175,7 +195,7 @@ const ExportPage = () => {
                 .filter((p) => selectedPatients.includes(p.id))
                 .map((p) => (
                   <li key={p.id}>
-                    <span className="patient-name">{p.name}</span>
+                    <span className="patient-name">{p.name}</span>{" "}
                     <span className="patient-hn">({p.hn})</span>
                   </li>
                 ))}
@@ -184,13 +204,28 @@ const ExportPage = () => {
               <button className="confirm" onClick={confirmExport}>
                 ยืนยันส่งออก
               </button>
-              <button className="cancel" onClick={() => setIsConfirmingExport(false)}>
+              <button
+                className="cancel"
+                onClick={() => setIsConfirmingExport(false)}
+              >
                 ยกเลิก
               </button>
             </div>
           </div>
         </div>
       )}
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
