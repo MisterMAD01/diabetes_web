@@ -1,5 +1,5 @@
 // models/report/reportModel.js
-const db = require('../../config/db');
+const db = require("../../config/db");
 
 exports.getPatients = async () => {
   const [rows] = await db.query(`
@@ -10,7 +10,8 @@ exports.getPatients = async () => {
 };
 
 exports.getReportByPatientId = async (id) => {
-  const [rows] = await db.query(`
+  const [rows] = await db.query(
+    `
     SELECT 
       p.Patient_ID,
       p.P_Name,
@@ -23,16 +24,19 @@ exports.getReportByPatientId = async (id) => {
       p.Color
     FROM patient p
     WHERE p.Patient_ID = ?
-  `, [id]);
+  `,
+    [id]
+  );
   return rows[0];
 };
 
-
 exports.getHealthTrendsByPatientId = async (id) => {
-  const [rows] = await db.query(`
+  const [rows] = await db.query(
+    `
     SELECT 
       Date_Recorded AS date,
       Blood_Sugar AS sugar,
+      Blood_Pressure AS pressure,
       Systolic_BP AS systolic,
       Diastolic_BP AS diastolic,
       Weight AS weight,
@@ -40,6 +44,8 @@ exports.getHealthTrendsByPatientId = async (id) => {
     FROM health_data
     WHERE Patient_ID = ?
     ORDER BY Date_Recorded ASC
-  `, [id]);
+    `,
+    [id]
+  );
   return rows;
 };

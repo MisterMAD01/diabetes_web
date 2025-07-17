@@ -119,11 +119,13 @@ const ReportPage = () => {
         const { data: trends } = await axios.get(
           `${process.env.REACT_APP_API}/api/reports/healthTrends/${selectedPatientId}`
         );
+
+        // รวมข้อมูล โดยแยก systolic และ diastolic จริงจาก trends
         const merged = trends.bloodSugar.map((item, idx) => ({
           date: item.date,
           sugar: parseFloat(item.value),
-          systolic: trends.pressure[idx]?.value || 0,
-          diastolic: (trends.pressure[idx]?.value || 0) - 45,
+          systolic: trends.systolic[idx]?.value || 0,
+          diastolic: trends.diastolic[idx]?.value || 0,
           weight: parseFloat(trends.weight[idx]?.value || 0),
           waist: parseFloat(trends.waist[idx]?.value || 0),
         }));
@@ -182,9 +184,15 @@ const ReportPage = () => {
     {
       metricKey: "pressure",
       title: "ความดันโลหิต",
-      value: last.systolic,
+      value:
+        last.systolic && last.diastolic
+          ? `${last.systolic}/${last.diastolic}`
+          : null,
       unit: "mmHg",
-      prevValue: prev.systolic,
+      prevValue:
+        prev.systolic && prev.diastolic
+          ? `${prev.systolic}/${prev.diastolic}`
+          : null,
     },
     {
       metricKey: "weight",
