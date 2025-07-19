@@ -1,4 +1,4 @@
-.combined-chart-container {
+.combined-chart-container-marin {
   position: relative;
   background-color: #fff;
   border-radius: 10px;
@@ -9,7 +9,7 @@
   margin-bottom: 32px;
 }
 
-.combined-chart-title {
+.combined-chart-title-marin {
   position: absolute;
   top: 20px;
   left: 20px;

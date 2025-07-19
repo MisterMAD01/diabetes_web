@@ -32,8 +32,8 @@ const metricConfigs = {
   },
   pressure: {
     title: "ความดันโลหิต",
-    key: "systolic",
-    color: "#FF6384",
+    keys: ["systolic", "diastolic"], // เปลี่ยนจาก key เดียวเป็น keys array
+    colors: ["#FF6384", "#13c2c2"],
     unit: "mmHg",
   },
   weight: { title: "น้ำหนัก", key: "weight", color: "#FF9F40", unit: "kg" },
@@ -48,73 +48,140 @@ const HealthChartGroup = ({ data, selectedCharts, chartType, filterType }) => {
   const isYearly = filterType === "year";
   const intervalX = isYearly ? data.length - 1 : 0;
 
-  const renderChart = ({ title, key, color, unit }) => (
-    <ResponsiveContainer width="100%" height={220}>
-      {chartType === "bar" ? (
-        <BarChart
-          data={data}
-          margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="date"
-            tickFormatter={isYearly ? formatYearTick : formatMonthTick}
-            interval={intervalX}
-          />
-          <YAxis />
-          <Tooltip
-            labelFormatter={formatDateLabel}
-            formatter={(value) => `${value} ${unit}`}
-          />
-          <Bar dataKey={key} fill={color} />
-        </BarChart>
-      ) : chartType === "pie" ? (
-        <PieChart margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
-          <Tooltip formatter={(value) => `${value} ${unit}`} />
-          <Pie
-            data={data.map((item) => ({
-              name: isYearly
-                ? dayjs(item.date).format("BBBB")
-                : dayjs(item.date).format("D MMM"),
-              value: item[key],
-            }))}
-            dataKey="value"
-            nameKey="name"
-            outerRadius={80}
-            label={({ name, value }) => `${name}: ${value} ${unit}`}
+  const renderChart = ({ title, key, color, unit, keys, colors }) => {
+    // กรณี key เป็น array (เช่น pressure)
+    if (Array.isArray(keys) && keys.length > 0) {
+      if (chartType === "bar") {
+        return (
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart
+              data={data}
+              margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="date"
+                tickFormatter={isYearly ? formatYearTick : formatMonthTick}
+                interval={intervalX}
+              />
+              <YAxis />
+              <Tooltip
+                labelFormatter={formatDateLabel}
+                formatter={(value) => `${value} ${unit}`}
+              />
+              {keys.map((k, idx) => (
+                <Bar key={k} dataKey={k} fill={colors[idx]} />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        );
+      } else if (chartType === "pie") {
+        // pie chart ไม่เหมาะกับข้อมูลหลายค่าใน chart เดียวแบบนี้
+        return <div>Pie chart ไม่รองรับสำหรับหลายค่า</div>;
+      } else {
+        // line chart
+        return (
+          <ResponsiveContainer width="100%" height={220}>
+            <LineChart
+              data={data}
+              margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="date"
+                tickFormatter={isYearly ? formatYearTick : formatMonthTick}
+                interval={intervalX}
+              />
+              <YAxis />
+              <Tooltip
+                labelFormatter={formatDateLabel}
+                formatter={(value) => `${value} ${unit}`}
+              />
+              {keys.map((k, idx) => (
+                <Line
+                  key={k}
+                  type="monotone"
+                  dataKey={k}
+                  stroke={colors[idx]}
+                  dot={false}
+                  strokeWidth={2}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        );
+      }
+    }
+
+    // กรณี key เป็น string ปกติ (เช่น sugar, weight, waist)
+    return (
+      <ResponsiveContainer width="100%" height={220}>
+        {chartType === "bar" ? (
+          <BarChart
+            data={data}
+            margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
           >
-            {data.map((_, idx) => (
-              <Cell key={idx} fill={color} />
-            ))}
-          </Pie>
-        </PieChart>
-      ) : (
-        <LineChart
-          data={data}
-          margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="date"
-            tickFormatter={isYearly ? formatYearTick : formatMonthTick}
-            interval={intervalX}
-          />
-          <YAxis />
-          <Tooltip
-            labelFormatter={formatDateLabel}
-            formatter={(value) => `${value} ${unit}`}
-          />
-          <Line
-            type="monotone"
-            dataKey={key}
-            stroke={color}
-            dot={false}
-            strokeWidth={2}
-          />
-        </LineChart>
-      )}
-    </ResponsiveContainer>
-  );
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="date"
+              tickFormatter={isYearly ? formatYearTick : formatMonthTick}
+              interval={intervalX}
+            />
+            <YAxis />
+            <Tooltip
+              labelFormatter={formatDateLabel}
+              formatter={(value) => `${value} ${unit}`}
+            />
+            <Bar dataKey={key} fill={color} />
+          </BarChart>
+        ) : chartType === "pie" ? (
+          <PieChart margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+            <Tooltip formatter={(value) => `${value} ${unit}`} />
+            <Pie
+              data={data.map((item) => ({
+                name: isYearly
+                  ? dayjs(item.date).format("BBBB")
+                  : dayjs(item.date).format("D MMM"),
+                value: item[key],
+              }))}
+              dataKey="value"
+              nameKey="name"
+              outerRadius={80}
+              label={({ name, value }) => `${name}: ${value} ${unit}`}
+            >
+              {data.map((_, idx) => (
+                <Cell key={idx} fill={color} />
+              ))}
+            </Pie>
+          </PieChart>
+        ) : (
+          <LineChart
+            data={data}
+            margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="date"
+              tickFormatter={isYearly ? formatYearTick : formatMonthTick}
+              interval={intervalX}
+            />
+            <YAxis />
+            <Tooltip
+              labelFormatter={formatDateLabel}
+              formatter={(value) => `${value} ${unit}`}
+            />
+            <Line
+              type="monotone"
+              dataKey={key}
+              stroke={color}
+              dot={false}
+              strokeWidth={2}
+            />
+          </LineChart>
+        )}
+      </ResponsiveContainer>
+    );
+  };
 
   return (
     <div className="health-charts">

@@ -112,7 +112,6 @@ export default function EditProfileModal({
     setLoadingSave(true);
     try {
       await onSave();
-      toast.success("บันทึกข้อมูลสำเร็จ");
       onClose();
     } catch (error) {
       toast.error("บันทึกข้อมูลไม่สำเร็จ");
@@ -290,9 +289,6 @@ export default function EditProfileModal({
           </Box>
         </Fade>
       </Modal>
-
-      {/* Toast container for notifications */}
-      <ToastContainer position="top-right" autoClose={3000} />
     </>
   );
 }

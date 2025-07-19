@@ -7,7 +7,7 @@
   border-radius: 0.75rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  font-family: 'Sarabun', sans-serif;
+  font-family: "Sarabun", sans-serif;
   color: #1e293b;
 }
 
@@ -40,9 +40,11 @@
 .button-group {
   display: flex;
   gap: 12px;
+  /* margin-left: auto; */
 }
 
-.add-btn1, .add-btn2 {
+.add-btn1,
+.add-btn2 {
   font-size: 1rem;
   background-color: #10b981;
   color: white;
@@ -56,12 +58,12 @@
 
 .add-btn1 {
   width: 160px;
-  height: 58px;
+  height: 40px;
 }
 
 .add-btn2 {
   width: 120px;
-  height: 58px;
+  height: 40px;
 }
 
 .add-btn:hover {
@@ -90,7 +92,7 @@
   font-size: 1rem;
   border-radius: 10px;
   cursor: pointer;
-  font-family: 'Sarabun', sans-serif;
+  font-family: "Sarabun", sans-serif;
   transition: 0.2s ease-in-out;
 }
 
@@ -107,7 +109,8 @@
   gap: 0.5rem;
 }
 
-.date-picker, .doctor-filter {
+.date-picker,
+.doctor-filter {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -130,7 +133,7 @@
   border-collapse: collapse;
   font-size: 0.95rem;
   background-color: white;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .appointment-table th,
@@ -159,6 +162,12 @@
   transform: scale(1.2);
 }
 
-.table-actions .view { color: #2563eb; }
-.table-actions .edit { color: #f59e0b; }
-.table-actions .delete { color: #ef4444; }
+.table-actions .view {
+  color: #2563eb;
+}
+.table-actions .edit {
+  color: #f59e0b;
+}
+.table-actions .delete {
+  color: #ef4444;
+}
