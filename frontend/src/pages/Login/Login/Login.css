@@ -170,3 +170,8 @@ body, .login-bg {
   .login-logo-img { height: 56px; }
   .login-app-name { font-size: 1rem; }
 }
+
+.login-header {
+  display: grid;
+  grid-gap: 15px;
+}

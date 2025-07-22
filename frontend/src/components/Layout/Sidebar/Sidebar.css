@@ -109,3 +109,9 @@
     font-size: 0.875rem;
   }
 }
+
+.sb-menu button.sb-active {
+  background-color: #1d4ed8;
+  color: white;
+  font-weight: bold;
+}
