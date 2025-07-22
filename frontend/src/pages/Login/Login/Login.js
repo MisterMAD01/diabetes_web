@@ -79,7 +79,7 @@ const loginData = {
           <div className="login-app-desc">ระบบจัดการเบาหวานสำหรับคลินิกและผู้ป่วย</div>
         </div>
         <h2 className="login-title">เข้าสู่ระบบ</h2>
-        <form onSubmit={handleLogin}>
+        <form  class="login-header" onSubmit={handleLogin}>
           <div className="login-input-wrapper">
             <span className="login-input-icon">
               <FontAwesomeIcon icon={faUser} />
