@@ -99,6 +99,7 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
                 name="Blood_Sugar"
                 value={formData.Blood_Sugar || ""}
                 onChange={handleChange}
+                min="0"
               />
             </div>
             <div className="health-popup-group">
@@ -108,6 +109,7 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
                 name="Systolic_BP"
                 value={formData.Systolic_BP || ""}
                 onChange={handleChange}
+                min="0"
               />
             </div>
             <div className="health-popup-group">
@@ -117,6 +119,7 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
                 name="Diastolic_BP"
                 value={formData.Diastolic_BP || ""}
                 onChange={handleChange}
+                min="0"
               />
             </div>
           </div>
@@ -130,6 +133,7 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
                 name="Weight"
                 value={formData.Weight || ""}
                 onChange={handleChange}
+                min="0"
               />
             </div>
             <div className="health-popup-group">
@@ -139,6 +143,8 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
                 name="Height"
                 value={formData.Height || ""}
                 onChange={handleChange}
+                min="0"
+                max="200"
               />
             </div>
             <div className="health-popup-group">
@@ -149,6 +155,7 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
                 name="Waist"
                 value={formData.Waist || ""}
                 onChange={handleChange}
+                min="0"
               />
             </div>
           </div>

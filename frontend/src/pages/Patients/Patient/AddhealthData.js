@@ -5,6 +5,14 @@ import "./AddPatient.css";
 
 const API_URL = process.env.REACT_APP_API;
 
+// ฟังก์ชันช่วยแปลงวันที่ปัจจุบันเป็นรูปแบบ datetime-local (YYYY-MM-DDTHH:mm)
+const getCurrentDateTimeLocal = () => {
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  const localDate = new Date(now.getTime() - offset * 60 * 1000);
+  return localDate.toISOString().slice(0, 16);
+};
+
 const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
   const [formData, setFormData] = useState({
     Systolic_BP: "",
@@ -16,6 +24,7 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
     Note: "",
     Diabetes_Mellitus: "ไม่ป่วยเป็นเบาหวาน",
     Smoke: "ไม่สูบ",
+    Date_Recorded: getCurrentDateTimeLocal(), // ตั้งวันที่และเวลาปัจจุบันเป็นค่าเริ่มต้น
   });
 
   const handleChange = (e) => {
@@ -41,6 +50,15 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.Date_Recorded) {
+      toast.error("กรุณาเลือกวันที่และเวลา");
+      return;
+    }
+
+    // แปลง 'YYYY-MM-DDTHH:mm' เป็น 'YYYY-MM-DD HH:mm:ss'
+    const dateRecordedWithTime =
+      formData.Date_Recorded.replace("T", " ") + ":00";
+
     const systolic = parseInt(formData.Systolic_BP, 10);
     const diastolic = parseInt(formData.Diastolic_BP, 10);
     if (isNaN(systolic) || isNaN(diastolic)) {
@@ -58,7 +76,7 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
       Note: formData.Note,
       Diabetes_Mellitus: formData.Diabetes_Mellitus,
       Smoke: formData.Smoke,
-      Blood_Pressure: `${systolic}/${diastolic}`,
+      Date_Recorded: dateRecordedWithTime,
     };
 
     try {
@@ -83,6 +101,7 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
 
   return (
     <>
+      <ToastContainer />
       <div className="add-patient-popup-overlay">
         <div className="add-patient-popup-content">
           <button className="add-patient-close-btn" onClick={closePopup}>
@@ -90,6 +109,20 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
           </button>
           <div className="add-patient-form-container">
             <h2>บันทึกข้อมูลสุขภาพ</h2>
+            <div className="add-patient-form-row">
+              <label htmlFor="Date_Recorded" style={{ marginRight: "10px" }}>
+                วันที่บันทึกสุขภาพ:
+              </label>
+              <input
+                type="datetime-local"
+                id="Date_Recorded"
+                name="Date_Recorded"
+                value={formData.Date_Recorded}
+                onChange={handleChange}
+                max={new Date().toISOString().slice(0, 16)}
+                required
+              />
+            </div>
             <form onSubmit={handleSubmit}>
               <div className="add-patient-form-row">
                 <input
@@ -98,6 +131,7 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
                   placeholder="ความดันโลหิดบน (SBP)"
                   onChange={handleChange}
                   required
+                  min="1"
                 />
                 <input
                   type="number"
@@ -105,6 +139,7 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
                   placeholder="ความดันโลหิดล่าง (DBA)"
                   onChange={handleChange}
                   required
+                  min="1"
                 />
                 <input
                   type="number"
@@ -112,6 +147,8 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
                   name="Blood_Sugar"
                   placeholder="น้ำตาล (mg/dL)"
                   onChange={handleChange}
+                  min="1"
+                  max="300"
                 />
               </div>
 
@@ -122,6 +159,8 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
                   name="Height"
                   placeholder="ส่วนสูง (cm)"
                   onChange={handleChange}
+                  min="1"
+                  max="250"
                 />
                 <input
                   type="number"
@@ -129,6 +168,9 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
                   name="Weight"
                   placeholder="น้ำหนัก (kg)"
                   onChange={handleChange}
+                  min="1"
+                  max="200"
+                  required
                 />
                 <input
                   type="number"
@@ -136,6 +178,7 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
                   name="Waist"
                   placeholder="รอบเอว (cm)"
                   onChange={handleChange}
+                  min="1"
                 />
               </div>
 

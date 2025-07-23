@@ -33,44 +33,71 @@ const AddPatient = ({ onSuccess, closePopup }) => {
   // ฟังก์ชันตรวจสอบข้อมูลและคืนค่า error object
   const validateFormData = () => {
     const newErrors = {};
-    const nameRegex = /^[ก-๙a-zA-Z\s]+$/;
-    const phoneRegex = /^[0-9]{10}$/; // เบอร์โทร 10 หลักเท่านั้น
+    const nameRegex = /^[ก-๙a-zA-Z\s]+$/; // ตัวอักษรไทย/อังกฤษ และเว้นวรรค
+    const phoneRegex = /^[0-9]{10}$/; // เบอร์โทรต้องมี 10 ตัว
     const ageNum = Number(formData.age);
     const today = new Date();
     const birthDateObj = new Date(formData.birthdate);
 
-    if (!formData.name.trim()) newErrors.name = "กรุณากรอกชื่อ";
-    else if (!nameRegex.test(formData.name))
-      newErrors.name = "ชื่อกรุณากรอกเป็นตัวอักษรภาษาไทยหรืออังกฤษเท่านั้น";
+    if (!formData.name.trim()) {
+      newErrors.name = "กรุณากรอกชื่อ";
+    } else if (!nameRegex.test(formData.name)) {
+      newErrors.name = "ชื่อกรุณากรอกเป็นตัวอักษร";
+    }
 
-    if (!formData.lastname.trim()) newErrors.lastname = "กรุณากรอกนามสกุล";
-    else if (!nameRegex.test(formData.lastname))
-      newErrors.lastname =
-        "นามสกุลกรุณากรอกเป็นตัวอักษรภาษาไทยหรืออังกฤษเท่านั้น";
+    if (!formData.lastname.trim()) {
+      newErrors.lastname = "กรุณากรอกนามสกุล";
+    } else if (!nameRegex.test(formData.lastname)) {
+      newErrors.lastname = "นามสกุลกรุณากรอกเป็นตัวอักษร";
+    }
 
-    if (!formData.address.trim()) newErrors.address = "กรุณากรอกที่อยู่";
+    if (!formData.address.trim()) {
+      newErrors.address = "กรุณากรอกที่อยู่";
+    }
 
-    if (!formData.village.trim()) newErrors.village = "กรุณากรอกหมู่";
+    if (!formData.village.trim()) {
+      newErrors.village = "กรุณากรอกหมู่";
+    }
 
-    if (!formData.subdistrict.trim()) newErrors.subdistrict = "กรุณากรอกตำบล";
+    if (!formData.subdistrict.trim()) {
+      newErrors.subdistrict = "กรุณากรอกตำบล";
+    } else if (!nameRegex.test(formData.subdistrict)) {
+      newErrors.subdistrict = "ตำบลต้องเป็นตัวอักษร";
+    }
 
-    if (!formData.district.trim()) newErrors.district = "กรุณากรอกอำเภอ";
+    if (!formData.district.trim()) {
+      newErrors.district = "กรุณากรอกอำเภอ";
+    } else if (!nameRegex.test(formData.district)) {
+      newErrors.district = "อำเภอต้องเป็นตัวอักษร";
+    }
 
-    if (!formData.province.trim()) newErrors.province = "กรุณากรอกจังหวัด";
+    if (!formData.province.trim()) {
+      newErrors.province = "กรุณากรอกจังหวัด";
+    } else if (!nameRegex.test(formData.province)) {
+      newErrors.province = "จังหวัดต้องเป็นตัวอักษร";
+    }
 
-    if (!formData.birthdate) newErrors.birthdate = "กรุณาเลือกวันเกิด";
-    else if (birthDateObj > today)
+    if (!formData.birthdate) {
+      newErrors.birthdate = "กรุณาเลือกวันเกิด";
+    } else if (birthDateObj > today) {
       newErrors.birthdate = "วันเกิดต้องไม่เป็นวันในอนาคต";
+    }
 
-    if (!formData.gender) newErrors.gender = "กรุณาเลือกเพศ";
+    if (!formData.gender) {
+      newErrors.gender = "กรุณาเลือกเพศ";
+    }
 
-    if (!formData.phone.trim()) newErrors.phone = "กรุณากรอกเบอร์โทรศัพท์";
-    else if (!phoneRegex.test(formData.phone))
+    if (!formData.phone.trim()) {
+      newErrors.phone = "กรุณากรอกเบอร์โทรศัพท์";
+    } else if (!phoneRegex.test(formData.phone)) {
       newErrors.phone = "เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก";
+    }
 
-    if (!formData.age.trim()) newErrors.age = "กรุณากรอกอายุ";
-    else if (!Number.isInteger(ageNum) || ageNum <= 0 || ageNum > 120)
-      newErrors.age = "อายุต้องเป็นตัวเลขตั้งแต่ 1 ถึง 120";
+    if (!formData.age.trim()) {
+      newErrors.age = "กรุณากรอกอายุ";
+    } else if (!Number.isInteger(ageNum) || ageNum <= 0 || ageNum > 120) {
+      newErrors.age = "อายุต้องเป็นตัวเลขตั้งแต่ 1 ถึง 150";
+    }
 
     return newErrors;
   };
@@ -159,7 +186,7 @@ const AddPatient = ({ onSuccess, closePopup }) => {
 
             <div style={{ display: "flex", flexDirection: "column" }}>
               <input
-                type="text"
+                type="number"
                 name="address"
                 placeholder="บ้านเลขที่"
                 value={formData.address}
@@ -243,7 +270,7 @@ const AddPatient = ({ onSuccess, closePopup }) => {
                 style={{ flex: 1, display: "flex", flexDirection: "column" }}
               >
                 <input
-                  type="text"
+                  type="number"
                   name="phone"
                   placeholder="เบอร์โทรติดต่อ"
                   value={formData.phone}
@@ -261,7 +288,7 @@ const AddPatient = ({ onSuccess, closePopup }) => {
                 style={{ flex: 1, display: "flex", flexDirection: "column" }}
               >
                 <input
-                  type="text"
+                  type="number"
                   name="age"
                   placeholder="อายุ"
                   value={formData.age}

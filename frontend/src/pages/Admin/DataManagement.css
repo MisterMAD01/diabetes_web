@@ -20,11 +20,12 @@
 .import-page-button {
   background-color: #2563eb;
   color: white;
-  padding: 8px 14px;
   border: none;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .import-page-button:hover {

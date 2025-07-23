@@ -163,3 +163,8 @@
   background-color: #9e9e9e;
   color: white;
 }
+.error-text {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 2px;
+}

@@ -87,3 +87,35 @@
   font-weight: 500;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
+.add-patient-form-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.add-patient-form-row label {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+  min-width: 150px; /* กำหนดความกว้าง label ให้เท่ากัน */
+}
+
+.add-patient-form-row input[type="date"] {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.3s ease;
+  cursor: pointer;
+  max-width: 220px;
+}
+
+.add-patient-form-row input[type="date"]:focus {
+  border-color: #007bff; /* เปลี่ยนสีเส้นขอบเมื่อโฟกัส */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.add-patient-form-row label + input[type="date"] {
+  margin-left: 10px; /* เว้นระยะห่างระหว่าง label กับ input */
+}

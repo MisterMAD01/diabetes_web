@@ -15,6 +15,7 @@ exports.addHealthData = async (req, res) => {
     Waist,
     Smoke,
     Note,
+    Date_Recorded, // เพิ่มรับวันที่จาก req.body
   } = req.body;
 
   const systolic =
@@ -35,12 +36,15 @@ exports.addHealthData = async (req, res) => {
 
   const Blood_Pressure = systolic + "/" + diastolic;
 
-  // บันทึกข้อมูลสุขภาพแบบ INSERT ทุกครั้ง พร้อมบันทึกเวลาปัจจุบัน (timestamp)
+  // ตรวจสอบ Date_Recorded ถ้าไม่มีให้ใช้เวลาปัจจุบัน
+  const recordedDate =
+    Date_Recorded || new Date().toISOString().slice(0, 19).replace("T", " ");
+
   const sql = `
     INSERT INTO health_data 
     (Patient_ID, Diabetes_Mellitus, Blood_Pressure, Systolic_BP, Diastolic_BP,
      Blood_Sugar, Height, Weight, Waist, Smoke, Note, Date_Recorded)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const values = [
@@ -55,6 +59,7 @@ exports.addHealthData = async (req, res) => {
     waist,
     Smoke || null,
     Note || null,
+    recordedDate,
   ];
 
   try {
