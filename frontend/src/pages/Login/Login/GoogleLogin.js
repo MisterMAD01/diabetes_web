@@ -23,7 +23,6 @@ function parseJwt(token) {
 function GoogleLogin({ setMessage }) {
   useEffect(() => {
     if (!window.google || !CLIENT_ID) {
-      setMessage?.("Google API ไม่ถูกต้องหรือยังไม่โหลด");
       return;
     }
 

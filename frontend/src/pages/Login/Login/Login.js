@@ -69,7 +69,7 @@ function Login() {
       window.location.href = "/home";
     } catch (error) {
       setMessage(
-        error.response?.data?.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ"
+        error.response?.data?.message || "ฝั่งเซิร์ฟเวอร์ยังไม่พร้อมทำงาน"
       );
     } finally {
       setLoading(false);
