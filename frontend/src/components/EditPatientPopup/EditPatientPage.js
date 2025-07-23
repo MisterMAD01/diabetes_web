@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { formatDateThai, toDateInputValue } from "../utils";
+import { formatDateThaiNew, formatTimeThai1, toDateInputValue } from "../utils";
 import HealthEditPopup from "./HealthEditPopup";
 import { toast } from "react-toastify";
 import "./EditPateintPage.css";
@@ -28,6 +28,7 @@ const EditPatientPage = () => {
   const [healthRecords, setHealthRecords] = useState([]);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
   // State สำหรับ confirm ลบผู้ป่วย
@@ -88,7 +89,73 @@ const EditPatientPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // ฟังก์ชันตรวจสอบข้อมูลฟอร์มก่อนบันทึก
+  const validateForm = () => {
+    if (!formData.name.trim()) {
+      toast.error("กรุณากรอกชื่อ");
+      return false;
+    }
+    if (!formData.lastname.trim()) {
+      toast.error("กรุณากรอกนามสกุล");
+      return false;
+    }
+    if (!formData.address.trim()) {
+      toast.error("กรุณากรอกที่อยู่");
+      return false;
+    }
+    if (!formData.village.trim()) {
+      toast.error("กรุณากรอกหมู่");
+      return false;
+    }
+    if (!formData.subdistrict.trim()) {
+      toast.error("กรุณากรอกตำบล");
+      return false;
+    }
+    if (!formData.district.trim()) {
+      toast.error("กรุณากรอกอำเภอ");
+      return false;
+    }
+    if (!formData.province.trim()) {
+      toast.error("กรุณากรอกจังหวัด");
+      return false;
+    }
+    if (!formData.birthdate) {
+      toast.error("กรุณาเลือกวันเกิด");
+      return false;
+    }
+    if (!formData.gender) {
+      toast.error("กรุณาเลือกเพศ");
+      return false;
+    }
+    if (!formData.phone.trim()) {
+      toast.error("กรุณากรอกเบอร์โทร");
+      return false;
+    }
+    // ตรวจสอบเบอร์โทรศัพท์ต้องเป็น 10 หลัก เท่านั้น
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      toast.error("กรุณากรอกเบอร์โทรให้ถูกต้อง 10 หลัก)");
+      return false;
+    }
+
+    if (!String(formData.age).trim()) {
+      toast.error("กรุณากรอกอายุ");
+      return false;
+    }
+    const ageNum = Number(formData.age);
+    if (isNaN(ageNum) || ageNum < 1 || ageNum > 120) {
+      toast.error("กรุณากรอกอายุเป็นตัวเลขระหว่าง 1 ถึง 120");
+      return false;
+    }
+    // disease เป็น optional ไม่บังคับ
+    return true;
+  };
+
   const handleSave = async () => {
+    if (!validateForm()) return;
+
+    setSaving(true);
+
     const payload = {
       P_Name: `${formData.name} ${formData.lastname}`,
       Address: `${formData.address} หมู่ ${formData.village} ต.${formData.subdistrict} อ.${formData.district} จ.${formData.province}`,
@@ -105,11 +172,16 @@ const EditPatientPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("Update failed");
-      toast.success("แกไข้ข้อมูลผู้ป่วยเรียบร้อยแล้ว");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Update failed");
+      }
+      toast.success("แก้ไขข้อมูลผู้ป่วยเรียบร้อยแล้ว");
       navigate(-1);
     } catch (err) {
-      toast.error("เกิดข้อผิดพลาดในการบันทึก");
+      toast.error(`เกิดข้อผิดพลาดในการบันทึก: ${err.message}`);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -144,7 +216,12 @@ const EditPatientPage = () => {
       <div className="edit-patient-row">
         <div className="edit-patient-group">
           <label>ชื่อ</label>
-          <input name="name" value={formData.name} onChange={handleChange} />
+          <input
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="กรอกชื่อ"
+          />
         </div>
         <div className="edit-patient-group">
           <label>นามสกุล</label>
@@ -152,16 +229,18 @@ const EditPatientPage = () => {
             name="lastname"
             value={formData.lastname}
             onChange={handleChange}
+            placeholder="กรอกนามสกุล"
           />
         </div>
       </div>
 
       <div className="edit-patient-group">
-        <label>ที่อยู่</label>
+        <label>บ้านเลขที่</label>
         <input
           name="address"
           value={formData.address}
           onChange={handleChange}
+          placeholder="กรอกบ้านเลขที่"
         />
       </div>
 
@@ -172,6 +251,7 @@ const EditPatientPage = () => {
             name="village"
             value={formData.village}
             onChange={handleChange}
+            placeholder="กรอกหมู่"
           />
         </div>
         <div className="edit-patient-group">
@@ -180,6 +260,7 @@ const EditPatientPage = () => {
             name="subdistrict"
             value={formData.subdistrict}
             onChange={handleChange}
+            placeholder="กรอกตำบล"
           />
         </div>
         <div className="edit-patient-group">
@@ -188,6 +269,7 @@ const EditPatientPage = () => {
             name="district"
             value={formData.district}
             onChange={handleChange}
+            placeholder="กรอกอำเภอ"
           />
         </div>
         <div className="edit-patient-group">
@@ -196,6 +278,7 @@ const EditPatientPage = () => {
             name="province"
             value={formData.province}
             onChange={handleChange}
+            placeholder="กรอกจังหวัด"
           />
         </div>
       </div>
@@ -208,27 +291,42 @@ const EditPatientPage = () => {
             name="birthdate"
             value={toDateInputValue(formData.birthdate)}
             onChange={handleChange}
+            placeholder="เลือกวันเกิด"
           />
         </div>
         <div className="edit-patient-group">
           <label>เพศ</label>
-          <select name="gender" value={formData.gender} onChange={handleChange}>
+          <select
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            placeholder="เลือกเพศ"
+          >
             <option value="">เลือกเพศ</option>
             <option value="ชาย">ชาย</option>
             <option value="หญิง">หญิง</option>
-            <option value="อื่นๆ">อื่นๆ</option>
           </select>
         </div>
         <div className="edit-patient-group">
           <label>เบอร์โทร</label>
-          <input name="phone" value={formData.phone} onChange={handleChange} />
+          <input
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="กรอกเบอร์โทร 10 หลัก"
+          />
         </div>
       </div>
 
       <div className="edit-patient-row">
         <div className="edit-patient-group">
           <label>อายุ</label>
-          <input name="age" value={formData.age} onChange={handleChange} />
+          <input
+            name="age"
+            value={formData.age}
+            onChange={handleChange}
+            placeholder="กรอกอายุ"
+          />
         </div>
         <div className="edit-patient-group">
           <label>โรคประจำตัว</label>
@@ -236,21 +334,31 @@ const EditPatientPage = () => {
             name="disease"
             value={formData.disease}
             onChange={handleChange}
+            placeholder="กรอกโรคประจำตัว (ถ้ามี)"
           />
         </div>
       </div>
 
       <div className="edit-patient-buttons">
-        <button onClick={handleSave} className="edit-patient-submit-btn">
-          บันทึก
+        <button
+          onClick={handleSave}
+          className="edit-patient-submit-btn"
+          disabled={saving}
+        >
+          {saving ? "กำลังบันทึก..." : "บันทึก"}
         </button>
         <button
           onClick={() => navigate(-1)}
           className="edit-patient-cancel-btn"
+          disabled={saving}
         >
           ย้อนกลับ
         </button>
-        <button onClick={confirmDelete} className="edit-patient-danger-btn">
+        <button
+          onClick={confirmDelete}
+          className="edit-patient-danger-btn"
+          disabled={saving}
+        >
           ลบผู้ป่วย
         </button>
       </div>
@@ -260,11 +368,12 @@ const EditPatientPage = () => {
         <div className="confirm-delete-popup">
           <div className="confirm-delete-content">
             <p>คุณแน่ใจหรือไม่ว่าต้องการลบผู้ป่วยรายนี้?</p>
-            <button onClick={handleDelete} className="confirm-btn yes">
-              ตกลง
-            </button>
+
             <button onClick={cancelDelete} className="confirm-btn no">
               ยกเลิก
+            </button>
+            <button onClick={handleDelete} className="confirm-btn yes">
+              ตกลง
             </button>
           </div>
         </div>
@@ -278,7 +387,8 @@ const EditPatientPage = () => {
             className="health-card"
             onClick={() => setSelectedRecord(rec)}
           >
-            {formatDateThai(rec.Date_Recorded)}
+            {formatDateThaiNew(rec.Date_Recorded)} เวลา{" "}
+            {formatTimeThai1(rec.Date_Recorded)}
           </div>
         ))}
       </div>

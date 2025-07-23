@@ -107,9 +107,9 @@ const UserTable = ({
 
       {/* Confirmation Modal */}
       {deleteUser && (
-        <div className="modal-overlay">
-          <div className="modal small">
-            <div className="modal-icon warning">
+        <div className="custom-modal-overlay">
+          <div className="custom-modal small">
+            <div className="custom-modal-icon warning">
               <i className="fas fa-exclamation-triangle"></i>
             </div>
             <h3>ยืนยันการลบผู้ใช้</h3>
@@ -117,14 +117,17 @@ const UserTable = ({
               คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้ "{deleteUser.username}"?
               การกระทำนี้ไม่สามารถย้อนกลับได้
             </p>
-            <div className="modal-actions">
+            <div className="custom-modal-actions">
               <button
                 onClick={() => setDeleteUser(null)}
-                className="cancel-btn"
+                className="custom-cancel-btn"
               >
                 ยกเลิก
               </button>
-              <button onClick={confirmDelete} className="delete-btn confirm">
+              <button
+                onClick={confirmDelete}
+                className="custom-delete-btn confirm"
+              >
                 ลบผู้ใช้
               </button>
             </div>

@@ -1,14 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { formatDateThai } from "../utils";
 import "./HealthEditPopup.css";
 import { toast } from "react-toastify";
+
+// ฟังก์ชันแปลงวันที่เป็นรูปแบบไทยพร้อมเวลา
+function formatDateThai(dateString) {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+  if (isNaN(date)) return "";
+
+  const monthsThai = [
+    "มกราคม",
+    "กุมภาพันธ์",
+    "มีนาคม",
+    "เมษายน",
+    "พฤษภาคม",
+    "มิถุนายน",
+    "กรกฎาคม",
+    "สิงหาคม",
+    "กันยายน",
+    "ตุลาคม",
+    "พฤศจิกายน",
+    "ธันวาคม",
+  ];
+
+  const day = date.getDate();
+  const month = monthsThai[date.getMonth()];
+  const year = date.getFullYear() + 543; // แปลงเป็นปี พ.ศ.
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+
+  return `${day} ${month} ${year} เวลา ${hours}:${minutes}น.`;
+}
 
 const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
   const [formData, setFormData] = useState(record || {});
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
-    setFormData(record);
+    setFormData(record || {});
     setShowDeleteConfirm(false);
   }, [record]);
 
@@ -22,7 +52,11 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await onSave(formData);
+    try {
+      await onSave(formData);
+    } catch (error) {
+      toast.error("บันทึกข้อมูลล้มเหลว");
+    }
   };
 
   const openDeleteConfirm = () => {
@@ -35,8 +69,12 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
 
   const confirmDelete = async () => {
     if (onDelete) {
-      await onDelete(record.Health_Data_ID);
-      setShowDeleteConfirm(false);
+      try {
+        await onDelete(record.Health_Data_ID);
+        setShowDeleteConfirm(false);
+      } catch (error) {
+        toast.error("ลบข้อมูลล้มเหลว");
+      }
     }
   };
 

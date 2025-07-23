@@ -109,9 +109,8 @@ const DataManagement = () => {
   return (
     <div className="data-container">
       <div className="header">
-        <h2>
-          <FontAwesomeIcon icon={faDatabase} /> จัดการข้อมูลระบบ
-        </h2>
+        <h2 className="data-title">จัดการข้อมูลระบบ</h2>
+
         <button
           className="import-page-button"
           onClick={() => setShowImportModal(true)}
@@ -200,35 +199,6 @@ const DataManagement = () => {
           typeOptions={tables}
         />
       )}
-
-      <div className="log-section">
-        <h3>
-          <FontAwesomeIcon icon={faClock} /> ประวัติการดาวน์โหลด
-        </h3>
-        {logs.length === 0 ? (
-          <p className="log-empty">ยังไม่มีรายการ</p>
-        ) : (
-          <ul className="log-list">
-            {logs.map((log, index) => {
-              const dateObj = new Date(log.download_date);
-              const day = dateObj.getDate();
-              const month = dateObj.getMonth() + 1;
-              const year = dateObj.getFullYear() + 543;
-              const time = dateObj.toLocaleTimeString("th-TH", {
-                hour12: false,
-              });
-
-              return (
-                <li key={index} className="log-item">
-                  <FontAwesomeIcon icon={faClock} />{" "}
-                  <strong>{log.table_name}</strong> — {log.filename} ({" "}
-                  {`${day}/${month}/${year} ${time}`} )
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </div>
     </div>
   );
 };

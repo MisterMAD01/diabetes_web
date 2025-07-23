@@ -57,11 +57,50 @@ export const parseThaiDateNew = (dateStr) => {
 
 // ฟังก์ชันใหม่ แปลงวันที่เป็นสตริงแบบไทย
 export const formatDateThaiNew = (dateStr) => {
-  const date = parseThaiDateNew(dateStr);
-  if (!date) return "-";
-  return date.toLocaleDateString("th-TH", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  if (!dateStr) return "-";
+
+  // แปลงให้เป็น ISO format ถ้ามีช่องว่างระหว่างวันที่กับเวลา
+  const isoStr = dateStr.includes(" ") ? dateStr.replace(" ", "T") : dateStr;
+
+  const date = new Date(isoStr);
+  if (isNaN(date)) return "-";
+
+  const thaiMonths = [
+    "มกราคม",
+    "กุมภาพันธ์",
+    "มีนาคม",
+    "เมษายน",
+    "พฤษภาคม",
+    "มิถุนายน",
+    "กรกฎาคม",
+    "สิงหาคม",
+    "กันยายน",
+    "ตุลาคม",
+    "พฤศจิกายน",
+    "ธันวาคม",
+  ];
+
+  const day = date.getDate();
+  const month = thaiMonths[date.getMonth()];
+  const year = date.getFullYear() + 543;
+
+  return `${day} ${month} ${year}`;
+};
+
+export const formatTimeThai1 = (dateStr) => {
+  if (!dateStr) return "-";
+
+  // ถ้าเป็นรูปแบบที่มี space ตรงกลาง ให้แปลงเป็น T
+  const isoStr = dateStr.includes(" ") ? dateStr.replace(" ", "T") : dateStr;
+
+  const date = new Date(isoStr);
+  if (isNaN(date)) return "-";
+
+  return (
+    date.toLocaleTimeString("th-TH", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }) + " น."
+  );
 };

@@ -149,10 +149,7 @@ function ManageAccounts() {
 
   return (
     <div className="manage-accounts-container">
-      <h1>
-        <FontAwesomeIcon icon={faUserCog} />
-        จัดการบัญชีผู้ใช้
-      </h1>
+      <h2 className="manage-accounts-title">จัดการบัญชีผู้ใช้</h2>
 
       {!editingUser && !isAddingUser && (
         <button onClick={() => setIsAddingUser(true)}>

@@ -1,6 +1,6 @@
 /* AppointmentDetailModal.module.css */
 
-.modal-overlay {
+.appt-detail-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -13,7 +13,7 @@
   z-index: 9999;
 }
 
-.modal.large {
+.appt-detail-container.large {
   background: white;
   border-radius: 10px;
   padding: 2rem;
@@ -23,54 +23,54 @@
   position: relative;
 }
 
-.modal-header {
+.appt-detail-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-.modal-header h3 {
+.appt-detail-header h3 {
   margin: 0;
   font-size: 1.25rem;
   color: #1e293b;
 }
 
-.close-btn {
+.appt-detail-close-btn {
   background: none;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
 }
 
-.modal-form {
+.appt-detail-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.modal-grid {
+.appt-detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
-.modal-grid div {
+.appt-detail-grid div {
   display: flex;
   flex-direction: column;
 }
 
-.modal-grid label {
+.appt-detail-grid label {
   font-size: 1rem;
   margin-bottom: 0.5rem;
 }
 
-.modal-grid p {
+.appt-detail-grid p {
   font-size: 1rem;
   color: #374151;
 }
 
-.detail-box.status-box {
+.appt-detail-info-box.appt-detail-status-box {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -80,7 +80,7 @@
   margin-bottom: 16px;
 }
 
-.status-badge {
+.appt-detail-status-badge {
   padding: 4px 10px;
   border-radius: 20px;
   font-size: 14px;
@@ -91,22 +91,22 @@
   text-transform: none;
 }
 
-.status-badge.รอพบแพทย์ {
+.appt-detail-status-badge.รอพบแพทย์ {
   background-color: #ffe58f;
   color: #8c6d1f;
 }
 
-.status-badge.เสร็จสิ้น {
+.appt-detail-status-badge.เสร็จสิ้น {
   background-color: #b7eb8f;
   color: #237804;
 }
 
-.status-badge.ยกเลิก {
+.appt-detail-status-badge.ยกเลิก {
   background-color: #ffa39e;
   color: #a8071a;
 }
 
-.modal-actions {
+.appt-detail-actions {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
@@ -114,12 +114,12 @@
   padding: 0 1rem;
 }
 
-.modal-actions button {
+.appt-detail-actions button {
   height: 44px;
   min-width: 120px;
   padding: 0 1.5rem;
   font-size: 1rem;
-  font-family: 'Sarabun', sans-serif;
+  font-family: "Sarabun", sans-serif;
   font-weight: 600;
   border-radius: 10px;
   display: inline-flex;
@@ -128,33 +128,33 @@
   white-space: nowrap;
 }
 
-.cancel-btn {
+.appt-detail-cancel-btn {
   background-color: white;
   border: 1px solid #cbd5e1;
   color: #1e293b;
 }
 
-.cancel-btn:hover {
+.appt-detail-cancel-btn:hover {
   background-color: #f1f5f9;
   border-color: #94a3b8;
 }
 
-.submit-btn {
+.appt-detail-submit-btn {
   background-color: #2563eb;
   color: white;
   border: none;
 }
 
-.submit-btn:hover {
+.appt-detail-submit-btn:hover {
   background-color: #1d4ed8;
 }
 
-.edit-btn {
+.appt-detail-edit-btn {
   background-color: #f59e0b;
   color: white;
   border: none;
 }
 
-.edit-btn:hover {
+.appt-detail-edit-btn:hover {
   background-color: #d97706;
 }

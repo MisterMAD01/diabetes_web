@@ -58,19 +58,45 @@ const AllPatients = () => {
     patient.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentPatients = filteredPatients.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
-  const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
+
+  // ฟังก์ชันสร้าง range หน้า pagination ตามที่ขอ (เช่น 123..10, 456..10)
+  const getPaginationRange = () => {
+    const total = totalPages;
+    const current = currentPage;
+    const range = [];
+
+    if (total <= 5) {
+      // ถ้าน้อยกว่าหรือเท่ากับ 5 หน้า แสดงทุกหน้าเลย
+      for (let i = 1; i <= total; i++) range.push(i);
+    } else {
+      if (current <= 3) {
+        // หน้าแรก ๆ แสดง 1 2 3 ... last
+        range.push(1, 2, 3, "...", total);
+      } else if (current >= total - 2) {
+        // หน้าสุดท้าย แสดง first ... last-2 last-1 last
+        range.push(1, "...", total - 2, total - 1, total);
+      } else {
+        // กลาง ๆ แสดง first ... current-1 current current+1 ... last
+        range.push(1, "...", current - 1, current, current + 1, "...", total);
+      }
+    }
+
+    return range;
+  };
 
   return (
     <div className="main-area">
       <div className="all-patients-wrapper">
         <div className="page-header">
-          <h1>รายชื่อผู้ป่วย</h1>
+          <h2 className="patient-title">รายชื่อผู้ป่วย</h2>
           <div className="header-actions">
             <input
               className="search-input"
@@ -78,7 +104,7 @@ const AllPatients = () => {
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                setCurrentPage(1);
+                setCurrentPage(1); // รีเซ็ตหน้าเมื่อค้นหาใหม่
               }}
             />
             <button
@@ -154,7 +180,7 @@ const AllPatients = () => {
           ))}
         </div>
 
-        {/* ✅ Pagination */}
+        {/* Pagination */}
         {totalPages > 1 && (
           <div className="pagination-controls">
             <button
@@ -164,17 +190,23 @@ const AllPatients = () => {
             >
               ก่อนหน้า
             </button>
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <button
-                key={index}
-                className={`page-btn ${
-                  currentPage === index + 1 ? "active" : ""
-                }`}
-                onClick={() => setCurrentPage(index + 1)}
-              >
-                {index + 1}
-              </button>
-            ))}
+
+            {getPaginationRange().map((page, idx) =>
+              page === "..." ? (
+                <span key={idx} className="dots">
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={idx}
+                  className={`page-btn ${currentPage === page ? "active" : ""}`}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </button>
+              )
+            )}
+
             <button
               className="page-btn"
               onClick={() =>
@@ -187,7 +219,7 @@ const AllPatients = () => {
           </div>
         )}
 
-        {/* ✅ Popups */}
+        {/* Popups */}
         {showAddPopup && (
           <AddPatientForm
             onSuccess={handleAddSuccess}

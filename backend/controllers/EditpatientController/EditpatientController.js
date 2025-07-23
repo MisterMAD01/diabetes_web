@@ -1,4 +1,6 @@
 const db = require("../../config/db"); // หรือโมดูลเชื่อมต่อฐานข้อมูลของคุณ
+const { calculateRiskScore } = require("../utils/calculateRiskScore");
+const { assignRiskColor } = require("../utils/assignRiskColor");
 
 exports.getPatientById = async (req, res) => {
   const { id } = req.params;
@@ -110,9 +112,8 @@ exports.getHealthByPatientId = async (req, res) => {
 };
 
 exports.updateHealthRecord = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params; // Health_Data_ID
   const {
-    // ไม่ต้องเอา Date_Recorded ออก
     Diabetes_Mellitus,
     Systolic_BP,
     Diastolic_BP,
@@ -125,6 +126,7 @@ exports.updateHealthRecord = async (req, res) => {
   } = req.body;
 
   try {
+    // อัปเดตข้อมูล health_data
     const query = `
       UPDATE health_data
       SET
@@ -160,13 +162,38 @@ exports.updateHealthRecord = async (req, res) => {
         .json({ error: "ไม่พบข้อมูลสุขภาพที่ต้องการอัปเดต" });
     }
 
-    res.json({ message: "อัปเดตข้อมูลสุขภาพเรียบร้อยแล้ว" });
+    // ⬇️ ค้นหา Patient_ID จาก Health_Data_ID
+    const [rows] = await db.query(
+      `SELECT Patient_ID FROM health_data WHERE Health_Data_ID = ?`,
+      [id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "ไม่พบผู้ป่วยที่เกี่ยวข้อง" });
+    }
+
+    const patientId = rows[0].Patient_ID;
+
+    // ⬇️ คำนวณความเสี่ยงและสีใหม่
+    const risk = await calculateRiskScore(patientId);
+    const color = await assignRiskColor(patientId);
+
+    // ⬇️ อัปเดต Risk และ Color ในตาราง patient
+    await db.query(
+      `UPDATE patient SET Risk = ?, Color = ? WHERE Patient_ID = ?`,
+      [risk, color, patientId]
+    );
+
+    res.json({
+      message: "✅ อัปเดตข้อมูลสุขภาพและความเสี่ยงเรียบร้อยแล้ว",
+      risk,
+      color,
+    });
   } catch (error) {
-    console.error(error);
+    console.error("❌ Error updating health record:", error);
     res.status(500).json({ error: "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" });
   }
 };
-
 exports.deleteHealthRecord = async (req, res) => {
   const { id } = req.params;
 

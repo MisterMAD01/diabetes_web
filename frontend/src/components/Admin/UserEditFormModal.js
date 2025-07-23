@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import "./UserEditFormModal.css";
 
 const UserEditForm = ({ user, handleSave, handleCancel }) => {
@@ -15,6 +17,8 @@ const UserEditForm = ({ user, handleSave, handleCancel }) => {
     e.preventDefault();
     handleSave(formData);
   };
+
+  const isGoogleUser = !!user.google_id; // เช็คว่าผูก google หรือไม่
 
   return (
     <div className="modal-overlay">
@@ -52,7 +56,15 @@ const UserEditForm = ({ user, handleSave, handleCancel }) => {
               value={formData.email || ""}
               onChange={handleChange}
               required
+              disabled={isGoogleUser} // ปิดช่องถ้าผูก Google
             />
+            {isGoogleUser && (
+              <div className="connected-google">
+                <strong>เชื่อมต่อด้วย :</strong>{" "}
+                <FontAwesomeIcon icon={faGoogle} className="icon-google" />{" "}
+                Google
+              </div>
+            )}
           </label>
           <label>
             สิทธิ์การใช้งาน:
@@ -68,9 +80,6 @@ const UserEditForm = ({ user, handleSave, handleCancel }) => {
           <div className="modal-actions">
             <button type="submit" className="submit-btn">
               บันทึก
-            </button>
-            <button type="button" className="cancel-btn" onClick={handleCancel}>
-              ยกเลิก
             </button>
           </div>
         </form>

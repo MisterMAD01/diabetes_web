@@ -21,13 +21,7 @@ const Layout = ({ children }) => {
     }
   }, []);
 
-  const excludedPaths = [
-    "/",
-    "/login",
-    "/register",
-    "/additional-info",
-    "/cvs",
-  ];
+  const excludedPaths = ["/", "/login", "/register"];
   const showLayout = !excludedPaths.includes(location.pathname);
 
   return (

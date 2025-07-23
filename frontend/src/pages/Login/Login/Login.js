@@ -6,19 +6,24 @@ import "./Login.css";
 import logo from "../../../assets/Logo.png";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faLock,
+  faEye,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons";
 
 const API_URL = process.env.REACT_APP_API;
 
 function parseJwt(token) {
   try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     const jsonPayload = decodeURIComponent(
       atob(base64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
     );
     return JSON.parse(jsonPayload);
   } catch (error) {
@@ -44,11 +49,10 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     setMessage("");
-const loginData = {
-  identifier: formData.identifier,
-  password: formData.password,
-};
-
+    const loginData = {
+      identifier: formData.identifier,
+      password: formData.password,
+    };
 
     try {
       const response = await axios.post(
@@ -64,7 +68,9 @@ const loginData = {
 
       window.location.href = "/home";
     } catch (error) {
-      setMessage(error.response?.data?.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+      setMessage(
+        error.response?.data?.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ"
+      );
     } finally {
       setLoading(false);
     }
@@ -76,10 +82,12 @@ const loginData = {
         <div className="login-logo-area">
           <img src={logo} alt="Logo" className="login-logo-img" />
           <div className="login-app-name">Diabetes Web System</div>
-          <div className="login-app-desc">ระบบจัดการเบาหวานสำหรับคลินิกและผู้ป่วย</div>
+          <div className="login-app-desc">
+            ระบบจัดการเบาหวานสำหรับคลินิกและผู้ป่วย
+          </div>
         </div>
         <h2 className="login-title">เข้าสู่ระบบ</h2>
-        <form  class="login-header" onSubmit={handleLogin}>
+        <form className="login-header" onSubmit={handleLogin}>
           <div className="login-input-wrapper">
             <span className="login-input-icon">
               <FontAwesomeIcon icon={faUser} />
@@ -124,12 +132,14 @@ const loginData = {
             {loading ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
           </button>
         </form>
+
         <div className="register-divider">หรือ</div>
         <div className="login-google-container">
           <GoogleLogin setMessage={setMessage} />
         </div>
 
         {message && <div className="login-message">{message}</div>}
+
         <div className="login-register-link">
           <p>
             ยังไม่มีบัญชีใช่ไหม? <Link to="/register">สมัครสมาชิก</Link>

@@ -1,4 +1,4 @@
-const db = require('../../config/db');
+const db = require("../../config/db");
 
 // ฟังก์ชันให้คะแนนความดันโลหิต
 function getBPScore(systolic, diastolic) {
@@ -22,21 +22,21 @@ function getSugarScore(blood_sugar) {
 function getColorFromAverage(score) {
   const rounded = Math.round(score);
   const colorMap = {
-    0: 'สีขาว',
-    1: 'สีเขียวอ่อน',
-    2: 'สีเขียวเข้ม',
-    3: 'สีเหลือง',
-    4: 'สีส้ม',
-    5: 'สีแดง',
+    0: "สีขาว",
+    1: "สีเขียวอ่อน",
+    2: "สีเขียวเข้ม",
+    3: "สีเหลือง",
+    4: "สีส้ม",
+    5: "สีแดง",
   };
-  return colorMap[rounded] || 'สีดำ';
+  return colorMap[rounded] || "สีดำ";
 }
-
 
 // ฟังก์ชันหลักที่ใช้ในระบบ
 exports.assignRiskColor = async (patientId) => {
   try {
-    const [rows] = await db.query(`
+    const [rows] = await db.query(
+      `
       SELECT 
         h.Systolic_BP AS systolic, 
         h.Diastolic_BP AS diastolic, 
@@ -45,26 +45,27 @@ exports.assignRiskColor = async (patientId) => {
       WHERE h.Patient_ID = ?
       ORDER BY h.Date_Recorded DESC
       LIMIT 1
-    `, [patientId]);
+    `,
+      [patientId]
+    );
 
     if (!rows.length) {
-      throw new Error('ไม่พบข้อมูลผู้ป่วย');
+      throw new Error("ไม่พบข้อมูลผู้ป่วย");
     }
 
     const { systolic, diastolic, blood_sugar } = rows[0];
 
-const bpScore = getBPScore(systolic, diastolic);
-const sugarScore = getSugarScore(blood_sugar);
-const avgScore = (bpScore + sugarScore) / 2;
-const color = getColorFromAverage(avgScore);
-
+    const bpScore = getBPScore(systolic, diastolic);
+    const sugarScore = getSugarScore(blood_sugar);
+    const avgScore = (bpScore + sugarScore) / 2;
+    const color = getColorFromAverage(avgScore);
 
     // ตัวเลือก: อัปเดตข้อมูลสีในฐานข้อมูล
     // await db.execute('UPDATE patient SET Color = ? WHERE Patient_ID = ?', [color, patientId]);
 
     return color;
   } catch (err) {
-    console.error('Error assigning risk color:', err);
-    throw new Error('เกิดข้อผิดพลาดในการคำนวณสีความเสี่ยง');
+    console.error("Error assigning risk color:", err);
+    throw new Error("เกิดข้อผิดพลาดในการคำนวณสีความเสี่ยง");
   }
 };

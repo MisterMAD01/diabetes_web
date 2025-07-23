@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import axios from "axios";
-import { toast } from "react-toastify"; // ✅ เพิ่ม import toast
+import { toast } from "react-toastify";
 import "./AppointmentFormModal.css";
 
 const API_URL = process.env.REACT_APP_API;
@@ -12,6 +12,17 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
   const [hn, setHn] = useState("");
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
+
+  // ฟังก์ชันช่วย format วันที่เป็น yyyy-mm-dd
+  const getTodayDateString = () => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0"); // เดือนเริ่มจาก 0
+    const dd = String(today.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  const todayString = getTodayDateString();
 
   useEffect(() => {
     axios
@@ -91,16 +102,16 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal large">
-        <div className="modal-header">
+    <div className="appt-modal-overlay">
+      <div className="appt-modal appt-modal-large">
+        <div className="appt-modal-header">
           <h3>{editAppointment ? "แก้ไขนัดหมาย" : "สร้างนัดหมายใหม่"}</h3>
-          <button className="close-btn" onClick={onClose}>
+          <button className="appt-close-btn" onClick={onClose}>
             &times;
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="modal-grid">
+        <form onSubmit={handleSubmit} className="appt-modal-form">
+          <div className="appt-modal-grid">
             <div>
               <label>ชื่อผู้ป่วย</label>
               <Select
@@ -164,6 +175,7 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
                 name="date"
                 type="date"
                 required
+                min={todayString} // ใส่ min เพื่อป้องกันเลือกย้อนหลัง
                 defaultValue={editAppointment?.date}
               />
             </div>
@@ -176,7 +188,7 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
                 defaultValue={editAppointment?.time || ""}
               />
             </div>
-            <div className="full-width">
+            <div className="appt-full-width">
               <label>หมายเหตุ</label>
               <textarea
                 name="note"
@@ -185,11 +197,11 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
               />
             </div>
           </div>
-          <div className="modal-actions">
-            <button type="button" onClick={onClose} className="cancel-btn">
+          <div className="appt-modal-actions">
+            <button type="button" onClick={onClose} className="appt-cancel-btn">
               ยกเลิก
             </button>
-            <button type="submit" className="submit-btn">
+            <button type="submit" className="appt-submit-btn">
               {editAppointment ? "บันทึกการแก้ไข" : "บันทึกนัดหมาย"}
             </button>
           </div>

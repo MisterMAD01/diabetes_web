@@ -42,80 +42,77 @@ const UserViewModal = ({ user, onClose, onApprove, onRevoke, onEdit }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal large">
-        <div className="modal-header">
+    <div className="uvm-modal-overlay">
+      <div className="uvm-modal uvm-large">
+        <div className="uvm-modal-header">
           <h3>รายละเอียดผู้ใช้</h3>
-          <button className="modal-close-btn" onClick={onClose}>
+          <button className="uvm-modal-close-btn" onClick={onClose}>
             &times;
           </button>
         </div>
-        <div className="modal-form">
-          <div className="user-summary-box">
-            <div className="user-summary-row">
+        <div className="uvm-modal-form">
+          <div className="uvm-user-summary-box">
+            <div className="uvm-user-summary-row">
               {pictureUrl ? (
                 <img
                   src={pictureUrl}
                   alt={localUser.name}
-                  className="user-avatar-img"
+                  className="uvm-user-avatar-img"
                 />
               ) : (
-                <div className="user-avatar-placeholder">
+                <div className="uvm-user-avatar-placeholder">
                   {localUser.name?.[0] || localUser.username?.[0]}
                 </div>
               )}
-              <div className="user-info">
-                <div className="user-realname">{localUser.name}</div>
-                <div className="user-username">
+              <div className="uvm-user-info">
+                <div className="uvm-user-realname">{localUser.name}</div>
+                <div className="uvm-user-username">
                   ชื่อผู้ใช้: {localUser.username}
                 </div>
               </div>
               <span
-                className={`status-badge ${
-                  localUser.approved ? "approved" : "pending"
+                className={`uvm-status-badge ${
+                  localUser.approved ? "uvm-approved" : "uvm-pending"
                 }`}
               >
                 {localUser.approved ? "อนุมัติแล้ว" : "รออนุมัติ"}
               </span>
             </div>
           </div>
-          <div className="view-field">
+          <div className="uvm-view-field">
             <b>อีเมล:</b> {localUser.email}
           </div>
-          <div className="view-field">
+          <div className="uvm-view-field">
             <b>สิทธิ์การใช้งาน:</b> {localUser.role}
           </div>
-          <div className="view-field">
+          <div className="uvm-view-field">
             <b>เชื่อมต่อด้วย:</b>{" "}
             {localUser.google_id ? (
-              <span className="provider-badge google">
-                <FontAwesomeIcon icon={faGoogle} className="google-icon" />{" "}
+              <span className="uvm-provider-badge uvm-google">
+                <FontAwesomeIcon icon={faGoogle} className="uvm-google-icon" />{" "}
                 Google
               </span>
             ) : (
-              <span className="provider-badge local">Local</span>
+              <span className="uvm-provider-badge uvm-local">Local</span>
             )}
           </div>
-          <div className="view-field">
+          <div className="uvm-view-field">
             <b>สร้างเมื่อ:</b> {formatDateThai(localUser.created_at)}
           </div>
         </div>
-        <div className="modal-actions">
+        <div className="uvm-modal-actions">
+          <button className="uvm-edit-btn" onClick={() => onEdit(localUser)}>
+            แก้ไข
+          </button>
           {!localUser.approved ? (
-            <button className="submit-btn" onClick={handleApprove}>
+            <button className="uvm-submit-btn" onClick={handleApprove}>
               อนุมัติ
             </button>
           ) : (
-            <button className="revoke-btn" onClick={handleRevoke}>
+            <button className="uvm-revoke-btn" onClick={handleRevoke}>
               ยกเลิกอนุมัติ
             </button>
           )}
-          <button className="edit-btn" onClick={() => onEdit(localUser)}>
-            แก้ไข
-          </button>
-          <button className="cancel-btn" onClick={onClose}>
-            ปิด
-          </button>
         </div>
       </div>
     </div>

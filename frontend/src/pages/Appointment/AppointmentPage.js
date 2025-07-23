@@ -151,7 +151,7 @@ const AppointmentPage = () => {
 
   return (
     <div className="appointment-page">
-      <h2>การนัดหมาย</h2>
+      <h2 className="appointment-title">การนัดหมาย</h2>
 
       <div className="header-row">
         <input

@@ -1,6 +1,7 @@
 .add-patient-popup-overlay {
   position: fixed;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
@@ -66,7 +67,7 @@
 
 .add-patient-submit-btn {
   padding: 12px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 8px;
@@ -78,4 +79,11 @@
 
 .add-patient-submit-btn:hover {
   background-color: #0047b3;
+}
+.input-error {
+  color: #d93025; /* สีแดงแจ้งเตือน */
+  font-size: 13px;
+  margin-top: 4px;
+  font-weight: 500;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }

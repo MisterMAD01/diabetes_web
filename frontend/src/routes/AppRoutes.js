@@ -6,9 +6,7 @@ import AdminRoute from "./AdminRoute";
 // 📌 หน้า public (ไม่ต้อง login)
 import WelcomePage from "../pages/Welcome/WelcomePage";
 import Register from "../pages/Login/Register/Register";
-import Register1 from "../pages/Login/Register/AdditionalInfo";
 import Login from "../pages/Login/Login/Login";
-import CVDRiskCalculator from "../components/CVDRiskCalculator/CVDRiskCalculator";
 
 // 🔐 หน้า private (ต้อง login)
 import HomePage from "../pages/Home/homepage";
@@ -18,7 +16,7 @@ import Export from "../pages/Export/Exportpage";
 import Patients from "../pages/Patients/Patient/Patient";
 import UserProfile from "../pages/UserProfile/UserProfile";
 import RiskGroup from "../pages/Riskgroup/Riskgroup";
-import EditPatientPage from '../components/EditPatientPopup/EditPatientPage';
+import EditPatientPage from "../components/EditPatientPopup/EditPatientPage";
 // 🔒 หน้าเฉพาะ admin
 import ManageAccounts from "../pages/Admin/ManageAccounts";
 import Datamanagement from "../pages/Admin/Datamanagement";
@@ -29,8 +27,6 @@ const AppRoutes = () => (
     <Route path="/" element={<WelcomePage />} />
     <Route path="/register" element={<Register />} />
     <Route path="/login" element={<Login />} />
-    <Route path="/additional-info" element={<Register1 />} />
-    <Route path="/cvs" element={<CVDRiskCalculator />} />
 
     {/* 🔐 Protected Routes (Login Required) */}
     <Route
@@ -97,14 +93,14 @@ const AppRoutes = () => (
         </ProtectedRoute>
       }
     />
-<Route 
-  path="/edit-patient/:id"
-  element={
-    <ProtectedRoute>
-      <EditPatientPage />
-    </ProtectedRoute>
-  }
-/>
+    <Route
+      path="/edit-patient/:id"
+      element={
+        <ProtectedRoute>
+          <EditPatientPage />
+        </ProtectedRoute>
+      }
+    />
 
     {/* 🔒 Admin Only */}
     <Route
