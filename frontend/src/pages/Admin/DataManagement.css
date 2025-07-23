@@ -53,6 +53,8 @@
   width: 100%;
   padding: 8px;
   font-size: 14px;
+  width: 550px;
+  border-radius: 0.5px;
 }
 
 .checkbox-group {
