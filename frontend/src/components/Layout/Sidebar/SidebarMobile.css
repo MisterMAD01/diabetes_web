@@ -1,0 +1,108 @@
+.mobile-menu-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 9999;
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  color: #333;
+  cursor: pointer;
+  display: block; /* แสดงเฉพาะมือถือ */
+}
+
+/* sidebar mobile ซ่อนอยู่ข้างนอกจอ */
+.sidebar-mobile {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px;
+  background: #fff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 9998;
+  overflow-y: auto;
+  padding-top: 60px;
+}
+
+/* เปิด sidebar mobile */
+.sidebar-mobile.open {
+  transform: translateX(0);
+}
+
+.sb-header-mobile {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.sb-logo-mobile {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.sb-title-mobile {
+  font-size: 18px;
+  margin: 0;
+}
+
+.sb-subtitle-mobile {
+  font-size: 12px;
+  margin: 0;
+  color: #555;
+}
+
+.sb-menu-mobile button {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  width: 100%;
+  border: none;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #333;
+  text-align: left;
+  border-left: 4px solid transparent;
+}
+
+.sb-menu-mobile button.sb-active {
+  background-color: #f0f0f0;
+  border-left-color: #007bff;
+  font-weight: bold;
+}
+
+.sb-menu-mobile button i {
+  margin-right: 10px;
+}
+.mobile-menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: #333;
+  margin-top: 45px;
+  /* เพิ่มเติมตามต้องการ */
+}
+
+.mobile-menu-icon {
+  /* ปรับขนาด สี หรือแอนิเมชัน */
+  color: #007bff;
+  transition: color 0.3s ease;
+}
+
+.mobile-menu-btn:hover .mobile-menu-icon {
+  color: #0056b3;
+}
+
+/* ซ่อนเมนูถ้าเกิน 768px (desktop) */
+@media (min-width: 769px) {
+  .mobile-menu-btn,
+  .sidebar-mobile {
+    display: none;
+  }
+}

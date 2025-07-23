@@ -3,40 +3,65 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./AppointmentDetailModal.css";
 
-const AppointmentDetailModal = ({
-  appointment,
-  onClose,
-  onStatusChange,
-  onEdit,
-}) => {
-  if (!appointment) return null;
+const STATUS = {
+  WAITING: "รอพบแพทย์",
+  DONE: "เสร็จสิ้น",
+  CANCELLED: "ยกเลิก",
+};
 
-  const formatDateThai = (dateStr) => {
-    if (!dateStr) return "-";
-    return new Date(dateStr).toLocaleDateString("th-TH", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  };
+const formatDateThai = (dateStr) => {
+  if (!dateStr) return "-";
+  return new Date(dateStr).toLocaleDateString("th-TH", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+};
 
-  const formatTime = (timeStr) => {
-    if (!timeStr) return "-";
-    return `${timeStr.slice(0, 5)} น.`;
-  };
+const formatTime = (timeStr) => {
+  if (!timeStr) return "-";
+  return `${timeStr.slice(0, 5)} น.`;
+};
 
-  const statusTextMap = {
-    รอพบแพทย์: "รอพบแพทย์",
-    เสร็จสิ้น: "เสร็จสิ้น",
-    ยกเลิก: "ยกเลิก",
-  };
+const StatusBadge = ({ status }) => (
+  <div className={`appt-detail-status-badge ${status}`}>{status}</div>
+);
 
-  const statusText = statusTextMap[appointment.status] || appointment.status;
+const AppointmentInfoBox = ({ appointment }) => (
+  <div className="appt-detail-info-box appt-detail-status-box">
+    <div>
+      <p>
+        <strong>{appointment.name}</strong>
+      </p>
+      <p>HN: {appointment.hn}</p>
+    </div>
+    <StatusBadge status={appointment.status} />
+  </div>
+);
 
-  // ฟังก์ชันจัดการสถานะ พร้อมโชว์ Toast แบบ async-await
-  const handleChangeStatus = async (id, newStatus) => {
+const AppointmentDetailsGrid = ({ appointment }) => (
+  <div className="appt-detail-grid">
+    <div>
+      <label>แพทย์ผู้ดูแล</label>
+      <p>{appointment.doctor || "-"}</p>
+    </div>
+    <div>
+      <label>วันที่</label>
+      <p>{formatDateThai(appointment.date)}</p>
+    </div>
+    <div>
+      <label>เวลา</label>
+      <p>{formatTime(appointment.time)}</p>
+    </div>
+  </div>
+);
+
+const AppointmentActions = ({ appointment, onChangeStatus }) => {
+  if (appointment.status !== STATUS.WAITING) return null;
+
+  const handleChange = async (newStatus) => {
     try {
-      await onStatusChange(id, newStatus);
+      await onChangeStatus(appointment.id, newStatus);
       toast.success(`สถานะนัดหมายเปลี่ยนเป็น "${newStatus}" เรียบร้อยแล้ว`);
     } catch (error) {
       console.error("Error updating status:", error);
@@ -44,75 +69,53 @@ const AppointmentDetailModal = ({
     }
   };
 
-  // ฟังก์ชันแก้ไข
-  const handleEdit = (appt) => {
-    onEdit(appt);
-  };
+  return (
+    <div className="appt-detail-actions">
+      <button
+        className="appt-detail-cancel-btn"
+        onClick={() => handleChange(STATUS.CANCELLED)}
+      >
+        ยกเลิกนัดหมาย
+      </button>
+      <button
+        className="appt-detail-submit-btn"
+        onClick={() => handleChange(STATUS.DONE)}
+      >
+        ยืนยันนัดหมาย
+      </button>
+    </div>
+  );
+};
+
+const AppointmentDetailModal = ({ appointment, onClose, onStatusChange }) => {
+  if (!appointment) return null;
 
   return (
-    <>
-      <div className="appt-detail-overlay">
-        <div className="appt-detail-container large">
-          <div className="appt-detail-header">
-            <h3>รายละเอียดนัดหมาย</h3>
-            <button className="appt-detail-close-btn" onClick={onClose}>
-              &times;
-            </button>
+    <div className="appt-detail-overlay">
+      <div className="appt-detail-container large">
+        <div className="appt-detail-header">
+          <h3>รายละเอียดนัดหมาย</h3>
+          <button className="appt-detail-close-btn" onClick={onClose}>
+            &times;
+          </button>
+        </div>
+
+        <div className="appt-detail-form">
+          <AppointmentInfoBox appointment={appointment} />
+          <AppointmentDetailsGrid appointment={appointment} />
+
+          <div>
+            <label>หมายเหตุ</label>
+            <p>{appointment.note || "-"}</p>
           </div>
-          <div className="appt-detail-form">
-            <div className="appt-detail-info-box appt-detail-status-box">
-              <div>
-                <p>
-                  <strong>{appointment.name}</strong>
-                </p>
-                <p>HN: {appointment.hn}</p>
-              </div>
-              <div className={`appt-detail-status-badge ${appointment.status}`}>
-                {statusText}
-              </div>
-            </div>
-            <div className="appt-detail-grid">
-              <div>
-                <label>แพทย์ผู้ดูแล</label>
-                <p>{appointment.doctor || "-"}</p>
-              </div>
-              <div>
-                <label>วันที่</label>
-                <p>{formatDateThai(appointment.date)}</p>
-              </div>
-              <div>
-                <label>เวลา</label>
-                <p>{formatTime(appointment.time)}</p>
-              </div>
-            </div>
-            <div>
-              <label>หมายเหตุ</label>
-              <p>{appointment.note || "-"}</p>
-            </div>
-            <div className="appt-detail-actions">
-              {appointment.status === "รอพบแพทย์" && (
-                <>
-                  <button
-                    className="appt-detail-cancel-btn"
-                    onClick={() => handleChangeStatus(appointment.id, "ยกเลิก")}
-                  >
-                    ยกเลิกนัดหมาย
-                  </button>
-                  <button
-                    className="appt-detail-submit-btn"
-                    onClick={() =>
-                      handleChangeStatus(appointment.id, "เสร็จสิ้น")
-                    }
-                  >
-                    ยืนยันนัดหมาย
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
+
+          <AppointmentActions
+            appointment={appointment}
+            onChangeStatus={onStatusChange}
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -6,21 +6,81 @@ import "./AppointmentFormModal.css";
 
 const API_URL = process.env.REACT_APP_API;
 
+const getTodayDateString = () => {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};
+
+const PatientSelect = ({ patients, selectedPatient, onChange }) => (
+  <div>
+    <label>ชื่อผู้ป่วย</label>
+    <Select
+      options={patients}
+      value={selectedPatient}
+      onChange={onChange}
+      placeholder="ค้นหาชื่อผู้ป่วย..."
+      isSearchable
+      components={{ DropdownIndicator: null }}
+    />
+  </div>
+);
+
+const DoctorSelect = ({ doctors, selectedDoctor, onChange }) => (
+  <div>
+    <label>เลือกแพทย์</label>
+    <Select
+      options={doctors}
+      value={selectedDoctor}
+      onChange={onChange}
+      placeholder="ค้นหาแพทย์..."
+      isSearchable
+    />
+  </div>
+);
+
+const DateInput = ({ defaultValue, min }) => (
+  <div>
+    <label>วันที่</label>
+    <input
+      name="date"
+      type="date"
+      required
+      min={min}
+      defaultValue={defaultValue}
+    />
+  </div>
+);
+
+const TimeInput = ({ defaultValue }) => (
+  <div>
+    <label>เวลา</label>
+    <input name="time" type="time" required defaultValue={defaultValue || ""} />
+  </div>
+);
+
+const HnField = ({ hn }) => (
+  <div>
+    <label>รหัสผู้ป่วย (HN)</label>
+    <input type="text" name="hn" value={hn} disabled />
+  </div>
+);
+
+const NoteTextarea = ({ defaultValue }) => (
+  <div className="appt-full-width">
+    <label>หมายเหตุ</label>
+    <textarea name="note" rows="2" defaultValue={defaultValue || ""} />
+  </div>
+);
+
 const AppointmentFormModal = ({ onClose, editAppointment }) => {
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [hn, setHn] = useState("");
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
-
-  // ฟังก์ชันช่วย format วันที่เป็น yyyy-mm-dd
-  const getTodayDateString = () => {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, "0"); // เดือนเริ่มจาก 0
-    const dd = String(today.getDate()).padStart(2, "0");
-    return `${yyyy}-${mm}-${dd}`;
-  };
 
   const todayString = getTodayDateString();
 
@@ -90,6 +150,9 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
 
       onClose();
       form.reset();
+      setSelectedPatient(null);
+      setSelectedDoctor(null);
+      setHn("");
     } catch (error) {
       console.error("เกิดข้อผิดพลาด:", error);
       toast.error("ไม่สามารถบันทึกนัดหมายได้");
@@ -98,7 +161,7 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
 
   const handlePatientChange = (selected) => {
     setSelectedPatient(selected);
-    setHn(selected.value);
+    setHn(selected?.value || "");
   };
 
   return (
@@ -112,58 +175,20 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
         </div>
         <form onSubmit={handleSubmit} className="appt-modal-form">
           <div className="appt-modal-grid">
-            <div>
-              <label>ชื่อผู้ป่วย</label>
-              <Select
-                options={patients}
-                value={selectedPatient}
-                onChange={handlePatientChange}
-                placeholder="ค้นหาชื่อผู้ป่วย..."
-                isSearchable
-                components={{ DropdownIndicator: null }}
-              />
-            </div>
-            <div>
-              <label>รหัสผู้ป่วย (HN)</label>
-              <input type="text" name="hn" value={hn} disabled />
-            </div>
-            <div>
-              <label>เลือกแพทย์</label>
-              <Select
-                options={doctors}
-                value={selectedDoctor}
-                onChange={(selected) => setSelectedDoctor(selected)}
-                placeholder="ค้นหาแพทย์..."
-                isSearchable
-              />
-            </div>
-            <div>
-              <label>วันที่</label>
-              <input
-                name="date"
-                type="date"
-                required
-                min={todayString} // ใส่ min เพื่อป้องกันเลือกย้อนหลัง
-                defaultValue={editAppointment?.date}
-              />
-            </div>
-            <div>
-              <label>เวลา</label>
-              <input
-                name="time"
-                type="time"
-                required
-                defaultValue={editAppointment?.time || ""}
-              />
-            </div>
-            <div className="appt-full-width">
-              <label>หมายเหตุ</label>
-              <textarea
-                name="note"
-                rows="2"
-                defaultValue={editAppointment?.note || ""}
-              />
-            </div>
+            <PatientSelect
+              patients={patients}
+              selectedPatient={selectedPatient}
+              onChange={handlePatientChange}
+            />
+            <HnField hn={hn} />
+            <DoctorSelect
+              doctors={doctors}
+              selectedDoctor={selectedDoctor}
+              onChange={setSelectedDoctor}
+            />
+            <DateInput defaultValue={editAppointment?.date} min={todayString} />
+            <TimeInput defaultValue={editAppointment?.time} />
+            <NoteTextarea defaultValue={editAppointment?.note} />
           </div>
           <div className="appt-modal-actions">
             <button type="submit" className="appt-submit-btn">

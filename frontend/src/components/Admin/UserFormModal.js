@@ -36,13 +36,13 @@ const UserForm = ({ handleSave, handleCancel }) => {
   };
 
   return (
-    <div className="user-form-overlay">
-      <div className="user-form-modal">
-        <button className="user-form-close-btn" onClick={handleCancel}>
+    <div className="user-modal-overlay">
+      <div className="user-modal">
+        <button className="user-modal-close-btn" onClick={handleCancel}>
           ×
         </button>
-        <form className="user-form" onSubmit={handleSubmit}>
-          <h2>เพิ่มผู้ใช้ใหม่</h2>
+        <form className="user-modal-form" onSubmit={handleSubmit}>
+          <h2 className="user-modal-title">เพิ่มผู้ใช้ใหม่</h2>
           <label>
             ชื่อผู้ใช้:
             <input
@@ -90,8 +90,10 @@ const UserForm = ({ handleSave, handleCancel }) => {
               <option value="user">User</option>
             </select>
           </label>
-          <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
-            <button type="submit">เพิ่มผู้ใช้</button>
+          <div className="user-modal-actions">
+            <button type="submit" className="user-modal-submit-btn">
+              เพิ่มผู้ใช้
+            </button>
           </div>
         </form>
       </div>

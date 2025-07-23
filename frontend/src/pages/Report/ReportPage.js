@@ -24,6 +24,7 @@ dayjs.locale("th");
 const colorMap = {
   สีแดง: "#ff4d4f",
   สีเหลือง: "#fadb14",
+  สีเขียว: "#52c41a",
   สีส้ม: "#fa8c16",
   สีดำ: "#595959",
   สีขาว: "#d9d9d9",
@@ -31,27 +32,17 @@ const colorMap = {
   สีเขียวเข้ม: "#4caf50",
 };
 
-const colorDescriptions = {
-  สีขาว: "กลุ่มปกติ",
-  สีเขียวอ่อน: "กลุ่มผู้ป่วยที่มีความเสี่ยงน้อย",
-  สีเขียวเข้ม: "กลุ่มผู้ป่วยระดับ 0",
-  สีเหลือง: "กลุ่มผู้ป่วยระดับ 1",
-  สีส้ม: "กลุ่มผู้ป่วยระดับ 2",
-  สีแดง: "กลุ่มผู้ป่วยระดับ 3",
-  สีดำ: "กลุ่มผู้ป่วยมีภาวะแทรกซ้อนรุนแรง",
-};
-
 const ColorBadge = ({ colorName }) => {
-  const trimmedColor = colorName?.trim();
-  const bg = colorMap[trimmedColor] || "#ccc";
-  // กำหนดสีข้อความ ให้มีความคอนทราสต์พอสมควร
-  const textColor = ["#fadb14", "#d9d9d9"].includes(bg) ? "#000" : "#fff";
+  const bg = colorMap[colorName?.trim()] || "#ccc";
+  const textColor = ["#ffeb3b", "#ffffff", "#fadb14"].includes(bg)
+    ? "#000"
+    : "#fff";
 
   return (
     <div style={{ textAlign: "center" }}>
       <div
         style={{
-          width: 125,
+          width: 140,
           height: 140,
           borderRadius: "50%",
           backgroundColor: bg,
@@ -62,14 +53,12 @@ const ColorBadge = ({ colorName }) => {
           fontSize: "0.95rem",
           fontWeight: 600,
           color: textColor,
-          padding: "0 10px",
-          wordBreak: "break-word",
         }}
       >
         {colorName || "ไม่ระบุ"}
       </div>
       <div style={{ marginTop: 8, fontSize: "0.95rem", fontWeight: 500 }}>
-        {colorDescriptions[trimmedColor] || "ไม่ระบุกลุ่ม"}
+        กลุ่มความเสี่ยง
       </div>
     </div>
   );
@@ -110,9 +99,6 @@ const ReportPage = () => {
         } else if (res.data.length > 0) {
           setSelectedPatientId(res.data[0].Patient_ID);
         }
-      })
-      .catch((err) => {
-        console.error("Error fetching patient list:", err);
       });
   }, [id]);
 
@@ -126,16 +112,15 @@ const ReportPage = () => {
           `${process.env.REACT_APP_API}/api/reports/patient/${selectedPatientId}`
         );
         setSelectedPatient(pd);
-
         setRiskColor(
           colorMap[pd["กลุ่มเสี่ยงปิงปองจราจร 7 สี"]?.trim()] || "#ff4d4f"
         );
-        console.log("Risk color group:", pd["กลุ่มเสี่ยงปิงปองจราจร 7 สี"]);
 
         const { data: trends } = await axios.get(
           `${process.env.REACT_APP_API}/api/reports/healthTrends/${selectedPatientId}`
         );
 
+        // รวมข้อมูล โดยแยก systolic และ diastolic จริงจาก trends
         const merged = trends.bloodSugar.map((item, idx) => ({
           date: item.date,
           sugar: parseFloat(item.value),

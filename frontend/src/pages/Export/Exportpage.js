@@ -17,6 +17,7 @@ const ExportPage = () => {
 
   const itemsPerPage = 8;
 
+  // โหลดข้อมูลผู้ป่วยเมื่อคอมโพเนนต์ mount
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -26,9 +27,7 @@ const ExportPage = () => {
 
     axios
       .get(`${API_URL}/api/export/all-patients`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
         const mapped = res.data.map((p) => ({
@@ -38,12 +37,12 @@ const ExportPage = () => {
         }));
         setPatients(mapped);
       })
-      .catch((err) => {
-        console.error("โหลดผู้ป่วยล้มเหลว", err);
+      .catch(() => {
         toast.error("โหลดผู้ป่วยล้มเหลว");
       });
   }, []);
 
+  // กรองรายชื่อผู้ป่วยตามคำค้นหา (ชื่อหรือ HN)
   const filteredPatients = patients.filter(
     (p) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -51,12 +50,14 @@ const ExportPage = () => {
   );
 
   const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
+
+  // ข้อมูลผู้ป่วยในหน้าปัจจุบัน
   const paginatedPatients = filteredPatients.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  // ฟังก์ชันสร้าง range หน้า pagination แบบมี ... (ellipsis)
+  // สร้าง range หน้า pagination พร้อมแทรก "..." (ellipsis)
   const getPaginationRange = () => {
     const total = totalPages;
     const current = currentPage;
@@ -76,6 +77,24 @@ const ExportPage = () => {
     return range;
   };
 
+  // จัดการเลือกหรือยกเลิกเลือกผู้ป่วยทั้งหมดบนหน้าปัจจุบัน (filtered)
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedPatients([]);
+    } else {
+      setSelectedPatients(filteredPatients.map((p) => p.id));
+    }
+    setSelectAll(!selectAll);
+  };
+
+  // จัดการเลือก/ยกเลิกเลือกผู้ป่วยทีละคน
+  const handleSelect = (id) => {
+    setSelectedPatients((prev) =>
+      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
+    );
+  };
+
+  // เริ่มกระบวนการ export (เลือกประเภทไฟล์และแสดง confirm modal)
   const handleExport = (format) => {
     if (selectedPatients.length === 0) {
       toast.warn("กรุณาเลือกผู้ป่วยที่ต้องการ export");
@@ -85,6 +104,7 @@ const ExportPage = () => {
     setIsConfirmingExport(true);
   };
 
+  // ยืนยันการส่งออกไฟล์และดาวน์โหลด
   const confirmExport = async () => {
     setIsConfirmingExport(false);
     const queryParam = selectedPatients.join(",");
@@ -101,9 +121,7 @@ const ExportPage = () => {
 
     try {
       const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
         responseType: "blob",
       });
 
@@ -119,29 +137,14 @@ const ExportPage = () => {
 
       toast.success("ส่งออกข้อมูลสำเร็จ");
     } catch (error) {
-      console.error("Error exporting data:", error);
       toast.error("เกิดข้อผิดพลาดในการส่งออกข้อมูล");
     }
-  };
-
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedPatients([]);
-    } else {
-      setSelectedPatients(filteredPatients.map((p) => p.id));
-    }
-    setSelectAll(!selectAll);
-  };
-
-  const handleSelect = (id) => {
-    setSelectedPatients((prev) =>
-      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
-    );
   };
 
   return (
     <div className="export-container">
       <h2 className="export-title">Export ข้อมูล</h2>
+
       <div className="export-controls">
         <input
           type="text"
@@ -224,7 +227,7 @@ const ExportPage = () => {
             <div
               className="export-patient-list"
               style={{
-                maxHeight: "150px",
+                maxHeight: 150,
                 overflowY: "auto",
                 border: "1px solid #ccc",
                 padding: "0.5rem",

@@ -5,6 +5,7 @@ import "./UserEditFormModal.css";
 
 const UserEditForm = ({ user, handleSave, handleCancel }) => {
   const [formData, setFormData] = useState({ ...user });
+  const isGoogleUser = !!user.google_id;
 
   const handleChange = (e) => {
     setFormData({
@@ -18,16 +19,19 @@ const UserEditForm = ({ user, handleSave, handleCancel }) => {
     handleSave(formData);
   };
 
-  const isGoogleUser = !!user.google_id; // เช็คว่าผูก google หรือไม่
-
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <button className="modal-close-btn" onClick={handleCancel}>
+    <div className="user-edit-modal-overlay">
+      <div className="user-edit-modal">
+        <button
+          className="user-edit-modal-close-btn"
+          onClick={handleCancel}
+          aria-label="ปิด"
+        >
           ×
         </button>
-        <form className="user-edit-form" onSubmit={handleSubmit}>
-          <h2>แก้ไขข้อมูลผู้ใช้</h2>
+        <form className="user-edit-modal-form" onSubmit={handleSubmit}>
+          <h2 className="user-edit-modal-title">แก้ไขข้อมูลผู้ใช้</h2>
+
           <label>
             ชื่อผู้ใช้:
             <input
@@ -38,6 +42,7 @@ const UserEditForm = ({ user, handleSave, handleCancel }) => {
               required
             />
           </label>
+
           <label>
             ชื่อจริง:
             <input
@@ -48,6 +53,7 @@ const UserEditForm = ({ user, handleSave, handleCancel }) => {
               required
             />
           </label>
+
           <label>
             อีเมล:
             <input
@@ -56,16 +62,20 @@ const UserEditForm = ({ user, handleSave, handleCancel }) => {
               value={formData.email || ""}
               onChange={handleChange}
               required
-              disabled={isGoogleUser} // ปิดช่องถ้าผูก Google
+              disabled={isGoogleUser}
             />
             {isGoogleUser && (
-              <div className="connected-google">
-                <strong>เชื่อมต่อด้วย :</strong>{" "}
-                <FontAwesomeIcon icon={faGoogle} className="icon-google" />{" "}
+              <div className="user-edit-google-info">
+                <strong>เชื่อมต่อด้วย:</strong>{" "}
+                <FontAwesomeIcon
+                  icon={faGoogle}
+                  className="user-edit-google-icon"
+                />
                 Google
               </div>
             )}
           </label>
+
           <label>
             สิทธิ์การใช้งาน:
             <select
@@ -77,8 +87,9 @@ const UserEditForm = ({ user, handleSave, handleCancel }) => {
               <option value="user">User</option>
             </select>
           </label>
-          <div className="modal-actions">
-            <button type="submit" className="submit-btn">
+
+          <div className="user-edit-modal-actions">
+            <button type="submit" className="user-edit-modal-submit-btn">
               บันทึก
             </button>
           </div>

@@ -19,8 +19,8 @@ const DataImportConfirmModal = ({ data, onClose, onConfirm }) => {
 
   if (!data || data.length === 0)
     return (
-      <div className="admin-modal-overlay">
-        <div className="admin-modal">
+      <div className="import-confirm-overlay">
+        <div className="import-confirm-modal">
           <p>ไม่มีข้อมูลในไฟล์ CSV</p>
           <button onClick={onClose}>ปิด</button>
         </div>
@@ -28,39 +28,44 @@ const DataImportConfirmModal = ({ data, onClose, onConfirm }) => {
     );
 
   return (
-    <div className="admin-modal-overlay">
-      <div className="admin-modal" style={{ maxHeight: "80vh", overflowY: "auto" }}>
+    <div className="import-confirm-overlay">
+      <div className="import-confirm-modal">
         <h3>เลือกแถวข้อมูลที่จะนำเข้า</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>เลือก</th>
-              {data[0] &&
-                Object.keys(data[0]).map((header) => (
+        <div className="import-confirm-table-container">
+          <table className="import-confirm-table">
+            <thead>
+              <tr>
+                <th>เลือก</th>
+                {Object.keys(data[0]).map((header) => (
                   <th key={header}>{header}</th>
                 ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, i) => (
-              <tr key={i}>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={checkedRows[i]}
-                    onChange={() => toggleRow(i)}
-                  />
-                </td>
-                {Object.values(row).map((val, idx) => (
-                  <td key={idx}>{val}</td>
-                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="admin-modal-buttons">
-          <button onClick={handleConfirm}>ยืนยัน</button>
-          <button onClick={onClose}>ยกเลิก</button>
+            </thead>
+            <tbody>
+              {data.map((row, i) => (
+                <tr key={i}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={checkedRows[i]}
+                      onChange={() => toggleRow(i)}
+                    />
+                  </td>
+                  {Object.values(row).map((val, idx) => (
+                    <td key={idx}>{val}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="import-confirm-actions">
+          <button className="btn-cancel" onClick={onClose}>
+            ยกเลิก
+          </button>
+          <button className="btn-confirm" onClick={handleConfirm}>
+            ยืนยัน
+          </button>
         </div>
       </div>
     </div>

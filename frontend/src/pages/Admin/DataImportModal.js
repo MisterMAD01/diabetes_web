@@ -32,7 +32,7 @@ const DataImportModal = ({ onClose, apiUrl }) => {
         skipEmptyLines: true,
         complete: (results) => {
           setCsvData(results.data);
-          setShowConfirmModal(true); // เปิด modal เลือกแถว
+          setShowConfirmModal(true);
         },
         error: () => {
           setMessage("ไฟล์ CSV ไม่ถูกต้อง");
@@ -47,7 +47,6 @@ const DataImportModal = ({ onClose, apiUrl }) => {
     setShowConfirmModal(false);
   };
 
-  // ฟังก์ชันแปลง selectedRows เป็นไฟล์ CSV แล้วส่งไป backend
   const handleImportSubmit = async () => {
     if (selectedRows.length === 0) {
       setMessage("กรุณาเลือกข้อมูลก่อนนำเข้า");
@@ -57,16 +56,12 @@ const DataImportModal = ({ onClose, apiUrl }) => {
     setMessage("");
 
     try {
-      // แปลง JSON เป็น CSV
       const csvString = Papa.unparse(selectedRows);
-
-      // สร้าง Blob แล้วแปลงเป็น File
       const blob = new Blob([csvString], { type: "text/csv" });
       const newFile = new File([blob], "selected_data.csv", {
         type: "text/csv",
       });
 
-      // สร้าง FormData ส่งไฟล์
       const formData = new FormData();
       formData.append("file", newFile);
 
@@ -74,7 +69,6 @@ const DataImportModal = ({ onClose, apiUrl }) => {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          // หลีกเลี่ยงกำหนด Content-Type ให้ browser ตั้งเองสำหรับ multipart/form-data
         },
         body: formData,
       });
@@ -95,15 +89,17 @@ const DataImportModal = ({ onClose, apiUrl }) => {
   };
 
   return (
-    <div className="admin-modal-overlay">
-      <div className="modal import-modal">
-        <div className="admin-modal-header">
+    <div className="import-modal-overlay">
+      <div className="import-modal-container">
+        <div className="import-modal-header">
           <h3>นำเข้าข้อมูล CSV</h3>
-          <button onClick={onClose}>✖</button>
+          <button className="import-modal-close-btn" onClick={onClose}>
+            ✖
+          </button>
         </div>
 
         <label>
-          เลือกประเภทข้อมูล:
+          ประเภทข้อมูล:
           <select value={type} onChange={(e) => setType(e.target.value)}>
             {tables.map((t) => (
               <option key={t.key} value={t.key}>
@@ -114,14 +110,18 @@ const DataImportModal = ({ onClose, apiUrl }) => {
         </label>
 
         <label>
-          เลือกไฟล์ CSV:
+          ไฟล์ CSV:
           <input type="file" accept=".csv" onChange={handleFileChange} />
         </label>
 
-        {file && <p>ไฟล์ที่เลือก: {file.name}</p>}
-        {message && <p className="admin-message">{message}</p>}
+        {file && <p className="import-modal-filename">📄 {file.name}</p>}
+        {message && <p className="import-modal-message">{message}</p>}
 
-        <button onClick={handleImportSubmit} disabled={loading}>
+        <button
+          className="import-modal-submit-btn"
+          onClick={handleImportSubmit}
+          disabled={loading}
+        >
           {loading ? "กำลังนำเข้า..." : "นำเข้า"}
         </button>
 
