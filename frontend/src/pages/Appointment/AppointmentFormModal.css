@@ -26,10 +26,6 @@
   box-sizing: border-box;
 }
 
-.appt-modal-large {
-  /* กำหนดขนาดเพิ่มถ้าต้องการ */
-}
-
 .appt-modal-header {
   display: flex;
   justify-content: space-between;

@@ -61,6 +61,7 @@
   transition: background-color 0.2s;
   height: 80px; /* ✅ ความสูงเท่ากัน */
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .patient-card.selected {

@@ -169,12 +169,16 @@ const ExportPage = () => {
             className={`patient-card ${
               selectedPatients.includes(patient.id) ? "selected" : ""
             }`}
+            onClick={() => handleSelect(patient.id)} // <-- เพิ่มตรงนี้
           >
             <input
               type="checkbox"
               className="card-checkbox"
               checked={selectedPatients.includes(patient.id)}
-              onChange={() => handleSelect(patient.id)}
+              onChange={(e) => {
+                e.stopPropagation(); // ป้องกัน event ซ้อน
+                handleSelect(patient.id);
+              }}
             />
             <div className="avatar">{patient.name.charAt(0)}</div>
             <div className="patient-info">
