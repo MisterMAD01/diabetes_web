@@ -10,9 +10,9 @@
 /* ChartControls */
 .chart-controls {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap; /* ให้ย้ายบรรทัดได้ถ้าพื้นที่น้อย */
 }
 
 .chart-controls__filter-section,
@@ -24,6 +24,11 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+/* กำหนดให้ filter-section กินพื้นที่ได้เต็มที่ */
+.chart-controls__filter-section {
+  flex: 1 1 auto;
 }
 
 .chart-controls__filter-section label,
@@ -129,4 +134,29 @@
   border: none;
   font-size: 1rem;
   cursor: pointer;
+}
+
+/* ปรับปุ่มรีเซ็ทให้อยู่ในบรรทัดเดียวกับ filter-section และชิดกัน */
+.chart-controls__reset-button {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  padding-left: 0.5rem; /* เว้นช่องว่างเล็กน้อยจาก filter section */
+}
+
+.chart-controls__reset-button button {
+  background-color: #ff5c5c;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chart-controls__reset-button button:hover {
+  background-color: #e04b4b;
 }

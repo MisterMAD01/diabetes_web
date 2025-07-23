@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
@@ -104,22 +104,27 @@ const renderBEHeader = ({
   );
 };
 
-const ChartControls = ({
-  filterType,
-  setFilterType,
-  selectedMonth,
-  setSelectedMonth,
-  selectedYear,
-  setSelectedYear,
-  customRange,
-  setCustomRange,
-  chartType,
-  setChartType,
-}) => {
+const ChartControls = () => {
   const parseDate = (str) => (str ? new Date(str) : null);
 
-  // เดือน
+  // กำหนด state และตั้งค่าเริ่มต้นเป็นเดือนปัจจุบัน ปีปัจจุบัน
+  const [filterType, setFilterType] = useState("month");
+
+  // selectedMonth format "YYYY-MM" เช่น "2025-07"
+  const [selectedMonth, setSelectedMonth] = useState(dayjs().format("YYYY-MM"));
+
+  // selectedYear เก็บปี ค.ศ. เช่น "2025"
+  const [selectedYear, setSelectedYear] = useState(dayjs().year().toString());
+
+  // customRange เก็บวันที่ในรูปแบบ "YYYY-MM-DD"
+  const [customRange, setCustomRange] = useState({ from: "", to: "" });
+
+  // ประเภทกราฟ เริ่มต้น "line"
+  const [chartType, setChartType] = useState("line");
+
+  // แปลง selectedMonth เป็น Date object สำหรับ DatePicker
   const monthDate = useMemo(() => parseDate(selectedMonth), [selectedMonth]);
+
   const onMonthChange = (date) => {
     if (!date) return setSelectedMonth("");
     const ceYear = dayjs(date).year().toString();
@@ -127,7 +132,7 @@ const ChartControls = ({
     setSelectedMonth(`${ceYear}-${month}`);
   };
 
-  // ปี (สร้างลิสต์ปี พ.ศ. ให้เลือก)
+  // สร้างลิสต์ปี พ.ศ. ให้เลือก
   const currentBE = dayjs().year() + 543;
   const START_BE = currentBE - 10;
   const END_BE = currentBE + 5;
@@ -135,9 +140,13 @@ const ChartControls = ({
     { length: END_BE - START_BE + 1 },
     (_, i) => START_BE + i
   );
-  const selectedBEYear = selectedYear ? parseInt(selectedYear, 10) + 543 : "";
 
-  // ช่วงกำหนดเอง
+  // ค่าปีที่แสดงใน select ต้องแปลงเป็นปี พ.ศ.
+  const selectedBEYear = selectedYear
+    ? (parseInt(selectedYear, 10) + 543).toString()
+    : "";
+
+  // จัดการวันที่ช่วงกำหนดเอง
   const onCustomChange = (field) => (date) => {
     if (!date) return setCustomRange((prev) => ({ ...prev, [field]: "" }));
     setCustomRange((prev) => ({
@@ -145,12 +154,23 @@ const ChartControls = ({
       [field]: dayjs(date).format("YYYY-MM-DD"),
     }));
   };
+
   const customFrom = parseDate(customRange.from);
   const customTo = parseDate(customRange.to);
+
   const isCustomInvalid =
     customRange.from &&
     customRange.to &&
     dayjs(customRange.from).isAfter(dayjs(customRange.to));
+
+  // รีเซ็ตค่า filter ทุกตัวกลับเป็นค่าเริ่มต้น
+  const handleReset = () => {
+    setFilterType("month");
+    setSelectedMonth(dayjs().format("YYYY-MM"));
+    setSelectedYear(dayjs().year().toString());
+    setCustomRange({ from: "", to: "" });
+    setChartType("line");
+  };
 
   return (
     <div className="chart-controls">
@@ -188,7 +208,11 @@ const ChartControls = ({
               className="chart-controls__custom-input"
               value={selectedBEYear}
               onChange={(e) =>
-                setSelectedYear((parseInt(e.target.value, 10) - 543).toString())
+                setSelectedYear(
+                  e.target.value
+                    ? (parseInt(e.target.value, 10) - 543).toString()
+                    : ""
+                )
               }
             >
               <option value="">เลือกปี</option>
@@ -238,6 +262,13 @@ const ChartControls = ({
           <option value="line">เส้น</option>
           <option value="bar">แท่ง</option>
         </select>
+      </div>
+
+      {/* ปุ่มรีเซ็ท */}
+      <div className="chart-controls__reset-button">
+        <button type="button" onClick={handleReset}>
+          รีเซ็ท
+        </button>
       </div>
     </div>
   );

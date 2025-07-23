@@ -48,7 +48,7 @@ function Register() {
       }, 1500);
     } catch (error) {
       setMessage(
-        error.response?.data?.message || "เกิดข้อผิดพลาดในการลงทะเบียน"
+        error.response?.data?.message || "ฝั่งเซิร์ฟเวอร์ยังไม่พร้อมทำงาน"
       );
     } finally {
       setLoading(false);
