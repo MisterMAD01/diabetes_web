@@ -291,6 +291,7 @@ const EditPatientPage = () => {
             name="birthdate"
             value={toDateInputValue(formData.birthdate)}
             onChange={handleChange}
+            max={new Date().toISOString().split("T")[0]} // ปิดไม่ให้เลือกวันเกินวันนี้
             placeholder="เลือกวันเกิด"
           />
         </div>

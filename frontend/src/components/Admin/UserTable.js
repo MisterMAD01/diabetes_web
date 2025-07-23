@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { formatDateShortThai } from "../../components/utils";
+import "./ComfirmDelete.css";
 
 // Utility: get initial from username
 const getInitials = (name) => {
@@ -107,9 +108,9 @@ const UserTable = ({
 
       {/* Confirmation Modal */}
       {deleteUser && (
-        <div className="custom-modal-overlay">
-          <div className="custom-modal small">
-            <div className="custom-modal-icon warning">
+        <div className="modal-overlay">
+          <div className="modal small">
+            <div className="modal-icon warning">
               <i className="fas fa-exclamation-triangle"></i>
             </div>
             <h3>ยืนยันการลบผู้ใช้</h3>
@@ -117,17 +118,14 @@ const UserTable = ({
               คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้ "{deleteUser.username}"?
               การกระทำนี้ไม่สามารถย้อนกลับได้
             </p>
-            <div className="custom-modal-actions">
+            <div className="modal-actions">
               <button
                 onClick={() => setDeleteUser(null)}
-                className="custom-cancel-btn"
+                className="cancel-btn"
               >
                 ยกเลิก
               </button>
-              <button
-                onClick={confirmDelete}
-                className="custom-delete-btn confirm"
-              >
+              <button onClick={confirmDelete} className="delete-btn">
                 ลบผู้ใช้
               </button>
             </div>

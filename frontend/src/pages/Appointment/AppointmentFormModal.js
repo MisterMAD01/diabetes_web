@@ -121,38 +121,6 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
                 placeholder="ค้นหาชื่อผู้ป่วย..."
                 isSearchable
                 components={{ DropdownIndicator: null }}
-                styles={{
-                  container: (base) => ({ ...base, width: "100%" }),
-                  control: (base, state) => ({
-                    ...base,
-                    minHeight: "38px",
-                    height: "38px",
-                    display: "flex",
-                    alignItems: "center",
-                    boxShadow: state.isFocused
-                      ? "0 0 0 1px #2684FF"
-                      : base.boxShadow,
-                    borderColor: state.isFocused ? "#2684FF" : "#ccc",
-                    "&:hover": { borderColor: "#2684FF" },
-                  }),
-                  valueContainer: (base) => ({
-                    ...base,
-                    height: "38px",
-                    padding: "0 8px",
-                    display: "flex",
-                    alignItems: "center",
-                  }),
-                  input: (base) => ({
-                    ...base,
-                    margin: 0,
-                    padding: 0,
-                  }),
-                  indicatorsContainer: () => ({ display: "none" }),
-                  menu: (base) => ({
-                    ...base,
-                    zIndex: 9999,
-                  }),
-                }}
               />
             </div>
             <div>
@@ -198,9 +166,6 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
             </div>
           </div>
           <div className="appt-modal-actions">
-            <button type="button" onClick={onClose} className="appt-cancel-btn">
-              ยกเลิก
-            </button>
             <button type="submit" className="appt-submit-btn">
               {editAppointment ? "บันทึกการแก้ไข" : "บันทึกนัดหมาย"}
             </button>

@@ -9,18 +9,17 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
   const [editDoctor, setEditDoctor] = useState(null);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [doctorToDelete, setDoctorToDelete] = useState(null);
+  const [errors, setErrors] = useState({}); // เพิ่ม state สำหรับเก็บ error
 
-  // ตรวจสอบฟอร์แมตเบอร์โทร: 10 ตัวเลข หรือว่างเปล่า
   const validatePhone = (phone) => {
-    if (!phone) return true; // ไม่กรอกก็ผ่าน
+    if (!phone) return true;
     const trimmedPhone = phone.trim();
-    const phoneRegex = /^\d{10}$/; // ต้องเป็นเลข 10 หลัก
+    const phoneRegex = /^\d{10}$/;
     return phoneRegex.test(trimmedPhone);
   };
 
-  // ตรวจสอบฟอร์แมตอีเมล หรือว่างเปล่า
   const validateEmail = (email) => {
-    if (!email) return true; // ไม่กรอกก็ผ่าน
+    if (!email) return true;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email.trim());
   };
@@ -44,26 +43,29 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
   };
 
   const handleUpdateDoctor = async () => {
+    const { Doctor_ID, D_Name, specialty, phone, email } = editDoctor;
+
+    const newErrors = {};
+
+    if (!D_Name || D_Name.trim() === "") {
+      newErrors.D_Name = "กรุณากรอกชื่อแพทย์";
+    }
+
+    if (!validatePhone(phone)) {
+      newErrors.phone = "กรุณากรอกเบอร์โทรให้ถูกต้อง 10 หลัก หรือเว้นว่าง";
+    }
+
+    if (!validateEmail(email)) {
+      newErrors.email = "กรุณากรอกอีเมลให้ถูกต้อง หรือเว้นว่างไว้";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error("กรุณาแก้ไขข้อผิดพลาดในฟอร์ม");
+      return;
+    }
+
     try {
-      const { Doctor_ID, D_Name, specialty, phone, email } = editDoctor;
-
-      if (!D_Name || D_Name.trim() === "") {
-        toast.error("กรุณากรอกชื่อแพทย์");
-        return;
-      }
-
-      // ตรวจสอบเบอร์โทร
-      if (!validatePhone(phone)) {
-        toast.error("กรุณากรอกเบอร์โทรให้ถูกต้อง 10 หลัก");
-        return;
-      }
-
-      // ตรวจสอบอีเมล
-      if (!validateEmail(email)) {
-        toast.error("กรุณากรอกอีเมลให้ถูกต้อง หรือเว้นว่างไว้");
-        return;
-      }
-
       await axios.put(`${API_URL}/api/doctors/${Doctor_ID}`, {
         name: D_Name.trim(),
         specialty: specialty ? specialty.trim() : "",
@@ -73,6 +75,7 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
 
       toast.success("อัปเดตข้อมูลแพทย์เรียบร้อยแล้ว");
       setEditDoctor(null);
+      setErrors({});
       onRefresh();
     } catch (err) {
       console.error("อัปเดตล้มเหลว:", err);
@@ -80,14 +83,18 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
     }
   };
 
-  // ฟังก์ชันจัดการกรอกเบอร์โทร รับเฉพาะตัวเลขและไม่เกิน 10 หลัก
   const handlePhoneChange = (value) => {
-    // ลบทุกอย่างที่ไม่ใช่ตัวเลข
     let numericValue = value.replace(/\D/g, "");
     if (numericValue.length > 10) {
       numericValue = numericValue.slice(0, 10);
     }
     setEditDoctor({ ...editDoctor, phone: numericValue });
+    setErrors((prev) => ({ ...prev, phone: "" })); // เคลียร์ error เบอร์โทร
+  };
+
+  const handleFieldChange = (field, value) => {
+    setEditDoctor({ ...editDoctor, [field]: value });
+    setErrors((prev) => ({ ...prev, [field]: "" })); // เคลียร์ error ฟิลด์นั้น
   };
 
   return (
@@ -116,7 +123,10 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
                 <td>{doc.email || "-"}</td>
                 <td>
                   <button
-                    onClick={() => setEditDoctor(doc)}
+                    onClick={() => {
+                      setEditDoctor(doc);
+                      setErrors({});
+                    }}
                     className="mdm-edit-btn"
                   >
                     แก้ไข
@@ -141,20 +151,20 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
               <input
                 type="text"
                 value={editDoctor.D_Name}
-                onChange={(e) =>
-                  setEditDoctor({ ...editDoctor, D_Name: e.target.value })
-                }
+                onChange={(e) => handleFieldChange("D_Name", e.target.value)}
               />
+              {errors.D_Name && (
+                <div className="input-error">{errors.D_Name}</div>
+              )}
             </label>
             <label>
               ความเชี่ยวชาญ:
               <input
                 type="text"
                 value={editDoctor.specialty || ""}
-                onChange={(e) =>
-                  setEditDoctor({ ...editDoctor, specialty: e.target.value })
-                }
+                onChange={(e) => handleFieldChange("specialty", e.target.value)}
               />
+              {/* ไม่บังคับ ไม่แสดง error */}
             </label>
             <label>
               เบอร์โทร:
@@ -166,22 +176,29 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
                 onChange={(e) => handlePhoneChange(e.target.value)}
                 placeholder="ตัวเลข 10 หลัก หรือเว้นว่าง"
               />
+              {errors.phone && (
+                <div className="input-error">{errors.phone}</div>
+              )}
             </label>
             <label>
               อีเมล:
               <input
                 type="email"
                 value={editDoctor.email || ""}
-                onChange={(e) =>
-                  setEditDoctor({ ...editDoctor, email: e.target.value })
-                }
+                onChange={(e) => handleFieldChange("email", e.target.value)}
                 placeholder="กรอกอีเมล หรือเว้นว่าง"
               />
+              {errors.email && (
+                <div className="input-error">{errors.email}</div>
+              )}
             </label>
             <div className="mdm-modal-actions">
               <button
                 className="mdm-cancel-btn"
-                onClick={() => setEditDoctor(null)}
+                onClick={() => {
+                  setEditDoctor(null);
+                  setErrors({});
+                }}
               >
                 ยกเลิก
               </button>

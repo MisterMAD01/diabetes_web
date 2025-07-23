@@ -90,12 +90,6 @@ const AppointmentDetailModal = ({
               <p>{appointment.note || "-"}</p>
             </div>
             <div className="appt-detail-actions">
-              <button
-                className="appt-detail-edit-btn"
-                onClick={() => handleEdit(appointment)}
-              >
-                แก้ไข
-              </button>
               {appointment.status === "รอพบแพทย์" && (
                 <>
                   <button

@@ -8,6 +8,7 @@ import AddDoctor from "../../components/AddDoctor/AddDoctor";
 import "./AppointmentPage.css";
 import { getLocalISODate } from "../../components/utils";
 import ManageDoctorModal from "./ManageDoctorModal";
+import "./ComfirmDelete.css";
 
 const API_URL = process.env.REACT_APP_API;
 
