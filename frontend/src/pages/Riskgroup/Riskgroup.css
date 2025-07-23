@@ -1,9 +1,17 @@
 .form-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+  padding: 20px;
+  font-family: "Sarabun", sans-serif;
+  color: #1e293b;
+  min-height: 100vh;
 }
 
+.color-group-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 1rem;
+  text-align: center;
+}
 .color-group {
   display: flex;
   flex-wrap: wrap;

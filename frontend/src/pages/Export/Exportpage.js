@@ -56,6 +56,26 @@ const ExportPage = () => {
     currentPage * itemsPerPage
   );
 
+  // ฟังก์ชันสร้าง range หน้า pagination แบบมี ... (ellipsis)
+  const getPaginationRange = () => {
+    const total = totalPages;
+    const current = currentPage;
+    const range = [];
+
+    if (total <= 5) {
+      for (let i = 1; i <= total; i++) range.push(i);
+    } else {
+      if (current <= 3) {
+        range.push(1, 2, 3, "...", total);
+      } else if (current >= total - 2) {
+        range.push(1, "...", total - 2, total - 1, total);
+      } else {
+        range.push(1, "...", current - 1, current, current + 1, "...", total);
+      }
+    }
+    return range;
+  };
+
   const handleExport = (format) => {
     if (selectedPatients.length === 0) {
       toast.warn("กรุณาเลือกผู้ป่วยที่ต้องการ export");
@@ -66,6 +86,7 @@ const ExportPage = () => {
   };
 
   const confirmExport = async () => {
+    setIsConfirmingExport(false);
     const queryParam = selectedPatients.join(",");
     const url =
       exportFormat === "PDF"
@@ -101,8 +122,6 @@ const ExportPage = () => {
       console.error("Error exporting data:", error);
       toast.error("เกิดข้อผิดพลาดในการส่งออกข้อมูล");
     }
-
-    setIsConfirmingExport(false);
   };
 
   const handleSelectAll = () => {
@@ -122,7 +141,7 @@ const ExportPage = () => {
 
   return (
     <div className="export-container">
-      <h2>Export ข้อมูล</h2>
+      <h2 className="export-title">Export ข้อมูล</h2>
       <div className="export-controls">
         <input
           type="text"
@@ -166,20 +185,32 @@ const ExportPage = () => {
       <div className="pagination">
         หน้าที่ {currentPage} จาก {totalPages}
         <div className="pagination-buttons">
-          <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}>
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+          >
             ก่อนหน้า
           </button>
-          {Array.from({ length: totalPages }, (_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentPage(i + 1)}
-              className={currentPage === i + 1 ? "active" : ""}
-            >
-              {i + 1}
-            </button>
-          ))}
+
+          {getPaginationRange().map((page, idx) =>
+            page === "..." ? (
+              <span key={idx} className="dots">
+                ...
+              </span>
+            ) : (
+              <button
+                key={idx}
+                onClick={() => setCurrentPage(page)}
+                className={currentPage === page ? "active" : ""}
+              >
+                {page}
+              </button>
+            )
+          )}
+
           <button
             onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            disabled={currentPage === totalPages}
           >
             ถัดไป
           </button>
@@ -190,42 +221,43 @@ const ExportPage = () => {
         <div className="modal-backdrop">
           <div className="modal-content">
             <h3>คุณกำลังจะส่งออกเป็น {exportFormat}</h3>
-            <ul className="export-patient-list">
+            <div
+              className="export-patient-list"
+              style={{
+                maxHeight: "150px",
+                overflowY: "auto",
+                border: "1px solid #ccc",
+                padding: "0.5rem",
+                margin: "1rem 0",
+                borderRadius: "8px",
+                background: "#f9f9f9",
+              }}
+            >
               {patients
                 .filter((p) => selectedPatients.includes(p.id))
                 .map((p) => (
-                  <li key={p.id}>
+                  <div key={p.id} style={{ padding: "0.25rem 0" }}>
                     <span className="patient-name">{p.name}</span>{" "}
                     <span className="patient-hn">({p.hn})</span>
-                  </li>
+                  </div>
                 ))}
-            </ul>
+            </div>
             <div className="modal-actions">
-              <button className="confirm" onClick={confirmExport}>
-                ยืนยันส่งออก
-              </button>
               <button
                 className="cancel"
                 onClick={() => setIsConfirmingExport(false)}
               >
                 ยกเลิก
               </button>
+              <button className="confirm" onClick={confirmExport}>
+                ยืนยันส่งออก
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

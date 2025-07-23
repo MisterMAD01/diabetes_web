@@ -1,12 +1,15 @@
 .manage-accounts-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  font-family: "Sarabun", sans-serif;
+  color: #1e293b;
+  min-height: 100vh;
 }
-
+.manage-accounts-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 1rem;
+}
 
 /* Header */
 .manage-accounts-container h1 {

@@ -1,3 +1,9 @@
+.home-page {
+  padding: 20px;
+  font-family: "Sarabun", sans-serif;
+  color: #1e293b;
+  min-height: 100vh;
+}
 .dashboard-overview-row {
   margin-bottom: 32px;
 }

@@ -79,10 +79,18 @@
   outline: none;
   transition: color 0.16s;
 }
-.action-btn.view { color: #2563eb; }
-.action-btn.edit { color: #f59e42; }
-.action-btn.delete { color: #ef4444; }
-.action-btn:hover { filter: brightness(0.85); }
+.action-btn.view {
+  color: #2563eb;
+}
+.action-btn.edit {
+  color: #f59e42;
+}
+.action-btn.delete {
+  color: #ef4444;
+}
+.action-btn:hover {
+  filter: brightness(0.85);
+}
 
 .action-group {
   display: flex;
@@ -100,4 +108,89 @@
   .user-table {
     min-width: 100%;
   }
+}
+.custom-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.custom-modal {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  width: 320px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.custom-modal.small {
+  max-width: 360px;
+}
+
+.custom-modal-icon.warning {
+  font-size: 48px;
+  color: #f5a623; /* สีส้มเหลือง */
+  margin-bottom: 16px;
+}
+
+.custom-modal h3 {
+  margin-bottom: 12px;
+  font-size: 1.5rem;
+}
+
+.custom-modal p {
+  font-size: 1rem;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+.custom-modal-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.custom-cancel-btn {
+  color: #c0392b;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.custom-delete-btn {
+  background-color: #e74c3c; /* สีแดง */
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.custom-cancel-btn {
+  background-color: #ccc;
+  color: #333;
+}
+
+.custom-cancel-btn:hover {
+  background-color: #b3b3b3;
+}
+
+.custom-delete-btn {
+  background-color: #e74c3c; /* สีแดง */
+  color: white;
+}
+
+.custom-delete-btn.confirm:hover {
+  background-color: #c0392b;
 }

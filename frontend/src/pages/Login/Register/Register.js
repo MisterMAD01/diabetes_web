@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import axios from "axios";
-import GoogleRegister from "./GoogleRegister";
 import { useNavigate, Link } from "react-router-dom";
 import "./Register.css";
 import logo from "../../../assets/Logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock, faEnvelope, faIdCard, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faLock,
+  faEnvelope,
+  faIdCard,
+  faEye,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons";
 
 const API_URL = process.env.REACT_APP_API;
 
@@ -31,14 +37,19 @@ function Register() {
     setLoading(true);
     setMessage("");
     try {
-      const response = await axios.post(`${API_URL}/api/auth/register`, formData);
+      const response = await axios.post(
+        `${API_URL}/api/auth/register`,
+        formData
+      );
       setMessage(response.data.message);
 
       setTimeout(() => {
         navigate("/login");
       }, 1500);
     } catch (error) {
-      setMessage(error.response?.data?.message || "เกิดข้อผิดพลาดในการลงทะเบียน");
+      setMessage(
+        error.response?.data?.message || "เกิดข้อผิดพลาดในการลงทะเบียน"
+      );
     } finally {
       setLoading(false);
     }
@@ -50,7 +61,9 @@ function Register() {
         <div className="register-logo-area">
           <img src={logo} alt="Logo" className="register-logo-img" />
           <div className="register-app-name">Diabetes Web System</div>
-          <div className="register-app-desc">ระบบจัดการเบาหวานสำหรับคลินิกและผู้ป่วย</div>
+          <div className="register-app-desc">
+            ระบบจัดการเบาหวานสำหรับคลินิกและผู้ป่วย
+          </div>
         </div>
         <h2 className="register-title">สมัครสมาชิก</h2>
         <form className="register-form" onSubmit={handleRegister}>
@@ -130,8 +143,6 @@ function Register() {
         </form>
 
         <div className="register-divider">หรือ</div>
-
-        <GoogleRegister />
 
         {message && <div className="register-message">{message}</div>}
 

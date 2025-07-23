@@ -1,8 +1,14 @@
+.page-container {
+  padding: 20px;
+  font-family: "Sarabun", sans-serif;
+  color: #1e293b;
+  min-height: 100vh;
+}
 .user-profile__container {
   max-width: 900px;
   margin: 3rem auto;
   padding: 3rem;
-  font-family: 'Sarabun', sans-serif;
+  font-family: "Sarabun", sans-serif;
   background-color: #f9fafb; /* สีพื้นหลังอ่อน (เทา very light) */
   border-radius: 12px;
   color: #1e3a8a; /* น้ำเงินเข้ม */
@@ -108,7 +114,7 @@
   max-width: 900px;
   margin: 3rem auto;
   padding: 0 1rem;
-  font-family: 'Sarabun', sans-serif;
+  font-family: "Sarabun", sans-serif;
 }
 
 .page-title {

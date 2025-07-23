@@ -92,9 +92,6 @@ const UserForm = ({ handleSave, handleCancel }) => {
           </label>
           <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
             <button type="submit">เพิ่มผู้ใช้</button>
-            <button type="button" className="cancel-btn" onClick={handleCancel}>
-              ยกเลิก
-            </button>
           </div>
         </form>
       </div>

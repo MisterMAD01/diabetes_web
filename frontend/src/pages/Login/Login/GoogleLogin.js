@@ -6,13 +6,13 @@ const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 function parseJwt(token) {
   try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     const jsonPayload = decodeURIComponent(
       atob(base64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
     );
     return JSON.parse(jsonPayload);
   } catch (error) {
@@ -22,6 +22,11 @@ function parseJwt(token) {
 
 function GoogleLogin({ setMessage }) {
   useEffect(() => {
+    if (!window.google || !CLIENT_ID) {
+      setMessage?.("Google API ไม่ถูกต้องหรือยังไม่โหลด");
+      return;
+    }
+
     window.google.accounts.id.initialize({
       client_id: CLIENT_ID,
       callback: handleCallbackResponse,
@@ -36,26 +41,42 @@ function GoogleLogin({ setMessage }) {
   const handleCallbackResponse = async (response) => {
     try {
       const res = await axios.post(
-        `${API_URL}/api/auth/google/login`,
+        `${API_URL}/api/auth/google`,
         { googleIdToken: response.credential },
-        { withCredentials: true } // ✅ ส่ง cookie (refresh token)
+        { withCredentials: true }
       );
 
-      const token = res.data.token;
-      localStorage.setItem("token", token);
+      if (res.status === 200) {
+        // Login success, มี token
+        const token = res.data.token;
+        localStorage.setItem("token", token);
 
-      const decoded = parseJwt(token);
-      localStorage.setItem("role", decoded?.role);
+        const decoded = parseJwt(token);
+        localStorage.setItem("role", decoded?.role);
 
-      window.location.href = "/home";
+        setTimeout(() => {
+          window.location.href = "/home";
+        }, 1000);
+      } else if (res.status === 201) {
+        // สมัครใหม่ รออนุมัติ ไม่มี token
+        setMessage(res.data.message);
+      } else {
+        // กรณีอื่น ๆ เช่น 403
+        setMessage(
+          res.data.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google"
+        );
+      }
     } catch (error) {
-      setMessage?.(error.response?.data?.message || "Google Login Failed!");
+      const msg =
+        error.response?.data?.message ||
+        "เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google";
+      setMessage(msg);
     }
   };
 
   return (
     <div>
-      <h2>Login with Google</h2>
+      <h2>เข้าสู่ระบบด้วย Google</h2>
       <div id="google-login-button"></div>
     </div>
   );

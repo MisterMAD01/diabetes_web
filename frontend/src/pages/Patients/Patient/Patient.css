@@ -1,25 +1,31 @@
 /* Layout ของหน้า all-patients */
 .all-patients-wrapper {
-    padding: 30px 40px;
-    background-color: #f9f9f9;
-    min-height: calc(100vh - 64px); /* หัก TopHeader */
-    box-sizing: border-box;
-  }
-  
-  /* หัวหน้า */
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .page-header h1 {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  .add-button {
+  padding: 20px;
+  font-family: "Sarabun", sans-serif;
+  color: #1e293b;
+  min-height: 100vh;
+}
+
+.patient-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 1rem;
+}
+/* หัวหน้า */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.page-header h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.add-button {
   background-color: #10b981;
   color: white;
   border: none;
@@ -28,132 +34,134 @@
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
-  }
-  
-  .add-button:hover{
-      background-color: #059669;
-      transition: background-color 0.2s ease-in-out;
-  }
-  /* ช่องค้นหา */
-  .search-input {
+}
+
+.add-button:hover {
+  background-color: #059669;
+  transition: background-color 0.2s ease-in-out;
+}
+/* ช่องค้นหา */
+.search-input {
   flex: 1;
   padding: 0.5rem 1rem;
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 1rem;
-  }
-  
-  /* ตารางแบบ flex */
-  .patient-table {
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .patient-row {
-    display: flex;
-    text-align: center;
-    align-items: center;
-    padding: 14px 20px;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .patient-header {
-    background-color: #f0f0f0;
-    font-weight: bold;
-  }
-  
-  .patient-row > div {
-    flex: 1;
-  }
-  /* ป้ายกลุ่มเสี่ยง */
-  .risk-tag {
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-weight: bold;
-    display: inline-block;
-    min-width: 80px;
-    text-align: center;
-    font-size: 14px;
-    text-transform: capitalize;
-  }
-  
-  /* สีแต่ละระดับ (ต้องตรงกับ .replace('สี', '').toLowerCase()) */
-  .risk-tag.ขาว {
-    background-color: #f2f2f2;
-    color: #333;
-  }
-  
-  .risk-tag.เขียวอ่อน {
-    background-color: #a8e6cf;
-    color: #000;
-  }
-  
-  .risk-tag.เขียวเข้ม {
-    background-color: #56c596;
-    color: #fff;
-  }
-  
-  .risk-tag.เหลือง {
-    background-color: #ffeb3b;
-    color: #000;
-  }
-  
-  .risk-tag.ส้ม {
-    background-color: #ffa500;
-    color: #fff;
-  }
-  
-  .risk-tag.แดง {
-    background-color: #f44336;
-    color: #fff;
-  }
-  
-  .risk-tag.ดำ {
-    background-color: #212121;
-    color: #fff;
-  }
-  
-  .pagination-controls {
-    display: flex;
-    justify-content: flex-end; /* ✅ ชิดขวา */
-    margin-top: 20px;
-    gap: 10px;
-    padding-right: 10px;
-  }
-  
-  .page-btn {
-    padding: 8px 14px;
-    border: 1px solid #ccc;
-    background-color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .page-btn.active {
-    background-color: #007bff;
-    color: white;
-    font-weight: bold;
-  }
-  
-  .page-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+}
 
-  .header-actions{
+/* ตารางแบบ flex */
+.patient-table {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.patient-row {
+  display: flex;
+  text-align: center;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.patient-header {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.patient-row > div {
+  flex: 1;
+}
+/* ป้ายกลุ่มเสี่ยง */
+.risk-tag {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+/* สีแต่ละระดับ (ต้องตรงกับ .replace('สี', '').toLowerCase()) */
+.risk-tag.ขาว {
+  background-color: #f2f2f2;
+  color: #333;
+}
+
+.risk-tag.เขียวอ่อน {
+  background-color: #a8e6cf;
+  color: #000;
+}
+
+.risk-tag.เขียวเข้ม {
+  background-color: #56c596;
+  color: #fff;
+}
+
+.risk-tag.เหลือง {
+  background-color: #ffeb3b;
+  color: #000;
+}
+
+.risk-tag.ส้ม {
+  background-color: #ffa500;
+  color: #fff;
+}
+
+.risk-tag.แดง {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.risk-tag.ดำ {
+  background-color: #212121;
+  color: #fff;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: flex-end; /* ✅ ชิดขวา */
+  margin-top: 20px;
+  gap: 10px;
+  padding-right: 10px;
+}
+
+.page-btn {
+  padding: 8px 14px;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.page-btn.active {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.header-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
   gap: 1rem;
-  }
+}
 
-.p-view-btn,.p-update-btn,.p-edit-btn {
+.p-view-btn,
+.p-update-btn,
+.p-edit-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -181,6 +189,12 @@
   align-items: center;
 }
 
-.p-action-buttons .p-view-btn { color: #2563eb; }
-.p-action-buttons .p-update-btn { color: #f59e0b; }
-.p-action-buttons .p-edit-btn { color: #ef4444; }
+.p-action-buttons .p-view-btn {
+  color: #2563eb;
+}
+.p-action-buttons .p-update-btn {
+  color: #f59e0b;
+}
+.p-action-buttons .p-edit-btn {
+  color: #ef4444;
+}

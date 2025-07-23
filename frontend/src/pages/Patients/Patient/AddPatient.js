@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { toast } from "react-toastify"; // เรียกใช้ toast เท่านั้น ไม่ต้องมี ToastContainer ที่นี่
+import { toast } from "react-toastify";
 import "./AddPatient.css";
 
 const API_URL = process.env.REACT_APP_API;
@@ -20,13 +20,70 @@ const AddPatient = ({ onSuccess, closePopup }) => {
     disease: "",
   });
 
+  const [errors, setErrors] = useState({}); // เก็บ error messages
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // ลบ error ข้อความเมื่อแก้ไข input นั้น
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  // ฟังก์ชันตรวจสอบข้อมูลและคืนค่า error object
+  const validateFormData = () => {
+    const newErrors = {};
+    const nameRegex = /^[ก-๙a-zA-Z\s]+$/;
+    const phoneRegex = /^[0-9]{10}$/; // เบอร์โทร 10 หลักเท่านั้น
+    const ageNum = Number(formData.age);
+    const today = new Date();
+    const birthDateObj = new Date(formData.birthdate);
+
+    if (!formData.name.trim()) newErrors.name = "กรุณากรอกชื่อ";
+    else if (!nameRegex.test(formData.name))
+      newErrors.name = "ชื่อกรุณากรอกเป็นตัวอักษรภาษาไทยหรืออังกฤษเท่านั้น";
+
+    if (!formData.lastname.trim()) newErrors.lastname = "กรุณากรอกนามสกุล";
+    else if (!nameRegex.test(formData.lastname))
+      newErrors.lastname =
+        "นามสกุลกรุณากรอกเป็นตัวอักษรภาษาไทยหรืออังกฤษเท่านั้น";
+
+    if (!formData.address.trim()) newErrors.address = "กรุณากรอกที่อยู่";
+
+    if (!formData.village.trim()) newErrors.village = "กรุณากรอกหมู่";
+
+    if (!formData.subdistrict.trim()) newErrors.subdistrict = "กรุณากรอกตำบล";
+
+    if (!formData.district.trim()) newErrors.district = "กรุณากรอกอำเภอ";
+
+    if (!formData.province.trim()) newErrors.province = "กรุณากรอกจังหวัด";
+
+    if (!formData.birthdate) newErrors.birthdate = "กรุณาเลือกวันเกิด";
+    else if (birthDateObj > today)
+      newErrors.birthdate = "วันเกิดต้องไม่เป็นวันในอนาคต";
+
+    if (!formData.gender) newErrors.gender = "กรุณาเลือกเพศ";
+
+    if (!formData.phone.trim()) newErrors.phone = "กรุณากรอกเบอร์โทรศัพท์";
+    else if (!phoneRegex.test(formData.phone))
+      newErrors.phone = "เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก";
+
+    if (!formData.age.trim()) newErrors.age = "กรุณากรอกอายุ";
+    else if (!Number.isInteger(ageNum) || ageNum <= 0 || ageNum > 120)
+      newErrors.age = "อายุต้องเป็นตัวเลขตั้งแต่ 1 ถึง 120";
+
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const validationErrors = validateFormData();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      toast.error("กรุณาแก้ไขข้อผิดพลาดในฟอร์ม");
+      return;
+    }
 
     const payload = {
       P_Name: `${formData.name} ${formData.lastname}`,
@@ -37,19 +94,6 @@ const AddPatient = ({ onSuccess, closePopup }) => {
       Birthdate: formData.birthdate,
       Underlying_Disease: formData.disease || null,
     };
-
-    // ตรวจสอบข้อมูลครบถ้วน
-    if (
-      !payload.P_Name ||
-      !payload.Address ||
-      !payload.Phone_Number ||
-      !payload.Age ||
-      !payload.Gender ||
-      !payload.Birthdate
-    ) {
-      toast.error("ข้อมูลไม่ครบถ้วน กรุณากรอกให้ครบทุกช่องที่จำเป็น");
-      return;
-    }
 
     try {
       const res = await fetch(`${API_URL}/api/patient/add`, {
@@ -81,106 +125,150 @@ const AddPatient = ({ onSuccess, closePopup }) => {
           <h2>เพิ่มข้อมูลผู้ป่วย</h2>
           <form onSubmit={handleSubmit}>
             <div className="add-patient-form-row">
-              <input
-                type="text"
-                name="name"
-                placeholder="ชื่อ"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="text"
-                name="lastname"
-                placeholder="นามสกุล"
-                value={formData.lastname}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <input
-              type="text"
-              name="address"
-              placeholder="ที่อยู่"
-              value={formData.address}
-              onChange={handleChange}
-              required
-            />
-
-            <div className="add-patient-form-row">
-              <input
-                type="text"
-                name="village"
-                placeholder="หมู่"
-                value={formData.village}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="text"
-                name="subdistrict"
-                placeholder="ตำบล"
-                value={formData.subdistrict}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="text"
-                name="district"
-                placeholder="อำเภอ"
-                value={formData.district}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="text"
-                name="province"
-                placeholder="จังหวัด"
-                value={formData.province}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="add-patient-form-row">
-              <input
-                type="date"
-                name="birthdate"
-                value={formData.birthdate}
-                onChange={handleChange}
-                required
-              />
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                required
+              <div
+                style={{ flex: 1, display: "flex", flexDirection: "column" }}
               >
-                <option value="">เพศ</option>
-                <option value="ชาย">ชาย</option>
-                <option value="หญิง">หญิง</option>
-                <option value="อื่นๆ">อื่นๆ</option>
-              </select>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="ชื่อ"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                />
+                {errors.name && (
+                  <div className="input-error">{errors.name}</div>
+                )}
+              </div>
+              <div
+                style={{ flex: 1, display: "flex", flexDirection: "column" }}
+              >
+                <input
+                  type="text"
+                  name="lastname"
+                  placeholder="นามสกุล"
+                  value={formData.lastname}
+                  onChange={handleChange}
+                  required
+                />
+                {errors.lastname && (
+                  <div className="input-error">{errors.lastname}</div>
+                )}
+              </div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column" }}>
               <input
                 type="text"
-                name="phone"
-                placeholder="เบอร์โทรติดต่อ"
-                value={formData.phone}
+                name="address"
+                placeholder="บ้านเลขที่"
+                value={formData.address}
                 onChange={handleChange}
                 required
               />
+              {errors.address && (
+                <div className="input-error">{errors.address}</div>
+              )}
             </div>
 
             <div className="add-patient-form-row">
-              <input
-                type="text"
-                name="age"
-                placeholder="อายุ"
-                value={formData.age}
-                onChange={handleChange}
-                required
-              />
+              {["village", "subdistrict", "district", "province"].map(
+                (field) => (
+                  <div
+                    key={field}
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <input
+                      type="text"
+                      name={field}
+                      placeholder={
+                        field === "village"
+                          ? "หมู่"
+                          : field === "subdistrict"
+                          ? "ตำบล"
+                          : field === "district"
+                          ? "อำเภอ"
+                          : "จังหวัด"
+                      }
+                      value={formData[field]}
+                      onChange={handleChange}
+                      required
+                    />
+                    {errors[field] && (
+                      <div className="input-error">{errors[field]}</div>
+                    )}
+                  </div>
+                )
+              )}
+            </div>
+
+            <div className="add-patient-form-row">
+              <div
+                style={{ flex: 1, display: "flex", flexDirection: "column" }}
+              >
+                <input
+                  type="date"
+                  name="birthdate"
+                  value={formData.birthdate}
+                  onChange={handleChange}
+                  required
+                />
+                {errors.birthdate && (
+                  <div className="input-error">{errors.birthdate}</div>
+                )}
+              </div>
+              <div
+                style={{ flex: 1, display: "flex", flexDirection: "column" }}
+              >
+                <select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">เพศ</option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                </select>
+                {errors.gender && (
+                  <div className="input-error">{errors.gender}</div>
+                )}
+              </div>
+              <div
+                style={{ flex: 1, display: "flex", flexDirection: "column" }}
+              >
+                <input
+                  type="text"
+                  name="phone"
+                  placeholder="เบอร์โทรติดต่อ"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
+                {errors.phone && (
+                  <div className="input-error">{errors.phone}</div>
+                )}
+              </div>
+            </div>
+
+            <div className="add-patient-form-row">
+              <div
+                style={{ flex: 1, display: "flex", flexDirection: "column" }}
+              >
+                <input
+                  type="text"
+                  name="age"
+                  placeholder="อายุ"
+                  value={formData.age}
+                  onChange={handleChange}
+                  required
+                />
+                {errors.age && <div className="input-error">{errors.age}</div>}
+              </div>
               <input
                 type="text"
                 name="disease"

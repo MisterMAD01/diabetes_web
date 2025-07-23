@@ -43,11 +43,10 @@ exports.approveAccount = async (req, res) => {
 
 // แก้ไขข้อมูลบัญชีผู้ใช้
 exports.editAccount = async (req, res) => {
-  const { userId } = req.params; // รับ ID ผู้ใช้จาก URL
-  const { username, name, email, password, role } = req.body; // รับข้อมูลใหม่จาก Body
+  const { userId } = req.params;
+  const { username, name, email, password, role } = req.body;
 
   try {
-    // เช็คว่าผู้ใช้ที่ต้องการแก้ไขมีอยู่ในระบบหรือไม่
     const [userExists] = await pool.execute(
       "SELECT * FROM users WHERE id = ?",
       [userId]
@@ -56,22 +55,28 @@ exports.editAccount = async (req, res) => {
       return res.status(404).json({ message: "ไม่พบผู้ใช้ที่ต้องการแก้ไข" });
     }
 
-    let hashedPassword = null;
+    const user = userExists[0];
 
-    // หากมีการส่งรหัสผ่านใหม่มา ให้ทำการเข้ารหัสรหัสผ่าน (hash)
+    // ถ้าผูกกับ Google แล้ว (มี google_id) ห้ามแก้ไข email
+    if (user.google_id && email && email !== user.email) {
+      return res.status(400).json({
+        message: "บัญชีที่ผูกกับ Google ไม่สามารถแก้ไขอีเมลได้",
+      });
+    }
+
+    let hashedPassword = null;
     if (password) {
       hashedPassword = await bcrypt.hash(password, 10);
     }
 
-    // อัปเดตข้อมูลผู้ใช้ในฐานข้อมูล
     await pool.execute(
       "UPDATE users SET username = ?, name = ?, email = ?, password = ?, role = ? WHERE id = ?",
       [
-        username || userExists[0].username, // ถ้าไม่มีข้อมูลใหม่ ใช้ข้อมูลเดิม
-        name || userExists[0].name,
-        email || userExists[0].email,
-        hashedPassword || userExists[0].password, // หากไม่มีรหัสผ่านใหม่ ใช้รหัสผ่านเดิม
-        role || userExists[0].role,
+        username || user.username,
+        name || user.name,
+        email || user.email,
+        hashedPassword || user.password,
+        role || user.role,
         userId,
       ]
     );

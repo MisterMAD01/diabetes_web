@@ -10,7 +10,21 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [doctorToDelete, setDoctorToDelete] = useState(null);
 
-  // แทนที่ window.confirm ด้วย modal ยืนยันลบ
+  // ตรวจสอบฟอร์แมตเบอร์โทร: 10 ตัวเลข หรือว่างเปล่า
+  const validatePhone = (phone) => {
+    if (!phone) return true; // ไม่กรอกก็ผ่าน
+    const trimmedPhone = phone.trim();
+    const phoneRegex = /^\d{10}$/; // ต้องเป็นเลข 10 หลัก
+    return phoneRegex.test(trimmedPhone);
+  };
+
+  // ตรวจสอบฟอร์แมตอีเมล หรือว่างเปล่า
+  const validateEmail = (email) => {
+    if (!email) return true; // ไม่กรอกก็ผ่าน
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email.trim());
+  };
+
   const confirmDelete = (doctor) => {
     setDoctorToDelete(doctor);
     setShowConfirmDelete(true);
@@ -33,11 +47,28 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
     try {
       const { Doctor_ID, D_Name, specialty, phone, email } = editDoctor;
 
+      if (!D_Name || D_Name.trim() === "") {
+        toast.error("กรุณากรอกชื่อแพทย์");
+        return;
+      }
+
+      // ตรวจสอบเบอร์โทร
+      if (!validatePhone(phone)) {
+        toast.error("กรุณากรอกเบอร์โทรให้ถูกต้อง 10 หลัก");
+        return;
+      }
+
+      // ตรวจสอบอีเมล
+      if (!validateEmail(email)) {
+        toast.error("กรุณากรอกอีเมลให้ถูกต้อง หรือเว้นว่างไว้");
+        return;
+      }
+
       await axios.put(`${API_URL}/api/doctors/${Doctor_ID}`, {
-        name: D_Name,
-        specialty,
-        phone,
-        email,
+        name: D_Name.trim(),
+        specialty: specialty ? specialty.trim() : "",
+        phone: phone ? phone.trim() : "",
+        email: email ? email.trim() : "",
       });
 
       toast.success("อัปเดตข้อมูลแพทย์เรียบร้อยแล้ว");
@@ -49,10 +80,21 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
     }
   };
 
+  // ฟังก์ชันจัดการกรอกเบอร์โทร รับเฉพาะตัวเลขและไม่เกิน 10 หลัก
+  const handlePhoneChange = (value) => {
+    // ลบทุกอย่างที่ไม่ใช่ตัวเลข
+    let numericValue = value.replace(/\D/g, "");
+    if (numericValue.length > 10) {
+      numericValue = numericValue.slice(0, 10);
+    }
+    setEditDoctor({ ...editDoctor, phone: numericValue });
+  };
+
   return (
     <div className="mdm-modal-overlay">
       <div className="mdm-modal large">
         <h3>จัดการแพทย์</h3>
+
         <table className="mdm-doctor-table">
           <thead>
             <tr>
@@ -72,7 +114,6 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
                 <td>{doc.specialty || "-"}</td>
                 <td>{doc.phone || "-"}</td>
                 <td>{doc.email || "-"}</td>
-
                 <td>
                   <button
                     onClick={() => setEditDoctor(doc)}
@@ -120,9 +161,10 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
               <input
                 type="text"
                 value={editDoctor.phone || ""}
-                onChange={(e) =>
-                  setEditDoctor({ ...editDoctor, phone: e.target.value })
-                }
+                maxLength={10}
+                inputMode="numeric"
+                onChange={(e) => handlePhoneChange(e.target.value)}
+                placeholder="ตัวเลข 10 หลัก หรือเว้นว่าง"
               />
             </label>
             <label>
@@ -133,6 +175,7 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
                 onChange={(e) =>
                   setEditDoctor({ ...editDoctor, email: e.target.value })
                 }
+                placeholder="กรอกอีเมล หรือเว้นว่าง"
               />
             </label>
             <div className="mdm-modal-actions">
@@ -158,9 +201,9 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
 
       {/* Modal ยืนยันลบ */}
       {showConfirmDelete && (
-        <div className="modal-overlay">
-          <div className="modal small">
-            <div className="modal-icon warning">
+        <div className="confirm-delete-overlay">
+          <div className="confirm-delete-modal small">
+            <div className="confirm-delete-icon warning">
               <i className="fas fa-exclamation-triangle"></i>
             </div>
             <h3>ยืนยันการลบแพทย์</h3>
@@ -169,14 +212,17 @@ const ManageDoctorModal = ({ doctors, onClose, onRefresh }) => {
               <strong>{doctorToDelete?.D_Name}</strong>? การกระทำนี้ไม่สามารถ
               ย้อนกลับได้
             </p>
-            <div className="modal-actions">
+            <div className="confirm-delete-actions">
               <button
                 onClick={() => setShowConfirmDelete(false)}
-                className="cancel-btn"
+                className="confirm-delete-cancel-btn"
               >
                 ยกเลิก
               </button>
-              <button onClick={handleDelete} className="delete-btn">
+              <button
+                onClick={handleDelete}
+                className="confirm-delete-delete-btn"
+              >
                 ลบแพทย์
               </button>
             </div>

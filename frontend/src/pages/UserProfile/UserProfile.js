@@ -8,6 +8,8 @@ import { formatDateShortThai } from "../../components/utils";
 import "./UserProfile.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 const API_URL = process.env.REACT_APP_API;
 const getInitial = (name) =>
@@ -91,7 +93,7 @@ export default function UserProfile() {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       const updated = res.data.profile;
-      const fullUrl = updated.picture
+      const fullUrl = updated.pictures
         ? updated.picture.startsWith("http")
           ? updated.picture
           : `${API_URL}/api/user/uploads/${updated.picture}`
@@ -129,6 +131,9 @@ export default function UserProfile() {
       ? profile.picture
       : `${API_URL}/api/user/uploads/${profile.picture}`
     : null;
+
+  // เช็คว่า user เป็น Google user หรือไม่
+  const isGoogleUser = !!profile.google_id;
 
   return (
     <Box className="page-container">
@@ -192,6 +197,24 @@ export default function UserProfile() {
             <Typography sx={{ mb: 1 }}>
               <strong>อีเมล :</strong> {profile.email}
             </Typography>
+
+            {profile.google_id && (
+              <Typography
+                sx={{
+                  mb: 1,
+                  color: "Black",
+                  fontWeight: "bold",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <strong>เชื่อมต่อด้วย :</strong>
+                <FontAwesomeIcon icon={faGoogle} className="icon-google" />
+                Google
+              </Typography>
+            )}
+
             <Typography sx={{ mb: 1 }}>
               <strong>สิทธิ์การใช้งาน :</strong> {profile.role}
             </Typography>
@@ -230,6 +253,7 @@ export default function UserProfile() {
         formData={formData}
         onChange={handleInputChange}
         onSave={handleSave}
+        isGoogleUser={isGoogleUser}
       />
       <ChangePasswordModal
         open={openPasswordModal}

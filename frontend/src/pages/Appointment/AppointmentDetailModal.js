@@ -51,27 +51,27 @@ const AppointmentDetailModal = ({
 
   return (
     <>
-      <div className="modal-overlay">
-        <div className="modal large">
-          <div className="modal-header">
+      <div className="appt-detail-overlay">
+        <div className="appt-detail-container large">
+          <div className="appt-detail-header">
             <h3>รายละเอียดนัดหมาย</h3>
-            <button className="close-btn" onClick={onClose}>
+            <button className="appt-detail-close-btn" onClick={onClose}>
               &times;
             </button>
           </div>
-          <div className="modal-form">
-            <div className="detail-box status-box">
+          <div className="appt-detail-form">
+            <div className="appt-detail-info-box appt-detail-status-box">
               <div>
                 <p>
                   <strong>{appointment.name}</strong>
                 </p>
                 <p>HN: {appointment.hn}</p>
               </div>
-              <div className={`status-badge ${appointment.status}`}>
+              <div className={`appt-detail-status-badge ${appointment.status}`}>
                 {statusText}
               </div>
             </div>
-            <div className="modal-grid">
+            <div className="appt-detail-grid">
               <div>
                 <label>แพทย์ผู้ดูแล</label>
                 <p>{appointment.doctor || "-"}</p>
@@ -89,34 +89,31 @@ const AppointmentDetailModal = ({
               <label>หมายเหตุ</label>
               <p>{appointment.note || "-"}</p>
             </div>
-            <div className="modal-actions">
+            <div className="appt-detail-actions">
+              <button
+                className="appt-detail-edit-btn"
+                onClick={() => handleEdit(appointment)}
+              >
+                แก้ไข
+              </button>
               {appointment.status === "รอพบแพทย์" && (
                 <>
                   <button
-                    className="submit-btn"
+                    className="appt-detail-cancel-btn"
+                    onClick={() => handleChangeStatus(appointment.id, "ยกเลิก")}
+                  >
+                    ยกเลิกนัดหมาย
+                  </button>
+                  <button
+                    className="appt-detail-submit-btn"
                     onClick={() =>
                       handleChangeStatus(appointment.id, "เสร็จสิ้น")
                     }
                   >
                     ยืนยันนัดหมาย
                   </button>
-                  <button
-                    className="cancel-btn"
-                    onClick={() => handleChangeStatus(appointment.id, "ยกเลิก")}
-                  >
-                    ยกเลิกนัดหมาย
-                  </button>
                 </>
               )}
-              <button
-                className="edit-btn"
-                onClick={() => handleEdit(appointment)}
-              >
-                แก้ไข
-              </button>
-              <button className="cancel-btn" onClick={onClose}>
-                ปิด
-              </button>
             </div>
           </div>
         </div>
