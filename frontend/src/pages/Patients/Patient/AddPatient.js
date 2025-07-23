@@ -215,6 +215,7 @@ const AddPatient = ({ onSuccess, closePopup }) => {
                   name="birthdate"
                   value={formData.birthdate}
                   onChange={handleChange}
+                  max={new Date().toISOString().split("T")[0]} // ปิดไม่ให้เลือกวันเกินวันนี้
                   required
                 />
                 {errors.birthdate && (

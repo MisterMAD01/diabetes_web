@@ -11,14 +11,14 @@ const AddDoctor = ({ onClose }) => {
     email: "",
   });
 
-  // ตรวจสอบเบอร์โทร: ต้องเป็นเลข 10 หลัก หรือไม่กรอกก็ได้
+  const [errors, setErrors] = useState({}); // เก็บข้อความ error
+
   const validatePhone = (phone) => {
-    if (!phone) return true; // ไม่กรอกผ่าน
+    if (!phone) return true;
     const phoneRegex = /^\d{10}$/;
     return phoneRegex.test(phone.trim());
   };
 
-  // ตรวจสอบอีเมล ฟอร์แมตถูกต้อง หรือไม่กรอกก็ได้
   const validateEmail = (email) => {
     if (!email) return true;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -28,7 +28,6 @@ const AddDoctor = ({ onClose }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "phone") {
-      // จำกัดให้กรอกเฉพาะเลข และความยาวไม่เกิน 10 ตัว
       let numericValue = value.replace(/\D/g, "");
       if (numericValue.length > 10) {
         numericValue = numericValue.slice(0, 10);
@@ -37,26 +36,27 @@ const AddDoctor = ({ onClose }) => {
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
+
+    // เคลียร์ error เมื่อแก้ไขฟิลด์นั้น
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ตรวจสอบชื่อแพทย์ไม่ว่าง
-    if (!form.name.trim()) {
-      toast.error("กรุณากรอกชื่อแพทย์");
-      return;
-    }
+    const newErrors = {};
 
-    // ตรวจสอบเบอร์โทร
-    if (!validatePhone(form.phone)) {
-      toast.error("กรุณากรอกเบอร์โทรให้ถูกต้อง 10 หลัก");
-      return;
-    }
+    if (!form.name.trim()) newErrors.name = "กรุณากรอกชื่อแพทย์";
 
-    // ตรวจสอบอีเมล
-    if (!validateEmail(form.email)) {
-      toast.error("กรุณากรอกอีเมลให้ถูกต้อง");
+    if (!validatePhone(form.phone))
+      newErrors.phone = "กรุณากรอกเบอร์โทรให้ถูกต้อง 10 หลัก";
+
+    if (!validateEmail(form.email))
+      newErrors.email = "กรุณากรอกอีเมลให้ถูกต้อง";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error("กรุณาแก้ไขข้อผิดพลาดในฟอร์ม");
       return;
     }
 
@@ -94,6 +94,7 @@ const AddDoctor = ({ onClose }) => {
                 value={form.name}
                 onChange={handleChange}
               />
+              {errors.name && <div className="input-error">{errors.name}</div>}
             </div>
             <div className="doctor-form-group">
               <label>ความเชี่ยวชาญ</label>
@@ -112,6 +113,9 @@ const AddDoctor = ({ onClose }) => {
                 maxLength={10}
                 inputMode="numeric"
               />
+              {errors.phone && (
+                <div className="input-error">{errors.phone}</div>
+              )}
             </div>
             <div className="doctor-form-group">
               <label>อีเมล</label>
@@ -122,16 +126,12 @@ const AddDoctor = ({ onClose }) => {
                 onChange={handleChange}
                 placeholder="กรอกอีเมล หรือเว้นว่าง"
               />
+              {errors.email && (
+                <div className="input-error">{errors.email}</div>
+              )}
             </div>
           </div>
           <div className="doctor-modal-actions">
-            <button
-              type="button"
-              onClick={onClose}
-              className="doctor-btn-cancel"
-            >
-              ยกเลิก
-            </button>
             <button type="submit" className="doctor-btn-submit">
               บันทึก
             </button>
