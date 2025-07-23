@@ -7,11 +7,7 @@ import UserTable from "../../components/Admin/UserTable";
 import "./ManageAccounts.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlus,
-  faArrowLeft,
-  faUserCog,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,9 +16,11 @@ const API_URL = process.env.REACT_APP_API;
 
 function ManageAccounts() {
   const [accounts, setAccounts] = useState([]);
+  const [filteredAccounts, setFilteredAccounts] = useState([]);
   const [isAddingUser, setIsAddingUser] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [viewingUser, setViewingUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchAccounts();
@@ -39,13 +37,28 @@ function ManageAccounts() {
       const response = await axios.get(`${API_URL}/api/admin/accounts`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const filteredAccounts = response.data.accounts.filter(
+      const filtered = response.data.accounts.filter(
         (account) => account.id !== currentUser.id
       );
-      setAccounts(filteredAccounts);
+      setAccounts(filtered);
+      setFilteredAccounts(filtered); // ตั้งค่าเริ่มต้นให้ filtered ด้วย
     } catch (error) {
       toast.error("ไม่สามารถดึงข้อมูลบัญชีได้!");
     }
+  };
+
+  const handleSearch = (e) => {
+    const keyword = e.target.value.toLowerCase();
+    setSearchTerm(keyword);
+
+    const filtered = accounts.filter(
+      (account) =>
+        `${account.firstName} ${account.lastName}`
+          .toLowerCase()
+          .includes(keyword) || account.email.toLowerCase().includes(keyword)
+    );
+
+    setFilteredAccounts(filtered);
   };
 
   const handleAddUser = async (user) => {
@@ -65,7 +78,9 @@ function ManageAccounts() {
 
       const newUser = response.data.user;
 
-      setAccounts((prev) => [...prev, newUser]);
+      const updatedAccounts = [...accounts, newUser];
+      setAccounts(updatedAccounts);
+      setFilteredAccounts(updatedAccounts);
       setIsAddingUser(false);
       toast.success("เพิ่มผู้ใช้สำเร็จ!");
     } catch (error) {
@@ -149,14 +164,26 @@ function ManageAccounts() {
 
   return (
     <div className="manage-accounts-container">
-      <h2 className="manage-accounts-title">จัดการบัญชีผู้ใช้</h2>
+      <div className="manage-accounts-header">
+        <h2 className="manage-accounts-title">จัดการบัญชีผู้ใช้</h2>
 
-      {!editingUser && !isAddingUser && (
-        <button onClick={() => setIsAddingUser(true)}>
-          <FontAwesomeIcon icon={faPlus} />
-          {" เพิ่มผู้ใช้"}
-        </button>
-      )}
+        {!editingUser && !isAddingUser && (
+          <div className="search-and-add">
+            <input
+              type="text"
+              placeholder="ค้นหาผู้ใช้..."
+              className="search-input"
+              value={searchTerm}
+              onChange={handleSearch}
+            />
+
+            <button onClick={() => setIsAddingUser(true)}>
+              <FontAwesomeIcon icon={faPlus} />
+              {" เพิ่มผู้ใช้"}
+            </button>
+          </div>
+        )}
+      </div>
 
       {isAddingUser && (
         <UserForm
@@ -175,7 +202,7 @@ function ManageAccounts() {
 
       {!isAddingUser && !editingUser && (
         <UserTable
-          users={accounts}
+          users={filteredAccounts}
           handleView={handleView}
           handleEdit={handleEdit}
           handleDelete={handleDelete}

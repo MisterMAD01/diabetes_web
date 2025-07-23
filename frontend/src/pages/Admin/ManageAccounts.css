@@ -102,3 +102,28 @@
     min-width: 100%;
   }
 }
+.manage-accounts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  margin-bottom: 4px;
+  margin-right: 4px;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.375rem;
+  width: 230px;
+}
