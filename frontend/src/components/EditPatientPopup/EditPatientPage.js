@@ -111,8 +111,13 @@ const EditPatientPage = () => {
       errors.phone = "กรุณากรอกเบอร์โทร 10 หลัก";
 
     const age = Number(formData.age);
-    if (!formData.age.trim()) errors.age = "กรุณากรอกอายุ";
-    else if (isNaN(age) || age < 1 || age > 150)
+    if (
+      formData.age === "" ||
+      formData.age === null ||
+      formData.age === undefined
+    ) {
+      errors.age = "กรุณากรอกอายุ";
+    } else if (isNaN(age) || age < 1 || age > 150)
       errors.age = "อายุควรอยู่ระหว่าง 1 - 150 ปี";
 
     setFormErrors(errors);
@@ -241,12 +246,13 @@ const EditPatientPage = () => {
 
       <div className="edit-patient-buttons">
         <button
-          onClick={handleSave}
-          className="edit-patient-submit-btn"
+          onClick={confirmDelete}
+          className="edit-patient-danger-btn"
           disabled={saving}
         >
-          {saving ? "กำลังบันทึก..." : "บันทึก"}
+          ลบผู้ป่วย
         </button>
+
         <button
           onClick={() => navigate(-1)}
           className="edit-patient-cancel-btn"
@@ -255,11 +261,11 @@ const EditPatientPage = () => {
           ย้อนกลับ
         </button>
         <button
-          onClick={confirmDelete}
-          className="edit-patient-danger-btn"
+          onClick={handleSave}
+          className="edit-patient-submit-btn"
           disabled={saving}
         >
-          ลบผู้ป่วย
+          {saving ? "กำลังบันทึก..." : "บันทึก"}
         </button>
       </div>
 

@@ -28,8 +28,6 @@ const AllPatients = () => {
       setPatients(data);
       setError(null);
     } catch (err) {
-      setError("เกิดข้อผิดพลาดในการโหลดข้อมูลผู้ป่วย");
-      console.error("Error fetching patients:", err);
     } finally {
       setLoading(false);
     }

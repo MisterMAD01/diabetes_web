@@ -43,7 +43,6 @@ const UserTable = ({
             <th className="col-role">สิทธิ์การใช้งาน</th>
             <th className="col-status">สถานะ</th>
             <th className="col-connection">เชื่อมต่อกับ</th>
-            <th className="col-updated">อัปเดตเมื่อ</th>
             <th className="col-actions">การจัดการ</th>
           </tr>
         </thead>
@@ -75,9 +74,7 @@ const UserTable = ({
                   "-"
                 )}
               </td>
-              <td data-label="อัปเดตเมื่อ">
-                {u.updated_at ? formatDateShortThai(u.updated_at) : "-"}
-              </td>
+
               <td data-label="การจัดการ" className="action-group">
                 <button
                   onClick={() => handleView(u)}
