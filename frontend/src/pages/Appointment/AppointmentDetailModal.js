@@ -42,12 +42,12 @@ const AppointmentInfoBox = ({ appointment }) => (
 const AppointmentDetailsGrid = ({ appointment }) => (
   <div className="appt-detail-grid">
     <div>
-      <label>แพทย์ผู้ดูแล</label>
-      <p>{appointment.doctor || "-"}</p>
-    </div>
-    <div>
       <label>วันที่</label>
       <p>{formatDateThai(appointment.date)}</p>
+    </div>
+    <div>
+      <label>แพทย์ผู้ดูแล</label>
+      <p>{appointment.doctor || "-"}</p>
     </div>
     <div>
       <label>เวลา</label>

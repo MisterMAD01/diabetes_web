@@ -32,11 +32,23 @@ const colorMap = {
   สีเขียวเข้ม: "#4caf50",
 };
 
+const riskGroupMap = {
+  สีขาว: "กลุ่มปกติ",
+  สีเขียวอ่อน: "กลุ่มผู้ป่วยที่มีความเสี่ยงน้อย",
+  สีเขียวเข้ม: "กลุ่มผู้ป่วยระดับ 0",
+  สีเหลือง: "กลุ่มผู้ป่วยระดับ 1",
+  สีส้ม: "กลุ่มผู้ป่วยระดับ 2",
+  สีแดง: "กลุ่มผู้ป่วยระดับ 3",
+  สีดำ: "กลุ่มผู้ป่วยมีภาวะแทรกซ้อนรุนแรง",
+};
+
 const ColorBadge = ({ colorName }) => {
-  const bg = colorMap[colorName?.trim()] || "#ccc";
+  const trimmedName = colorName?.trim();
+  const bg = colorMap[trimmedName] || "#ccc";
   const textColor = ["#ffeb3b", "#ffffff", "#fadb14"].includes(bg)
     ? "#000"
     : "#fff";
+  const riskText = riskGroupMap[trimmedName] || "ไม่ระบุ";
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -58,7 +70,7 @@ const ColorBadge = ({ colorName }) => {
         {colorName || "ไม่ระบุ"}
       </div>
       <div style={{ marginTop: 8, fontSize: "0.95rem", fontWeight: 500 }}>
-        กลุ่มความเสี่ยง
+        {riskText}
       </div>
     </div>
   );

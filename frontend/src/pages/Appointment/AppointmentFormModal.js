@@ -181,12 +181,13 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
               onChange={handlePatientChange}
             />
             <HnField hn={hn} />
+            <DateInput defaultValue={editAppointment?.date} min={todayString} />
             <DoctorSelect
               doctors={doctors}
               selectedDoctor={selectedDoctor}
               onChange={setSelectedDoctor}
             />
-            <DateInput defaultValue={editAppointment?.date} min={todayString} />
+
             <TimeInput defaultValue={editAppointment?.time} />
             <NoteTextarea defaultValue={editAppointment?.note} />
           </div>

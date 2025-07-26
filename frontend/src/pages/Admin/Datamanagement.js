@@ -38,20 +38,6 @@ const DataManagement = () => {
     { key: "users", label: "ผู้ใช้", icon: faUser },
   ];
 
-  useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        const res = await axios.get(`${API_URL}/api/history/download`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        setLogs(res.data);
-      } catch (error) {
-        console.error("Failed to load download logs:", error);
-      }
-    };
-    fetchLogs();
-  }, [accessToken]);
-
   const toggleTable = (key) => {
     setSelectedTables((prev) =>
       prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
