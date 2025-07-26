@@ -1,10 +1,7 @@
-// src/components/Report/SummaryMetricCard.jsx
-
 import React from "react";
 import { FaTint, FaHeartbeat, FaWeight, FaRulerVertical } from "react-icons/fa";
 import "./SummaryMetricCard.css";
 
-// แมป metricKey ไปหาไอคอน
 const iconMap = {
   sugar: <FaTint />,
   pressure: <FaHeartbeat />,
@@ -12,13 +9,34 @@ const iconMap = {
   waist: <FaRulerVertical />,
 };
 
+const parsePressure = (str) => {
+  if (!str || typeof str !== "string") return null; // เช็คก่อน
+  const [sys, dia] = str.split("/").map(Number);
+  return !isNaN(sys) && !isNaN(dia) && dia !== 0 ? sys / dia : null;
+};
+
 const SummaryMetricCard = ({ metricKey, title, value, unit, prevValue }) => {
-  // คำนวณเปอร์เซ็นต์การเปลี่ยนแปลง
-  const change =
-    prevValue != null && prevValue !== 0
-      ? ((value - prevValue) / prevValue) * 100
-      : 0;
-  const formattedChange = (change >= 0 ? "+" : "") + change.toFixed(1) + "%";
+  let current = value;
+  let previous = prevValue;
+
+  // หากเป็นความดัน ต้องแปลงจาก "120/80" เป็นอัตราส่วน
+  if (metricKey === "pressure") {
+    current = parsePressure(value);
+    previous = parsePressure(prevValue);
+  }
+
+  let change = null;
+  if (
+    current != null &&
+    previous != null &&
+    typeof current === "number" &&
+    typeof previous === "number" &&
+    !isNaN(current) &&
+    !isNaN(previous) &&
+    previous !== 0
+  ) {
+    change = ((current - previous) / previous) * 100;
+  }
 
   return (
     <div className="summary-card">
@@ -31,9 +49,14 @@ const SummaryMetricCard = ({ metricKey, title, value, unit, prevValue }) => {
           </div>
         </div>
       </div>
-      <div className={"summary-trend " + (change >= 0 ? "up" : "down")}>
-        {formattedChange} จากก่อนหน้า
-      </div>
+
+      {change !== null ? (
+        <div className={`summary-trend ${change >= 0 ? "up" : "down"}`}>
+          {(change >= 0 ? "+" : "") + change.toFixed(1)}% จากก่อนหน้า
+        </div>
+      ) : (
+        <div className="summary-trend up">+0.0% จากก่อนหน้า</div>
+      )}
     </div>
   );
 };

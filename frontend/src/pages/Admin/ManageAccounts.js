@@ -22,6 +22,10 @@ function ManageAccounts() {
   const [viewingUser, setViewingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // จำนวนรายการต่อหน้า
+
   useEffect(() => {
     fetchAccounts();
   }, []);
@@ -41,7 +45,8 @@ function ManageAccounts() {
         (account) => account.id !== currentUser.id
       );
       setAccounts(filtered);
-      setFilteredAccounts(filtered); // ตั้งค่าเริ่มต้นให้ filtered ด้วย
+      setFilteredAccounts(filtered);
+      setCurrentPage(1);
     } catch (error) {
       toast.error("ไม่สามารถดึงข้อมูลบัญชีได้!");
     }
@@ -59,6 +64,43 @@ function ManageAccounts() {
     );
 
     setFilteredAccounts(filtered);
+    setCurrentPage(1);
+  };
+
+  // Pagination calculation
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentAccounts = filteredAccounts.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  const totalPages = Math.ceil(filteredAccounts.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const getPaginationRange = () => {
+    const total = totalPages;
+    const current = currentPage;
+    const range = [];
+
+    if (total <= 5) {
+      for (let i = 1; i <= total; i++) range.push(i);
+    } else {
+      if (current <= 3) {
+        range.push(1, 2, 3, "...", total);
+      } else if (current >= total - 2) {
+        range.push(1, "...", total - 2, total - 1, total);
+      } else {
+        range.push(1, "...", current - 1, current, current + 1, "...", total);
+      }
+    }
+
+    return range;
   };
 
   const handleAddUser = async (user) => {
@@ -83,8 +125,14 @@ function ManageAccounts() {
       setFilteredAccounts(updatedAccounts);
       setIsAddingUser(false);
       toast.success("เพิ่มผู้ใช้สำเร็จ!");
+      setCurrentPage(1);
     } catch (error) {
-      toast.error("ไม่สามารถเพิ่มผู้ใช้ได้!");
+      const message =
+        error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : error.message || "เกิดข้อผิดพลาดไม่ทราบสาเหตุ";
+
+      toast.error(`${message}`);
     }
   };
 
@@ -107,7 +155,12 @@ function ManageAccounts() {
       setEditingUser(null);
       toast.success("แก้ไขข้อมูลสำเร็จ!");
     } catch (error) {
-      toast.error("ไม่สามารถแก้ไขข้อมูลได้!");
+      const message =
+        error.response && error.response.data && error.response.data.message
+          ? error.response.data.message
+          : error.message || "เกิดข้อผิดพลาดไม่ทราบสาเหตุ";
+
+      toast.error(`${message}`);
     }
   };
 
@@ -201,14 +254,55 @@ function ManageAccounts() {
       )}
 
       {!isAddingUser && !editingUser && (
-        <UserTable
-          users={filteredAccounts}
-          handleView={handleView}
-          handleEdit={handleEdit}
-          handleDelete={handleDelete}
-          handleApprove={handleApprove}
-          handleRevoke={handleRevoke}
-        />
+        <>
+          <UserTable
+            users={currentAccounts}
+            handleView={handleView}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            handleApprove={handleApprove}
+            handleRevoke={handleRevoke}
+          />
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="custom-pagination-controls">
+              <button
+                className="custom-page-btn"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                ก่อนหน้า
+              </button>
+
+              {getPaginationRange().map((page, idx) =>
+                page === "..." ? (
+                  <span key={idx} className="custom-dots">
+                    ...
+                  </span>
+                ) : (
+                  <button
+                    key={idx}
+                    className={`custom-page-btn ${
+                      currentPage === page ? "custom-active" : ""
+                    }`}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
+
+              <button
+                className="custom-page-btn"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                ถัดไป
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {viewingUser && (

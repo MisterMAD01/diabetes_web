@@ -101,9 +101,6 @@ const UserViewModal = ({ user, onClose, onApprove, onRevoke, onEdit }) => {
           </div>
         </div>
         <div className="uvm-modal-actions">
-          <button className="uvm-edit-btn" onClick={() => onEdit(localUser)}>
-            แก้ไข
-          </button>
           {!localUser.approved ? (
             <button className="uvm-submit-btn" onClick={handleApprove}>
               อนุมัติ

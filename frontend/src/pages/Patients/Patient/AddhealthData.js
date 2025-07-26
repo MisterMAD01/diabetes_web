@@ -145,10 +145,9 @@ const AddHealthData = ({ patientId, onSuccess, closePopup }) => {
                   type="number"
                   step="0.1"
                   name="Blood_Sugar"
-                  placeholder="น้ำตาล (mg/dL)"
+                  placeholder="น้ำตาลในเลือด (mg/dL)"
                   onChange={handleChange}
                   min="1"
-                  max="300"
                 />
               </div>
 

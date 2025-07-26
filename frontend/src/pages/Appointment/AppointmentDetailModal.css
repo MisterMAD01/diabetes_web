@@ -1,26 +1,34 @@
-/* AppointmentDetailModal.module.css */
-
 .appt-detail-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 1000;
 }
 
 .appt-detail-container.large {
   background: white;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 2rem;
-  width: 700px;
-  max-width: 90%;
+  width: 100%;
+  max-width: 700px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
   position: relative;
+  animation: appt-detail-popIn 0.2s ease-out;
+  font-family: "Sarabun", sans-serif;
+}
+
+@keyframes appt-detail-popIn {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .appt-detail-header {
@@ -33,14 +41,30 @@
 .appt-detail-header h3 {
   margin: 0;
   font-size: 1.25rem;
+  font-weight: 700;
   color: #1e293b;
 }
 
 .appt-detail-close-btn {
-  background: none;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: white;
+  color: #555;
   border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
   font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
+}
+
+.appt-detail-close-btn:hover {
+  color: #ef4444;
 }
 
 .appt-detail-form {
@@ -62,7 +86,9 @@
 
 .appt-detail-grid label {
   font-size: 1rem;
-  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.4rem;
 }
 
 .appt-detail-grid p {
@@ -75,20 +101,19 @@
   justify-content: space-between;
   align-items: center;
   background-color: #f0f7ff;
-  padding: 16px;
+  padding: 1rem;
   border-radius: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 }
 
 .appt-detail-status-badge {
   padding: 4px 10px;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: bold;
   display: inline-block;
   text-align: center;
   white-space: nowrap;
-  text-transform: none;
 }
 
 .appt-detail-status-badge.รอพบแพทย์ {
@@ -110,8 +135,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  margin-top: 1rem;
-  padding: 0 1rem;
+  margin-top: 1.5rem;
 }
 
 .appt-detail-actions button {
@@ -122,27 +146,27 @@
   font-family: "Sarabun", sans-serif;
   font-weight: 600;
   border-radius: 10px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
 }
 
 .appt-detail-cancel-btn {
-  background-color: white;
-  border: 1px solid #cbd5e1;
-  color: #1e293b;
+  background-color: #ef4444;
+  color: white;
 }
 
 .appt-detail-cancel-btn:hover {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
+  background-color: #dc2626;
 }
 
 .appt-detail-submit-btn {
   background-color: #2563eb;
   color: white;
-  border: none;
 }
 
 .appt-detail-submit-btn:hover {
@@ -152,9 +176,28 @@
 .appt-detail-edit-btn {
   background-color: #f59e0b;
   color: white;
-  border: none;
 }
 
 .appt-detail-edit-btn:hover {
   background-color: #d97706;
+}
+
+/* Responsive for small screens */
+@media (max-width: 480px) {
+  .appt-detail-container.large {
+    padding: 1.5rem;
+  }
+
+  .appt-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .appt-detail-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .appt-detail-actions button {
+    width: 100%;
+  }
 }

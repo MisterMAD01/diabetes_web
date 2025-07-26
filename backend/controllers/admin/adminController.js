@@ -84,6 +84,13 @@ exports.editAccount = async (req, res) => {
     res.status(200).json({ message: "แก้ไขข้อมูลบัญชีสำเร็จ" });
   } catch (error) {
     console.error("Error editing account:", error);
+
+    if (error.code === "ER_DUP_ENTRY") {
+      return res
+        .status(400)
+        .json({ message: "อีเมลนี้ถูกใช้งานแล้ว กรุณาใช้ email อื่น" });
+    }
+
     res.status(500).json({ message: "เกิดข้อผิดพลาดในการแก้ไขข้อมูลบัญชี" });
   }
 };

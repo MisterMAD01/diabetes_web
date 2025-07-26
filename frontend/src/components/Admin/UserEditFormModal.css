@@ -2,10 +2,11 @@
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .user-edit-modal {
@@ -188,14 +189,16 @@
   min-width: 120px;
   padding: 0 1.5rem;
   font-size: 1rem;
-  font-family: "Sarabun", sans-serif;
-  font-weight: 600;
   background-color: #2563eb;
   color: white;
   border: none;
+  font-weight: 600;
   border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .user-edit-modal-submit-btn:hover {
