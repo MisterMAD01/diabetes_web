@@ -14,7 +14,7 @@ const getTodayDateString = () => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
-const PatientSelect = ({ patients, selectedPatient, onChange }) => (
+const PatientSelect = ({ patients, selectedPatient, onChange, isDisabled }) => (
   <div>
     <label>ชื่อผู้ป่วย</label>
     <Select
@@ -22,8 +22,9 @@ const PatientSelect = ({ patients, selectedPatient, onChange }) => (
       value={selectedPatient}
       onChange={onChange}
       placeholder="ค้นหาชื่อผู้ป่วย..."
-      isSearchable
-      components={{ DropdownIndicator: null }}
+      isSearchable={!isDisabled}
+      components={{ DropdownIndicator: isDisabled ? null : undefined }}
+      isDisabled={isDisabled} // ปิดไม่ให้แก้ไข
     />
   </div>
 );
@@ -179,6 +180,7 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
               patients={patients}
               selectedPatient={selectedPatient}
               onChange={handlePatientChange}
+              isDisabled={!!editAppointment} // Disable ถ้าแก้ไข
             />
             <HnField hn={hn} />
             <DateInput defaultValue={editAppointment?.date} min={todayString} />

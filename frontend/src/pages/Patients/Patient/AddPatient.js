@@ -34,7 +34,9 @@ const AddPatient = ({ onSuccess, closePopup }) => {
   const validateFormData = () => {
     const newErrors = {};
     const nameRegex = /^[ก-๙a-zA-Z\s]+$/; // ตัวอักษรไทย/อังกฤษ และเว้นวรรค
-    const phoneRegex = /^[0-9]{10}$/; // เบอร์โทรต้องมี 10 ตัว
+    const phoneRegex = /^[0-9]{10}$/; // เบอร์โทรต้องมี 10 หลัก
+    const addressRegex = /^[0-9]+(\/[0-9A-Za-z]+)?$/; // เช่น 17, 17/4, 123/1A
+    const villageRegex = /^[0-9]+$/; // เฉพาะตัวเลข
     const ageNum = Number(formData.age);
     const today = new Date();
     const birthDateObj = new Date(formData.birthdate);
@@ -52,11 +54,15 @@ const AddPatient = ({ onSuccess, closePopup }) => {
     }
 
     if (!formData.address.trim()) {
-      newErrors.address = "กรุณากรอกที่อยู่";
+      newErrors.address = "กรุณากรอกบ้านเลขที่";
+    } else if (!addressRegex.test(formData.address)) {
+      newErrors.address = "บ้านเลขที่ควรอยู่ในรูปแบบตัวเลข เช่น 17 หรือ 17/4";
     }
 
     if (!formData.village.trim()) {
       newErrors.village = "กรุณากรอกหมู่";
+    } else if (!villageRegex.test(formData.village)) {
+      newErrors.village = "หมู่ต้องเป็นตัวเลขเท่านั้น";
     }
 
     if (!formData.subdistrict.trim()) {
@@ -95,7 +101,7 @@ const AddPatient = ({ onSuccess, closePopup }) => {
 
     if (!formData.age.trim()) {
       newErrors.age = "กรุณากรอกอายุ";
-    } else if (!Number.isInteger(ageNum) || ageNum <= 0 || ageNum > 120) {
+    } else if (!Number.isInteger(ageNum) || ageNum <= 0 || ageNum > 150) {
       newErrors.age = "อายุต้องเป็นตัวเลขตั้งแต่ 1 ถึง 150";
     }
 
@@ -210,7 +216,7 @@ const AddPatient = ({ onSuccess, closePopup }) => {
                     }}
                   >
                     <input
-                      type="text"
+                      type={field === "village" ? "number" : "text"} // ✅ เปลี่ยนเฉพาะ village
                       name={field}
                       placeholder={
                         field === "village"
@@ -224,6 +230,7 @@ const AddPatient = ({ onSuccess, closePopup }) => {
                       value={formData[field]}
                       onChange={handleChange}
                       required
+                      {...(field === "village" && { min: 1, step: 1 })} // ✅ ใส่ min และ step เฉพาะ village
                     />
                     {errors[field] && (
                       <div className="input-error">{errors[field]}</div>
