@@ -184,8 +184,15 @@ const DataManagement = () => {
               {startDate || "-"} ถึง {endDate || "-"}
             </p>
             <div className="modal-buttons">
-              <button onClick={handleExport}>ยืนยัน</button>
-              <button onClick={() => setShowConfirm(false)}>ยกเลิก</button>
+              <button
+                className="cancel-button"
+                onClick={() => setShowConfirm(false)}
+              >
+                ยกเลิก
+              </button>
+              <button className="confirm-button" onClick={handleExport}>
+                ยืนยัน
+              </button>
             </div>
           </div>
         </div>
