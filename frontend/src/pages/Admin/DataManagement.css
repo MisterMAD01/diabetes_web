@@ -20,7 +20,10 @@
   align-items: center;
   margin-bottom: 20px;
 }
-
+.title-group {
+  display: flex;
+  flex-direction: column; /* ให้อยู่ในแนวตั้ง */
+}
 /* ====== Import Button ====== */
 .import-page-button {
   background-color: #2563eb;
@@ -270,4 +273,12 @@ button[type="submit"]:hover {
 button[type="submit"]:disabled {
   background-color: #9ca3af;
   cursor: not-allowed;
+}
+/* ====== Subtitle / Description ====== */
+.data-subtitle {
+  font-size: 1rem; /* ขนาดตัวอักษรเล็กกว่า title */
+  font-weight: 400; /* น้ำหนักปกติ */
+  color: #4b5563; /* สีเทาเข้มระดับกลาง (gray-600) */
+  margin-top: 4px; /* เว้นช่องว่างบนเล็กน้อย */
+  margin-bottom: 1.5rem; /* เว้นช่องว่างล่างระหว่าง subtitle กับเนื้อหา */
 }

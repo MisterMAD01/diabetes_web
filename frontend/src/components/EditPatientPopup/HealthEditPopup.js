@@ -203,15 +203,16 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
             >
               ปิด
             </button>
-            <button type="submit" className="health-popup-submit-btn">
-              บันทึก
-            </button>
             <button
               type="button"
               className="health-popup-danger-btn"
               onClick={openDeleteConfirm}
             >
               ลบข้อมูลสุขภาพ
+            </button>
+
+            <button type="submit" className="health-popup-submit-btn">
+              บันทึก
             </button>
           </div>
         </form>
@@ -220,11 +221,12 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
           <div className="confirm-delete-popup">
             <div className="confirm-delete-content">
               <p>คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลสุขภาพนี้?</p>
-              <button onClick={confirmDelete} className="confirm-btn yes">
-                ตกลง
-              </button>
+
               <button onClick={cancelDelete} className="confirm-btn no">
                 ยกเลิก
+              </button>
+              <button onClick={confirmDelete} className="confirm-btn yes">
+                ตกลง
               </button>
             </div>
           </div>

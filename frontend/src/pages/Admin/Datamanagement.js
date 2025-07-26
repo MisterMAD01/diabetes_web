@@ -1,9 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import "./DataManagement.css";
 import {
   faDatabase,
-  faClock,
   faDownload,
   faFileImport,
   faExclamationTriangle,
@@ -17,7 +16,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
-import DataImportModal from "./DataImportModal"; // import modal นำเข้า
+import DataImportModal from "./DataImportModal";
 
 const API_URL = process.env.REACT_APP_API;
 
@@ -29,6 +28,7 @@ const DataManagement = () => {
   const [logs, setLogs] = useState([]);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [noData, setNoData] = useState(false);
   const navigate = useNavigate();
 
   const tables = [
@@ -46,7 +46,10 @@ const DataManagement = () => {
 
   const handleExport = async () => {
     setShowConfirm(false);
+    setNoData(false);
     try {
+      let hasData = false;
+
       for (const type of selectedTables) {
         const params = {};
         if (startDate) params.startDate = startDate;
@@ -58,6 +61,10 @@ const DataManagement = () => {
           responseType: "blob",
           headers: { Authorization: `Bearer ${accessToken}` },
         });
+
+        // ตรวจสอบว่าข้อมูลว่างเปล่าหรือไม่
+        if (response.data.size === 0) continue;
+        hasData = true;
 
         const blob = new Blob([response.data]);
         const url = window.URL.createObjectURL(blob);
@@ -80,6 +87,10 @@ const DataManagement = () => {
           ...prev,
         ]);
       }
+
+      if (!hasData) {
+        setNoData(true);
+      }
     } catch (error) {
       console.error("Download error:", error.message);
       alert("เกิดข้อผิดพลาดในการส่งออกข้อมูล");
@@ -95,7 +106,12 @@ const DataManagement = () => {
   return (
     <div className="data-container">
       <div className="header">
-        <h2 className="data-title">จัดการข้อมูลระบบ</h2>
+        <div className="title-group">
+          <h2 className="data-title">จัดการข้อมูลระบบ</h2>
+          <p className="data-subtitle">
+            เลือกช่วงเวลาที่ต้องการ และเลือกข้อมูลเพื่อส่งออก
+          </p>
+        </div>
 
         <button
           className="import-page-button"
@@ -137,6 +153,10 @@ const DataManagement = () => {
         ))}
       </div>
 
+      <p className="selected-count">
+        รายการที่เลือก: {selectedTables.length} รายการ
+      </p>
+
       <button
         className="export-button"
         onClick={handleConfirm}
@@ -144,6 +164,12 @@ const DataManagement = () => {
       >
         <FontAwesomeIcon icon={faDownload} /> ส่งออกข้อมูลที่เลือก
       </button>
+
+      {noData && (
+        <p className="warning-text">
+          ⚠️ ไม่พบข้อมูลสำหรับช่วงวันที่ที่เลือก โปรดตรวจสอบอีกครั้ง
+        </p>
+      )}
 
       {showConfirm && (
         <div className="modal-overlay">
