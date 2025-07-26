@@ -192,12 +192,13 @@ const AddPatient = ({ onSuccess, closePopup }) => {
 
             <div style={{ display: "flex", flexDirection: "column" }}>
               <input
-                type="number"
+                type="text"
                 name="address"
                 placeholder="บ้านเลขที่"
                 value={formData.address}
                 onChange={handleChange}
                 required
+                pattern="[0-9]+(/[\w\d]+)?"
               />
               {errors.address && (
                 <div className="input-error">{errors.address}</div>
