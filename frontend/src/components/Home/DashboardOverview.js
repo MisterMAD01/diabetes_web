@@ -39,7 +39,8 @@ const DashboardOverview = () => {
         const totalPatients = patients.length;
 
         // ✅ กลุ่มเสี่ยงสูง = สีแดง, สีส้ม, สีดำ
-        const highRiskColors = ["สีแดง", "สีส้ม", "สีดำ"];
+        //  const highRiskColors = ["สีแดง", "สีส้ม", "สีดำ"];
+        const highRiskColors = ["สีแดง"];
         const highRisk = patients.filter((p) =>
           highRiskColors.includes(p.color_level)
         ).length;
@@ -93,7 +94,7 @@ const DashboardOverview = () => {
             <ExclamationCircleIcon className="icon-size red" />
           </div>
           <div>
-            <h3 className="label">กลุ่มเสี่ยงสูง</h3>
+            <h3 className="label">กลุ่มผู้ป่วยระดับ 3</h3>
             <p className="value">{stats.highRisk}</p>
           </div>
         </div>
