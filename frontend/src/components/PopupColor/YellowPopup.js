@@ -7,9 +7,8 @@ const YellowPopup = ({ onClose, patients }) => (
       <button className="close-btn" onClick={onClose}>
         ✖
       </button>
-      <h2 className="popup-title">กลุ่มสีเหลือง</h2>
+      <h2 className="popup-title">กลุ่มผู้ป่วยระดับ 1 (สีเหลือง)</h2>
       <div className="symbol-circle symbol-circle-Yellow"></div>
-      <p className="popup-description">กลุ่มผู้ป่วยระดับ 1</p>
       <p className="patient-summary">
         จำนวนทั้งหมด: <strong>{patients.length}</strong> คน
       </p>

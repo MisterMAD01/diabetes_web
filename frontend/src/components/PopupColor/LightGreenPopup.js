@@ -7,9 +7,10 @@ const LightGreenPopup = ({ onClose, patients }) => (
       <button className="close-btn" onClick={onClose}>
         ✖
       </button>
-      <h2 className="popup-title">กลุ่มสีเขียวอ่อน</h2>
+      <h2 className="popup-title">
+        กลุ่มผู้ป่วยที่มีความเสี่ยงน้อย (สีเขียวอ่อน)
+      </h2>
       <div className="symbol-circle symbol-circle-LightGreen"></div>
-      <p className="popup-description">กลุ่มผู้ป่วยที่มีความเสี่ยงน้อย</p>
       <p className="patient-summary">
         จำนวนทั้งหมด: <strong>{patients.length}</strong> คน
       </p>

@@ -8,9 +8,8 @@ const WhitePopup = ({ onClose, patients }) => {
         <button className="close-btn" onClick={onClose}>
           ✖
         </button>
-        <h2 className="popup-title">กลุ่มสีขาว</h2>
+        <h2 className="popup-title">กลุ่มปกติ (สีขาว)</h2>
         <div className="symbol-circle symbol-circle-White"></div>
-        <p className="popup-description">กลุ่มปกติ</p>
         <p className="patient-summary">
           จำนวนทั้งหมด: <strong>{patients.length}</strong> คน
         </p>
