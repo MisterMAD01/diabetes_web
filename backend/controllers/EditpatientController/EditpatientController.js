@@ -198,6 +198,19 @@ exports.deleteHealthRecord = async (req, res) => {
   const { id } = req.params;
 
   try {
+    // ดึง Patient_ID ของข้อมูลสุขภาพที่กำลังจะลบ
+    const [healthRows] = await db.query(
+      "SELECT Patient_ID FROM health_data WHERE Health_Data_ID = ?",
+      [id]
+    );
+
+    if (healthRows.length === 0) {
+      return res.status(404).json({ error: "ไม่พบข้อมูลสุขภาพที่จะลบ" });
+    }
+
+    const patientId = healthRows[0].Patient_ID;
+
+    // ลบข้อมูลสุขภาพ
     const [result] = await db.query(
       "DELETE FROM health_data WHERE Health_Data_ID = ?",
       [id]
@@ -207,7 +220,32 @@ exports.deleteHealthRecord = async (req, res) => {
       return res.status(404).json({ error: "ไม่พบข้อมูลสุขภาพที่จะลบ" });
     }
 
-    res.status(200).json({ message: "ลบข้อมูลสุขภาพเรียบร้อยแล้ว" });
+    // ตรวจสอบว่าผู้ป่วยยังมีข้อมูลสุขภาพเหลืออยู่ไหม
+    const [remainingHealth] = await db.query(
+      "SELECT COUNT(*) AS count FROM health_data WHERE Patient_ID = ?",
+      [patientId]
+    );
+
+    if (remainingHealth[0].count === 0) {
+      // ถ้าไม่มีข้อมูลสุขภาพเหลืออยู่ ให้รีเซ็ต Risk และ Color
+      await db.query(
+        "UPDATE patient SET Risk = NULL, Color = NULL WHERE Patient_ID = ?",
+        [patientId]
+      );
+    } else {
+      // ถ้ายังมีข้อมูลสุขภาพ ให้คำนวณ Risk และ Color ใหม่
+      const risk = await calculateRiskScore(patientId);
+      const color = await assignRiskColor(patientId);
+
+      await db.query(
+        "UPDATE patient SET Risk = ?, Color = ? WHERE Patient_ID = ?",
+        [risk, color, patientId]
+      );
+    }
+
+    res
+      .status(200)
+      .json({ message: "ลบข้อมูลสุขภาพและอัปเดตความเสี่ยงเรียบร้อยแล้ว" });
   } catch (err) {
     console.error("❌ Error deleting health record:", err);
     res.status(500).json({ error: "ไม่สามารถลบข้อมูลสุขภาพได้" });
