@@ -1,4 +1,3 @@
-// src/pages/ReportPage.js
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -84,7 +83,6 @@ const ReportPage = () => {
   const [lineData, setLineData] = useState([]);
   const [riskColor, setRiskColor] = useState("#ff4d4f");
 
-  // Chart controls state
   const [filterType, setFilterType] = useState("month");
   const [selectedMonth, setSelectedMonth] = useState(dayjs().format("YYYY-MM"));
   const [selectedYear, setSelectedYear] = useState(dayjs().year().toString());
@@ -100,7 +98,6 @@ const ReportPage = () => {
   });
   const [chartType, setChartType] = useState("line");
 
-  // Fetch patient list
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API}/api/reports/patients`)
@@ -114,7 +111,6 @@ const ReportPage = () => {
       });
   }, [id]);
 
-  // Fetch selected patient & trends
   useEffect(() => {
     if (!selectedPatientId) return;
 
@@ -124,15 +120,21 @@ const ReportPage = () => {
           `${process.env.REACT_APP_API}/api/reports/patient/${selectedPatientId}`
         );
         setSelectedPatient(pd);
-        setRiskColor(
-          colorMap[pd["กลุ่มเสี่ยงปิงปองจราจร 7 สี"]?.trim()] || "#ff4d4f"
-        );
+
+        // ✅ คำนวณสีตามโอกาสเกิดโรคแทรกซ้อน
+        const complicationRisk = parseFloat(pd["%โอกาสเกิดโรคแทรกซ้อน"] ?? 0);
+        if (complicationRisk < 10) {
+          setRiskColor("#52c41a"); // เขียว
+        } else if (complicationRisk < 30) {
+          setRiskColor("#fadb14"); // เหลือง
+        } else {
+          setRiskColor("#ff4d4f"); // แดง
+        }
 
         const { data: trends } = await axios.get(
           `${process.env.REACT_APP_API}/api/reports/healthTrends/${selectedPatientId}`
         );
 
-        // รวมข้อมูล โดยแยก systolic และ diastolic จริงจาก trends
         const merged = trends.bloodSugar.map((item, idx) => ({
           date: item.date,
           sugar: parseFloat(item.value),
@@ -150,7 +152,6 @@ const ReportPage = () => {
     fetchData();
   }, [selectedPatientId]);
 
-  // Filtered data for HealthChartGroup
   const filteredData = lineData.filter((item) => {
     const date = dayjs(item.date);
     if (filterType === "month") {
@@ -168,7 +169,6 @@ const ReportPage = () => {
     return true;
   });
 
-  // Pie chart data
   const complicationData = selectedPatient
     ? [
         {
@@ -182,7 +182,6 @@ const ReportPage = () => {
       ]
     : [];
 
-  // Summary metrics (latest vs previous)
   const last = lineData[lineData.length - 1] || {};
   const prev = lineData[lineData.length - 2] || {};
   const summaryMetrics = [
@@ -270,10 +269,7 @@ const ReportPage = () => {
           </div>
 
           <div className="chart-controls-wrapper">
-            {/* CombinedChart: full-year overview */}
             <CombinedChart data={lineData} />
-
-            {/* Controls for filtering HealthChartGroup */}
             <ChartControls
               filterType={filterType}
               setFilterType={setFilterType}
@@ -288,8 +284,6 @@ const ReportPage = () => {
               chartType={chartType}
               setChartType={setChartType}
             />
-
-            {/* Filtered health charts */}
             <HealthChartGroup
               data={filteredData}
               selectedCharts={selectedCharts}
