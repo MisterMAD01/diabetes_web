@@ -171,3 +171,27 @@
 .table-actions .delete {
   color: #ef4444;
 }
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-align: center;
+  min-width: 90px;
+}
+
+.badge-pending {
+  background-color: #fef08a; /* เหลืองอ่อน */
+  color: #92400e; /* น้ำตาลเข้ม */
+}
+
+.badge-success {
+  background-color: #c7f2c2; /* เขียวอ่อน */
+  color: #065f46; /* เขียวเข้ม */
+}
+
+.badge-cancelled {
+  background-color: #fecaca; /* แดงอ่อน */
+  color: #b91c1c; /* แดงเข้ม */
+}

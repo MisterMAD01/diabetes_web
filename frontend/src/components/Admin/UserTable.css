@@ -22,59 +22,71 @@
 }
 
 .user-avatar-circle {
+  background-color: #e0edff;
+  color: #1e3a8a;
+  font-weight: bold;
+  border-radius: 50%;
   width: 36px;
   height: 36px;
-  background-color: #d1d5db;
-  color: #111827;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  margin: auto;
 }
 
 .user-status-badge {
-  display: inline-block;
-  padding: 0.4rem 0.75rem;
-  border-radius: 999px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: bold;
   font-size: 0.875rem;
-  font-weight: 500;
-  color: white;
+  display: inline-block;
+  min-width: 90px;
+  text-align: center;
 }
 
 .user-approved {
-  background-color: #10b981;
+  background-color: #c7f2c2;
+  color: #065f46;
 }
 
 .user-pending {
-  background-color: #f59e0b;
+  background-color: #fef08a;
+  color: #92400e;
 }
 
-.user-action-group .user-action-btn {
+.user-icon-google {
+  color: #000000;
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+
+.user-action-group1 {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.user-action-btn1 {
   background: none;
   border: none;
-  margin: 0 0.3rem;
-  font-size: 1rem;
   cursor: pointer;
-  transition: transform 0.1s ease;
+  font-size: 1rem;
+  padding: 4px;
+  transition: transform 0.2s;
 }
 
-.user-action-group .user-action-btn:hover {
+.user-action-btn1:hover {
   transform: scale(1.2);
 }
 
-.user-view {
+.user-view1 {
   color: #2563eb;
 }
 
-.user-edit {
+.user-edit1 {
   color: #f59e0b;
 }
 
-.user-delete {
+.user-delete1 {
   color: #ef4444;
-}
-
-.user-table-wrapper {
-  overflow-x: auto;
 }
