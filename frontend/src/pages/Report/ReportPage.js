@@ -13,7 +13,7 @@ import {
 } from "../../components/Report/PatientInfoCard";
 import RiskPieChart from "../../components/Report/RiskPieChart";
 import CombinedChart from "../../components/Report/CombinedChart";
-import ChartControls from "../../components/Report/ChartControls";
+import ChartControls from "../../components/Report/ChartControls"; // นำเข้า ChartControls
 import HealthChartGroup from "../../components/Report/HealthChartGroup";
 import SummaryMetricCard from "../../components/Report/SummaryMetricCard";
 
@@ -44,9 +44,7 @@ const riskGroupMap = {
 const ColorBadge = ({ colorName }) => {
   const trimmedName = colorName?.trim();
   const bg = colorMap[trimmedName] || "#ccc";
-  const textColor = ["#ffeb3b", "#ffffff", "#fadb14"].includes(bg)
-    ? "#000"
-    : "#fff";
+  const textColor = ["#ffeb3b", "#fadb14"].includes(bg) ? "#000" : "#fff"; // ปรับสีตัวอักษรให้เหมาะสม
   const riskText = riskGroupMap[trimmedName] || "ไม่ระบุ";
 
   return (
@@ -80,9 +78,10 @@ const ReportPage = () => {
   const [patients, setPatients] = useState([]);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [lineData, setLineData] = useState([]);
+  const [lineData, setLineData] = useState([]); // ข้อมูลดิบจาก API
   const [riskColor, setRiskColor] = useState("#ff4d4f");
 
+  // State สำหรับควบคุมตัวกรองและประเภทกราฟทั้งหมด
   const [filterType, setFilterType] = useState("month");
   const [selectedMonth, setSelectedMonth] = useState(dayjs().format("YYYY-MM"));
   const [selectedYear, setSelectedYear] = useState(dayjs().year().toString());
@@ -98,6 +97,7 @@ const ReportPage = () => {
   });
   const [chartType, setChartType] = useState("line");
 
+  // Fetch รายชื่อผู้ป่วยและตั้งค่าผู้ป่วยเริ่มต้น
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API}/api/reports/patients`)
@@ -111,6 +111,7 @@ const ReportPage = () => {
       });
   }, [id]);
 
+  // Fetch ข้อมูลผู้ป่วยและแนวโน้มสุขภาพเมื่อ selectedPatientId เปลี่ยน
   useEffect(() => {
     if (!selectedPatientId) return;
 
@@ -121,20 +122,21 @@ const ReportPage = () => {
         );
         setSelectedPatient(pd);
 
-        // ✅ คำนวณสีตามโอกาสเกิดโรคแทรกซ้อน
         const complicationRisk = parseFloat(pd["%โอกาสเกิดโรคแทรกซ้อน"] ?? 0);
         if (complicationRisk < 10) {
-          setRiskColor("#52c41a"); // เขียว
+          setRiskColor("#52c41a");
         } else if (complicationRisk < 30) {
-          setRiskColor("#fadb14"); // เหลือง
+          setRiskColor("#fadb14");
         } else {
-          setRiskColor("#ff4d4f"); // แดง
+          setRiskColor("#ff4d4f");
         }
 
         const { data: trends } = await axios.get(
           `${process.env.REACT_APP_API}/api/reports/healthTrends/${selectedPatientId}`
         );
 
+        // รวมข้อมูลจากหลาย Arrays เข้าด้วยกันโดยใช้ date เป็น key
+        // ควรปรับปรุงหาก API ไม่รับประกันว่าทุก array มีข้อมูลครบทุกวันและเรียงลำดับเดียวกัน
         const merged = trends.bloodSugar.map((item, idx) => ({
           date: item.date,
           sugar: parseFloat(item.value),
@@ -150,23 +152,29 @@ const ReportPage = () => {
     };
 
     fetchData();
-  }, [selectedPatientId]);
+  }, [selectedPatientId]); // dependency คือ selectedPatientId เท่านั้น
 
+  // กรองข้อมูล lineData ตาม filterType และค่าที่เลือก
   const filteredData = lineData.filter((item) => {
     const date = dayjs(item.date);
     if (filterType === "month") {
       return date.format("YYYY-MM") === selectedMonth;
     }
     if (filterType === "year") {
+      // selectedYear เป็น string ของปี ค.ศ.
       return date.year().toString() === selectedYear;
     }
     if (filterType === "custom") {
+      // ตรวจสอบว่า customRange มีค่าครบถ้วน
+      if (!customRange.from || !customRange.to) {
+        return false; // ไม่แสดงข้อมูลหากช่วงวันที่ไม่สมบูรณ์
+      }
       return (
         date.isAfter(dayjs(customRange.from).subtract(1, "day")) &&
         date.isBefore(dayjs(customRange.to).add(1, "day"))
       );
     }
-    return true;
+    return true; // ถ้าไม่มี filterType ที่เลือก ให้แสดงข้อมูลทั้งหมด (หรือตามค่าเริ่มต้น)
   });
 
   const complicationData = selectedPatient
@@ -269,6 +277,7 @@ const ReportPage = () => {
           </div>
 
           <div className="chart-controls-wrapper">
+            {/* CombinedChart สามารถใช้ lineData ดิบได้ เพราะ CombinedChart น่าจะแสดงภาพรวมทั้งหมด */}
             <CombinedChart data={lineData} />
             <ChartControls
               filterType={filterType}
@@ -285,9 +294,11 @@ const ReportPage = () => {
               setChartType={setChartType}
             />
             <HealthChartGroup
-              data={filteredData}
+              data={filteredData} // ส่งข้อมูลที่ถูกกรองแล้วไปยัง HealthChartGroup
               selectedCharts={selectedCharts}
               chartType={chartType}
+              filterType={filterType}
+              selectedYear={parseInt(selectedYear)} // ส่งเป็น Int
             />
           </div>
         </div>

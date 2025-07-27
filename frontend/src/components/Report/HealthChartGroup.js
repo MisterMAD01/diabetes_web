@@ -16,7 +16,7 @@ import {
   CartesianGrid,
   Tooltip,
   Cell,
-} from "recharts"; // ตัด Legend ออก
+} from "recharts";
 import "./HealthChartGroup.css";
 
 // ตั้งค่า dayjs ให้รองรับ พ.ศ.
@@ -32,7 +32,7 @@ const metricConfigs = {
   },
   pressure: {
     title: "ความดันโลหิต",
-    keys: ["systolic", "diastolic"], // เปลี่ยนจาก key เดียวเป็น keys array
+    keys: ["systolic", "diastolic"], // ใช้ keys สำหรับหลายค่า
     colors: ["#FF6384", "#13c2c2"],
     unit: "mmHg",
   },
@@ -40,147 +40,160 @@ const metricConfigs = {
   waist: { title: "รอบเอว", key: "waist", color: "#FFCD56", unit: "cm" },
 };
 
-const formatMonthTick = (val) => dayjs(val).format("MMM BBBB");
-const formatYearTick = (val) => dayjs(val).format("BBBB");
-const formatDateLabel = (label) => dayjs(label).format("D MMMM BBBB");
+// Functions สำหรับการ Format วันที่
+// ใช้ "HH:mm" เพื่อแสดงชั่วโมงและนาที
+// BBBB สำหรับปี พ.ศ.
+const formatMonthTick = (val) => dayjs(val).format("MMM BBBB"); // เช่น ม.ค. 2567
+const formatYearTick = (val) => dayjs(val).format("BBBB"); // เช่น 2567
+// ✅ เปลี่ยน formatDateLabel เพื่อรวมเวลา
+const formatDateLabel = (label) => dayjs(label).format("D MMMM BBBB HH:mm"); // เช่น 1 มกราคม 2567 14:16
 
-const HealthChartGroup = ({ data, selectedCharts, chartType, filterType }) => {
+// ✅ เพิ่ม formatHourMinuteTick สำหรับ XAxis หากต้องการแสดงเวลาในบางโหมด
+const formatDayTimeTick = (val) => dayjs(val).format("D MMM HH:mm"); // เช่น 10 ก.ค. 14:16
+
+const HealthChartGroup = ({
+  data, // data นี้คือ filteredData ที่ถูกกรองมาจาก ReportPage แล้ว
+  selectedCharts,
+  chartType,
+  filterType, // ใช้ filterType เพื่อกำหนด tickFormatter
+  selectedYear, // รับ selectedYear มาใช้ในการกำหนด intervalX
+}) => {
+  // ไม่ต้องกรองข้อมูลในนี้ซ้ำอีก เพราะ data ถูกกรองมาแล้ว
+  const filteredData = data;
+
+  // กำหนด interval สำหรับ XAxis เพื่อให้แสดงผลได้เหมาะสม
+  // หากเป็นรายปี และมีข้อมูลน้อย อาจจะให้แสดงทุกจุด หรือเว้นตามความเหมาะสม
+  // หากเป็นรายเดือน/กำหนดเอง อาจจะให้แสดงทุกจุด
   const isYearly = filterType === "year";
-  const intervalX = isYearly ? data.length - 1 : 0;
+  const isMonthlyOrCustom = filterType === "month" || filterType === "custom";
 
+  // ปรับ intervalX และ tickFormatter ตาม filterType
+  let xAxisTickFormatter = formatMonthTick; // default for month
+  let intervalX = 0; // default to show all ticks
+
+  if (isYearly) {
+    xAxisTickFormatter = formatYearTick;
+    intervalX = filteredData.length > 10 ? "preserveEnd" : 0; // แสดงเฉพาะปลายหากข้อมูลเยอะ
+  } else if (isMonthlyOrCustom) {
+    xAxisTickFormatter = formatDayTimeTick; // แสดง วันที่และเวลา
+    intervalX = 0; // แสดงทุกจุด (หากข้อมูลไม่เยอะเกินไป)
+  }
+
+  // ฟังก์ชัน renderChart เดียว เพื่อลดความซ้ำซ้อน
   const renderChart = ({ title, key, color, unit, keys, colors }) => {
-    // กรณี key เป็น array (เช่น pressure)
+    // ถ้ามีหลายค่า (เช่น ความดันโลหิต)
     if (Array.isArray(keys) && keys.length > 0) {
-      if (chartType === "bar") {
-        return (
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart
-              data={data}
-              margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="date"
-                tickFormatter={isYearly ? formatYearTick : formatMonthTick}
-                interval={intervalX}
-              />
-              <YAxis />
-              <Tooltip
-                labelFormatter={formatDateLabel}
-                formatter={(value) => `${value} ${unit}`}
-              />
-              {keys.map((k, idx) => (
-                <Bar key={k} dataKey={k} fill={colors[idx]} />
-              ))}
-            </BarChart>
-          </ResponsiveContainer>
-        );
-      } else if (chartType === "pie") {
-        // pie chart ไม่เหมาะกับข้อมูลหลายค่าใน chart เดียวแบบนี้
+      if (chartType === "pie") {
         return <div>Pie chart ไม่รองรับสำหรับหลายค่า</div>;
       } else {
-        // line chart
+        const ChartComponent = chartType === "bar" ? BarChart : LineChart;
+        const GraphElement = chartType === "bar" ? Bar : Line;
         return (
           <ResponsiveContainer width="100%" height={220}>
-            <LineChart
-              data={data}
+            <ChartComponent
+              data={filteredData}
               margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="date"
-                tickFormatter={isYearly ? formatYearTick : formatMonthTick}
+                tickFormatter={xAxisTickFormatter} // ✅ ใช้ xAxisTickFormatter
                 interval={intervalX}
               />
               <YAxis />
               <Tooltip
-                labelFormatter={formatDateLabel}
+                labelFormatter={formatDateLabel} // ✅ ใช้ formatDateLabel ที่แสดงเวลา
                 formatter={(value) => `${value} ${unit}`}
               />
               {keys.map((k, idx) => (
-                <Line
+                <GraphElement
                   key={k}
-                  type="monotone"
+                  type="monotone" // ใช้ได้เฉพาะ LineChart
                   dataKey={k}
-                  stroke={colors[idx]}
-                  dot={false}
+                  fill={chartType === "bar" ? colors[idx] : undefined} // Bar ใช้ fill
+                  stroke={chartType === "line" ? colors[idx] : undefined} // Line ใช้ stroke
+                  dot={chartType === "line" ? false : undefined} // Line ไม่มีจุด
                   strokeWidth={2}
                 />
               ))}
-            </LineChart>
+            </ChartComponent>
           </ResponsiveContainer>
         );
       }
     }
 
-    // กรณี key เป็น string ปกติ (เช่น sugar, weight, waist)
-    return (
-      <ResponsiveContainer width="100%" height={220}>
-        {chartType === "bar" ? (
-          <BarChart
-            data={data}
-            margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="date"
-              tickFormatter={isYearly ? formatYearTick : formatMonthTick}
-              interval={intervalX}
-            />
-            <YAxis />
-            <Tooltip
-              labelFormatter={formatDateLabel}
-              formatter={(value) => `${value} ${unit}`}
-            />
-            <Bar dataKey={key} fill={color} />
-          </BarChart>
-        ) : chartType === "pie" ? (
+    // สำหรับค่าเดียว (น้ำตาล, น้ำหนัก, รอบเอว)
+    if (chartType === "pie") {
+      // สำหรับ Pie Chart ต้องมีการจัดรูปแบบข้อมูลที่แตกต่างออกไป
+      const pieData = filteredData.map((item) => ({
+        name: isYearly
+          ? dayjs(item.date).format("BBBB") // แสดงปี พ.ศ. สำหรับรายปี
+          : dayjs(item.date).format("D MMM BBBB HH:mm"), // ✅ แสดงวัน เดือน ปี พ.ศ. และเวลาสำหรับรายเดือน/กำหนดเอง
+        value: item[key],
+      }));
+      // กรองข้อมูลที่มีค่าเป็น 0 หรือ null ออกไปจาก Pie Chart เพื่อให้แสดงผลได้ดีขึ้น
+      const validPieData = pieData.filter((d) => d.value > 0);
+
+      // ถ้าไม่มีข้อมูลที่ถูกต้อง ไม่ต้องแสดง Pie Chart
+      if (validPieData.length === 0) {
+        return (
+          <div style={{ textAlign: "center", color: "#888" }}>
+            ไม่มีข้อมูลสำหรับกราฟวงกลม
+          </div>
+        );
+      }
+
+      return (
+        <ResponsiveContainer width="100%" height={220}>
           <PieChart margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
             <Tooltip formatter={(value) => `${value} ${unit}`} />
             <Pie
-              data={data.map((item) => ({
-                name: isYearly
-                  ? dayjs(item.date).format("BBBB")
-                  : dayjs(item.date).format("D MMM"),
-                value: item[key],
-              }))}
+              data={validPieData}
               dataKey="value"
               nameKey="name"
               outerRadius={80}
               label={({ name, value }) => `${name}: ${value} ${unit}`}
             >
-              {data.map((_, idx) => (
-                <Cell key={idx} fill={color} />
+              {validPieData.map((_, idx) => (
+                <Cell key={`cell-${idx}`} fill={color} /> // ใช้สีเดียวกับ metricConfigs
               ))}
             </Pie>
           </PieChart>
-        ) : (
-          <LineChart
-            data={data}
+        </ResponsiveContainer>
+      );
+    } else {
+      // สำหรับ Bar Chart หรือ Line Chart (ค่าเดียว)
+      const ChartComponent = chartType === "bar" ? BarChart : LineChart;
+      const GraphElement = chartType === "bar" ? Bar : Line;
+      return (
+        <ResponsiveContainer width="100%" height={220}>
+          <ChartComponent
+            data={filteredData}
             margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="date"
-              tickFormatter={isYearly ? formatYearTick : formatMonthTick}
+              tickFormatter={xAxisTickFormatter} // ✅ ใช้ xAxisTickFormatter
               interval={intervalX}
             />
             <YAxis />
             <Tooltip
-              labelFormatter={formatDateLabel}
+              labelFormatter={formatDateLabel} // ✅ ใช้ formatDateLabel ที่แสดงเวลา
               formatter={(value) => `${value} ${unit}`}
             />
-            <Line
+            <GraphElement
               type="monotone"
               dataKey={key}
-              stroke={color}
-              dot={false}
+              fill={chartType === "bar" ? color : undefined}
+              stroke={chartType === "line" ? color : undefined}
+              dot={chartType === "line" ? false : undefined}
               strokeWidth={2}
             />
-          </LineChart>
-        )}
-      </ResponsiveContainer>
-    );
+          </ChartComponent>
+        </ResponsiveContainer>
+      );
+    }
   };
 
   return (
