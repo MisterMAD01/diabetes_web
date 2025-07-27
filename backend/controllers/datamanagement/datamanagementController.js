@@ -145,12 +145,6 @@ const exportData = async (req, res) => {
     const parser = new Parser({ fields });
     const csv = parser.parse(rows);
 
-    // บันทึกประวัติการดาวน์โหลด ลงตาราง download_logs
-    await db.execute(
-      `INSERT INTO download_logs (user_id, table_name, filename) VALUES (?, ?, ?)`,
-      [userId || null, type, fileName]
-    );
-
     res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
     res.setHeader("Content-Type", "text/csv");
     res.status(200).send(csv);

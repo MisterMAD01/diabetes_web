@@ -4,7 +4,6 @@ import "./UserTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
-import { formatDateShortThai } from "../../components/utils";
 import "./ComfirmDelete.css";
 
 // Utility: get initial from username
@@ -33,32 +32,34 @@ const UserTable = ({
   };
 
   return (
-    <div className="table-wrapper">
+    <div className="user-table-wrapper">
       <table className="user-table">
         <thead>
           <tr>
-            <th className="col-avatar">#</th>
-            <th className="col-username">ชื่อผู้ใช้</th>
-            <th className="col-email">อีเมล</th>
-            <th className="col-role">สิทธิ์การใช้งาน</th>
-            <th className="col-status">สถานะ</th>
-            <th className="col-connection">เชื่อมต่อกับ</th>
-            <th className="col-actions">การจัดการ</th>
+            <th className="user-col-avatar">#</th>
+            <th className="user-col-username">ชื่อผู้ใช้</th>
+            <th className="user-col-email">อีเมล</th>
+            <th className="user-col-role">สิทธิ์การใช้งาน</th>
+            <th className="user-col-status">สถานะ</th>
+            <th className="user-col-connection">เชื่อมต่อกับ</th>
+            <th className="user-col-actions">การจัดการ</th>
           </tr>
         </thead>
         <tbody>
           {users.map((u) => (
             <tr key={u.id}>
               <td data-label="#">
-                <div className="avatar-circle">{getInitials(u.username)}</div>
+                <div className="user-avatar-circle">
+                  {getInitials(u.username)}
+                </div>
               </td>
               <td data-label="ชื่อผู้ใช้">{u.username}</td>
               <td data-label="อีเมล">{u.email}</td>
               <td data-label="สิทธิ์การใช้งาน">{u.role}</td>
               <td data-label="สถานะ">
                 <span
-                  className={`status-badge ${
-                    u.approved ? "approved" : "pending"
+                  className={`user-status-badge ${
+                    u.approved ? "user-approved" : "user-pending"
                   }`}
                 >
                   {u.approved ? "อนุมัติแล้ว" : "รออนุมัติ"}
@@ -67,33 +68,35 @@ const UserTable = ({
               <td data-label="เชื่อมต่อกับ">
                 {u.google_id ? (
                   <>
-                    <FontAwesomeIcon icon={faGoogle} className="icon-google" />{" "}
+                    <FontAwesomeIcon
+                      icon={faGoogle}
+                      className="user-icon-google"
+                    />{" "}
                     Google
                   </>
                 ) : (
                   "-"
                 )}
               </td>
-
-              <td data-label="การจัดการ" className="action-group">
+              <td data-label="การจัดการ" className="user-action-group">
                 <button
                   onClick={() => handleView(u)}
                   title="ดูรายละเอียด"
-                  className="action-btn view"
+                  className="user-action-btn user-view"
                 >
                   <FontAwesomeIcon icon={faEye} />
                 </button>
                 <button
                   onClick={() => handleEdit(u)}
                   title="แก้ไข"
-                  className="action-btn edit"
+                  className="user-action-btn user-edit"
                 >
                   <FontAwesomeIcon icon={faEdit} />
                 </button>
                 <button
                   onClick={() => setDeleteUser(u)}
                   title="ลบ"
-                  className="action-btn delete"
+                  className="user-action-btn user-delete"
                 >
                   <FontAwesomeIcon icon={faTrashAlt} />
                 </button>

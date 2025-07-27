@@ -1,207 +1,80 @@
-/* ===== Avatar ===== */
-.avatar-circle {
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-table th,
+.user-table td {
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.user-table th {
+  background-color: #f0f0f0;
+  color: #111827;
+  font-weight: 600;
+}
+
+.user-avatar-circle {
   width: 36px;
   height: 36px;
-  background-color: #3b82f6;
-  color: #fff;
+  background-color: #d1d5db;
+  color: #111827;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 1rem;
-  margin: auto;
 }
 
-/* ===== Table Style ===== */
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  margin-top: 1rem;
-  border-radius: 8px;
-}
-
-.user-table {
-  width: 100%;
-  min-width: 600px;
-  border-collapse: collapse;
-  background-color: white;
-  font-size: 0.95rem;
-}
-
-.user-table th,
-.user-table td {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-  white-space: nowrap;
-  vertical-align: middle;
-}
-
-.user-table th {
-  background-color: #f1f5f9;
-  font-weight: 600;
-  color: #1e3a8a;
-}
-
-.user-table tr:nth-child(even) {
-  background-color: #f9fafb;
-}
-
-/* ===== Status Badge ===== */
-.status-badge {
+.user-status-badge {
   display: inline-block;
-  padding: 0.38em 1.1em;
-  background: #fef9c3;
-  color: #a16207;
+  padding: 0.4rem 0.75rem;
   border-radius: 999px;
-  font-weight: 600;
-  font-size: 1rem;
-  letter-spacing: 0.01em;
-}
-.status-badge.approved {
-  background: #bbf7d0;
-  color: #166534;
-}
-.status-badge.pending {
-  background: #fef9c3;
-  color: #a16207;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
 }
 
-/* ===== Action Icon Buttons ===== */
-.action-btn {
+.user-approved {
+  background-color: #10b981;
+}
+
+.user-pending {
+  background-color: #f59e0b;
+}
+
+.user-action-group .user-action-btn {
   background: none;
   border: none;
+  margin: 0 0.3rem;
+  font-size: 1rem;
   cursor: pointer;
-  font-size: 1.18rem;
-  margin: 0 4px;
-  padding: 0;
-  outline: none;
-  transition: color 0.16s;
+  transition: transform 0.1s ease;
 }
-.action-btn.view {
+
+.user-action-group .user-action-btn:hover {
+  transform: scale(1.2);
+}
+
+.user-view {
   color: #2563eb;
 }
-.action-btn.edit {
-  color: #f59e42;
+
+.user-edit {
+  color: #f59e0b;
 }
-.action-btn.delete {
+
+.user-delete {
   color: #ef4444;
 }
-.action-btn:hover {
-  filter: brightness(0.85);
-}
 
-.action-group {
-  display: flex;
-  align-items: center;
-  gap: 0.3em;
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 768px) {
-  .user-table th,
-  .user-table td {
-    padding: 0.5rem;
-    font-size: 0.85rem;
-  }
-  .user-table {
-    min-width: 100%;
-  }
-}
-.custom-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(2px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.custom-modal {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 8px 36px rgba(30, 58, 138, 0.15);
-  padding: 2rem;
-  min-width: 430px;
-  max-width: 95vw;
-  width: 100%;
-  position: relative;
-  animation: popIn 0.2s ease-out;
-  text-align: center;
-}
-
-@keyframes popIn {
-  from {
-    transform: translateY(60px) scale(0.96);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-}
-
-/* ไอคอนเตือน */
-.custom-modal-icon.warning {
-  font-size: 2.5rem;
-  color: #f59e0b;
-  margin-bottom: 1rem;
-}
-
-/* ข้อความ */
-.custom-modal h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
-}
-
-.custom-modal p {
-  color: #374151;
-  font-size: 1rem;
-  margin-bottom: 1.2rem;
-}
-
-/* ปุ่มด้านล่าง */
-.custom-modal-actions {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-/* ปุ่มยกเลิก */
-.custom-cancel-btn {
-  background-color: #ffffff;
-  color: #1e293b;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 600;
-  padding: 0.6rem 1.4rem;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-}
-.custom-cancel-btn:hover {
-  background-color: #f1f5f9;
-  color: #dc2626;
-}
-
-/* ปุ่มลบ */
-.custom-delete-btn {
-  background-color: #ef4444;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 600;
-  padding: 0.6rem 1.4rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-.custom-delete-btn:hover {
-  background-color: #b91c1c;
+.user-table-wrapper {
+  overflow-x: auto;
 }

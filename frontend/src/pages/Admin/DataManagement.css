@@ -20,10 +20,12 @@
   align-items: center;
   margin-bottom: 20px;
 }
+
 .title-group {
   display: flex;
   flex-direction: column; /* ให้อยู่ในแนวตั้ง */
 }
+
 /* ====== Import Button ====== */
 .import-page-button {
   background-color: #2563eb;
@@ -184,6 +186,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+
 .confirm-button {
   background-color: #2563eb;
   color: white;
@@ -208,7 +211,7 @@
   transform: translateY(-1px);
 }
 
-/* ====== Import Modal (Reuseable) ====== */
+/* ====== Import Modal (Reusable) ====== */
 .modal.import-modal {
   background: #fff;
   padding: 20px;
@@ -274,6 +277,7 @@ button[type="submit"]:disabled {
   background-color: #9ca3af;
   cursor: not-allowed;
 }
+
 /* ====== Subtitle / Description ====== */
 .data-subtitle {
   font-size: 1rem; /* ขนาดตัวอักษรเล็กกว่า title */
@@ -281,4 +285,65 @@ button[type="submit"]:disabled {
   color: #4b5563; /* สีเทาเข้มระดับกลาง (gray-600) */
   margin-top: 4px; /* เว้นช่องว่างบนเล็กน้อย */
   margin-bottom: 1.5rem; /* เว้นช่องว่างล่างระหว่าง subtitle กับเนื้อหา */
+}
+
+/* ====== Download Logs Section ====== */
+.download-logs-title {
+  color: #1e3a8a;
+  margin-bottom: 0.25rem;
+}
+.download-logs-section {
+  margin-top: 30px;
+  padding: 15px;
+}
+
+/* แถวหัวข้อกับปุ่มล้าง ให้อยู่แถวเดียวกัน */
+.download-logs-section .header-row {
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 1rem; /* เว้นระยะห่างด้านล่าง */
+}
+/* ตารางประวัติการดาวน์โหลด ปรับเป็นสไตล์ appointment-table */
+.download-logs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+.download-logs-table th,
+.download-logs-table td {
+  padding: 0.75rem;
+  text-align: center; /* จัดกลาง */
+  font-size: 1rem;
+  border: none; /* เอาเส้นขอบเดิมออก */
+  border-bottom: 1px solid #e5e7eb; /* เส้นแบ่งแถวสีอ่อน */
+}
+
+.download-logs-table th {
+  background-color: #f0f0f0;
+  color: #111827;
+  font-weight: 600;
+  border-bottom: 2px solid #d1d5db; /* ขีดเส้นหนากว่าใต้หัวข้อ */
+}
+
+/* ปุ่มล้างประวัติ */
+.reset-logs-button {
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.75rem; /* ลด padding */
+  border-radius: 4px; /* ขอบมนเล็กลง */
+  cursor: pointer;
+  font-size: 0.875rem; /* ลดขนาดตัวอักษร */
+  transition: background-color 0.3s ease;
+}
+
+.reset-logs-button:hover {
+  background-color: #c9302c;
 }

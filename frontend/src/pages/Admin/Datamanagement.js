@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import "./DataManagement.css";
 import {
@@ -38,10 +38,38 @@ const DataManagement = () => {
     { key: "users", label: "ผู้ใช้", icon: faUser },
   ];
 
+  useEffect(() => {
+    fetchDownloadLogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const toggleTable = (key) => {
     setSelectedTables((prev) =>
       prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
     );
+  };
+
+  const fetchDownloadLogs = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/data/download`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      setLogs(response.data);
+    } catch (error) {
+      console.error("Error fetching download logs:", error);
+    }
+  };
+
+  const resetLogs = async () => {
+    try {
+      await axios.delete(`${API_URL}/api/data/download`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      setLogs([]);
+    } catch (error) {
+      console.error("Error resetting logs:", error);
+      alert("ไม่สามารถลบประวัติได้");
+    }
   };
 
   const handleExport = async () => {
@@ -62,7 +90,6 @@ const DataManagement = () => {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
 
-        // ตรวจสอบว่าข้อมูลว่างเปล่าหรือไม่
         if (response.data.size === 0) continue;
         hasData = true;
 
@@ -78,11 +105,28 @@ const DataManagement = () => {
         link.click();
         link.remove();
 
+        // บันทึก log ดาวน์โหลด
+        try {
+          await axios.post(
+            `${API_URL}/api/data/download`,
+            {
+              user_id: user?.id,
+              table_name: type,
+              filename,
+            },
+            { headers: { Authorization: `Bearer ${accessToken}` } }
+          );
+        } catch (err) {
+          console.error("Error saving download log:", err);
+        }
+
+        // อัพเดต log ในหน้า
         setLogs((prev) => [
           {
             table_name: type,
             filename,
             download_date: new Date().toISOString(),
+            username: user?.username || "ไม่ระบุ",
           },
           ...prev,
         ]);
@@ -218,6 +262,41 @@ const DataManagement = () => {
           typeOptions={tables}
         />
       )}
+      <div className="download-logs-section">
+        <div className="header-row">
+          <h3 className="download-logs-title">ประวัติการส่งออกข้อมูล</h3>
+          <button className="reset-logs-button" onClick={resetLogs}>
+            ล้างประวัติ
+          </button>
+        </div>
+
+        {logs.length === 0 ? (
+          <p>ยังไม่มีประวัติการส่งออกข้อมูล</p>
+        ) : (
+          <>
+            <table className="download-logs-table">
+              <thead>
+                <tr>
+                  <th>ชื่อไฟล์</th>
+                  <th>ข้อมูล</th>
+                  <th>วันที่ส่งออก</th>
+                  <th>ชื่อผู้ใช้</th>
+                </tr>
+              </thead>
+              <tbody>
+                {logs.map((log, index) => (
+                  <tr key={index}>
+                    <td>{log.filename}</td>
+                    <td>{log.table_name}</td>
+                    <td>{new Date(log.download_date).toLocaleString()}</td>
+                    <td>{log.name || "-"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+      </div>
     </div>
   );
 };
