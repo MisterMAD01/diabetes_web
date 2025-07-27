@@ -11,19 +11,8 @@
   margin-bottom: 1rem;
 }
 
-/* Header */
-.manage-accounts-container h1 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-  color: #1e3a8a;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 /* Add/Back Button */
-.manage-accounts-container button {
+.add-user-button {
   background-color: #2563eb;
   color: white;
   border: none;
@@ -38,7 +27,7 @@
   gap: 0.5rem;
 }
 
-.manage-accounts-container button:hover {
+.add-user-button:hover {
   background-color: #1d4ed8;
 }
 
@@ -49,13 +38,6 @@
   flex-wrap: wrap;
   margin-bottom: 1rem;
   gap: 1rem;
-}
-
-.left-section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
 }
 
 .search-input {

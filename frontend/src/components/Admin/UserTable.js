@@ -78,25 +78,25 @@ const UserTable = ({
                   "-"
                 )}
               </td>
-              <td data-label="การจัดการ" className="user-action-group1">
+              <td data-label="การจัดการ" className="user-action-group">
                 <button
                   onClick={() => handleView(u)}
                   title="ดูรายละเอียด"
-                  className="user-action-btn user-view1"
+                  className="user-action-btn user-view"
                 >
                   <FontAwesomeIcon icon={faEye} />
                 </button>
                 <button
                   onClick={() => handleEdit(u)}
                   title="แก้ไข"
-                  className="user-action-btn user-edit1"
+                  className="user-action-btn user-edit"
                 >
                   <FontAwesomeIcon icon={faEdit} />
                 </button>
                 <button
                   onClick={() => setDeleteUser(u)}
                   title="ลบ"
-                  className="user-action-btn user-delete1"
+                  className="user-action-btn user-delete"
                 >
                   <FontAwesomeIcon icon={faTrashAlt} />
                 </button>

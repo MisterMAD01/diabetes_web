@@ -229,8 +229,10 @@ function ManageAccounts() {
               value={searchTerm}
               onChange={handleSearch}
             />
-
-            <button onClick={() => setIsAddingUser(true)}>
+            <button
+              className="add-user-button"
+              onClick={() => setIsAddingUser(true)}
+            >
               <FontAwesomeIcon icon={faPlus} />
               {" เพิ่มผู้ใช้"}
             </button>

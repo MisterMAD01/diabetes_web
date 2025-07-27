@@ -60,13 +60,13 @@
   vertical-align: middle;
 }
 
-.user-action-group1 {
+.user-action-group {
   display: flex;
   justify-content: center;
   gap: 10px;
 }
 
-.user-action-btn1 {
+.user-action-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -75,18 +75,18 @@
   transition: transform 0.2s;
 }
 
-.user-action-btn1:hover {
+.user-action-btn:hover {
   transform: scale(1.2);
 }
 
-.user-view1 {
+.user-view {
   color: #2563eb;
 }
 
-.user-edit1 {
+.user-edit {
   color: #f59e0b;
 }
 
-.user-delete1 {
+.user-delete {
   color: #ef4444;
 }
