@@ -25,7 +25,15 @@ const UserEditForm = ({ user, handleSave, handleCancel }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
+    if (name === "username") {
+      // แปลงเป็นพิมพ์เล็ก และลบตัวอักษรที่ไม่ใช่ a-z, 0-9, _
+      const formatted = value.toLowerCase().replace(/[^a-z0-9_]/g, "");
+      setFormData((prev) => ({
+        ...prev,
+        [name]: formatted,
+      }));
+      return;
+    }
     if (name === "firstName" || name === "lastName") {
       const newFirstName = name === "firstName" ? value : formData.firstName;
       const newLastName = name === "lastName" ? value : formData.lastName;

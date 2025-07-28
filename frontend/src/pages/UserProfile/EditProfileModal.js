@@ -133,6 +133,12 @@ export default function EditProfileModal({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === "username") {
+      // แปลงเป็นพิมพ์เล็ก และลบตัวอักษรที่ไม่ใช่ a-z, 0-9, _
+      const formatted = value.toLowerCase().replace(/[^a-z0-9_]/g, "");
+      onChange({ target: { name, value: formatted } });
+      return;
+    }
     if (name === "email") {
       setEmailError(validateEmail(value) ? "" : "รูปแบบอีเมลไม่ถูกต้อง");
     }
@@ -246,7 +252,6 @@ export default function EditProfileModal({
               />
             </Box>
 
-            {/* 🟡 ชื่อ-นามสกุล */}
             <Box sx={{ display: "flex", gap: 2 }}>
               <TextField
                 name="firstName"
@@ -265,7 +270,14 @@ export default function EditProfileModal({
                 margin="normal"
               />
             </Box>
-
+            <TextField
+              name="username"
+              label="ชื่อผู้ใช้"
+              value={formData.username || ""}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+            />
             <TextField
               name="email"
               label="อีเมล"

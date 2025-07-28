@@ -4,7 +4,7 @@ import { CircularProgress, Box, Button, Typography } from "@mui/material";
 import { UserContext } from "../../contexts/UserContext";
 import EditProfileModal from "./EditProfileModal";
 import ChangePasswordModal from "./ChangePasswordModal";
-import { formatDateShortThai } from "../../components/utils";
+import { formatDateThai } from "../../components/utils";
 import "./UserProfile.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,6 +19,7 @@ export default function UserProfile() {
   const { accessToken, setUser } = useContext(UserContext);
   const [profile, setProfile] = useState(null);
   const [formData, setFormData] = useState({
+    username: "", // <-- เพิ่ม
     name: "",
     email: "",
     avatarFile: null,
@@ -40,6 +41,7 @@ export default function UserProfile() {
         const p = res.data.profile;
         setProfile(p);
         setFormData({
+          username: p.username || "", // <-- เพิ่ม
           name: p.name || "",
           email: p.email || "",
           avatarFile: null,
@@ -68,6 +70,7 @@ export default function UserProfile() {
     setLoading(true);
     try {
       const data = new FormData();
+      data.append("username", formData.username); // <-- เพิ่ม
       data.append("name", formData.name);
       data.append("email", formData.email);
       if (formData.deleteAvatar === "true") data.append("deleteAvatar", "true");
@@ -93,7 +96,7 @@ export default function UserProfile() {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       const updated = res.data.profile;
-      const fullUrl = updated.pictures
+      const fullUrl = updated.picture
         ? updated.picture.startsWith("http")
           ? updated.picture
           : `${API_URL}/api/user/uploads/${updated.picture}`
@@ -121,9 +124,7 @@ export default function UserProfile() {
 
   if (!profile)
     return (
-      <Typography variant="h6" sx={{ mt: 4, textAlign: "center" }}>
-        ไม่พบข้อมูลโปรไฟล์
-      </Typography>
+      <Typography variant="h6" sx={{ mt: 4, textAlign: "center" }}></Typography>
     );
 
   const avatarSrc = profile.picture
@@ -180,7 +181,8 @@ export default function UserProfile() {
             )}
             <Typography sx={{ mt: 1 }}>รหัสผู้ใช้ : {profile.id}</Typography>
             <Typography>
-              สร้างเมื่อ : {formatDateShortThai(profile.created_at)}
+              สร้างเมื่อ :
+              {/* สร้างเมื่อ {formatDateThai(profile.created_at)} */}
             </Typography>
           </Box>
 

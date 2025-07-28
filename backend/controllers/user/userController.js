@@ -38,7 +38,7 @@ exports.getMe = async (req, res) => {
   try {
     const userId = req.user.id;
     const [rows] = await pool.execute(
-      `SELECT id, username, name, email, role, approved, google_id, updated_at, picture
+      `SELECT id, username, name, email, role, approved, google_id, updated_at, picture,created_at
        FROM users
        WHERE id = ?`,
       [userId]
@@ -83,7 +83,12 @@ exports.getMe = async (req, res) => {
 exports.updateMe = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { name = null, email = null, deleteAvatar } = req.body || {};
+    const {
+      name = null,
+      email = null,
+      username = null,
+      deleteAvatar,
+    } = req.body || {};
 
     // 1. ดึงข้อมูล user ปัจจุบัน เพื่อเช็ค google_id
     const [userRows] = await pool.execute(
@@ -99,30 +104,52 @@ exports.updateMe = async (req, res) => {
     // 2. ถ้าผู้ใช้สมัครด้วย Google (มี google_id) ห้ามแก้ไข email
     let emailToUpdate = email;
     if (user.google_id && email) {
-      // ถ้าพยายามแก้ email ให้ ignore หรือ return error ก็ได้
-      // return res.status(403).json({ message: 'ผู้ใช้ที่สมัครด้วย Google ไม่สามารถแก้ไขอีเมลได้' });
-
-      // หรือถ้าไม่อยากให้ error ก็ลบ email ออก ไม่แก้ไข
       emailToUpdate = null;
     }
 
-    // 3. อัปเดตข้อมูลใน DB
-    let sql = "UPDATE users SET name = ?";
-    const params = [name];
+    // 3. ตรวจสอบว่า username ซ้ำหรือไม่ (ถ้ามีการส่งค่าใหม่มา)
+    if (username) {
+      const [usernameRows] = await pool.execute(
+        "SELECT id FROM users WHERE username = ? AND id != ?",
+        [username, userId]
+      );
+      if (usernameRows.length) {
+        return res.status(400).json({ message: "ชื่อผู้ใช้นี้มีอยู่แล้ว" });
+      }
+    }
+
+    // 4. อัปเดตข้อมูลใน DB
+    let sql = "UPDATE users SET";
+    const updates = [];
+    const params = [];
+
+    if (name !== null) {
+      updates.push(" name = ?");
+      params.push(name);
+    }
 
     if (emailToUpdate !== null) {
-      sql += ", email = ?";
+      updates.push(" email = ?");
       params.push(emailToUpdate);
     }
 
-    // deleteAvatar
+    if (username !== null) {
+      updates.push(" username = ?");
+      params.push(username);
+    }
+
     if (deleteAvatar === "true") {
-      sql += ", picture = NULL";
+      updates.push(" picture = NULL");
     } else if (req.file) {
-      sql += ", picture = ?";
+      updates.push(" picture = ?");
       params.push(req.file.filename);
     }
 
+    if (updates.length === 0) {
+      return res.status(400).json({ message: "ไม่มีข้อมูลที่ต้องอัปเดต" });
+    }
+
+    sql += updates.join(",");
     sql += " WHERE id = ?";
     params.push(userId);
 
@@ -131,12 +158,10 @@ exports.updateMe = async (req, res) => {
     res.status(200).json({ message: "อัปเดตโปรไฟล์สำเร็จ" });
   } catch (error) {
     console.error("Error in updateMe:", error);
-    res
-      .status(500)
-      .json({
-        message: "เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "เกิดข้อผิดพลาดในการอัปเดตโปรไฟล์",
+      error: error.message,
+    });
   }
 };
 
