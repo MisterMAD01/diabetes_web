@@ -147,7 +147,7 @@
 }
 
 .chart-controls__reset-button button {
-  background-color: #ff5c5c;
+  background-color: #d9534f;
   color: white;
   border: none;
   padding: 8px 18px;
@@ -158,5 +158,5 @@
 }
 
 .chart-controls__reset-button button:hover {
-  background-color: #e04b4b;
+  background-color: #c9302c;
 }
