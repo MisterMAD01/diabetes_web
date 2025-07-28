@@ -19,6 +19,7 @@ const BlackPopup = ({ onClose, patients }) => (
               <th>ลำดับ</th>
               <th>HN</th>
               <th>ชื่อ</th>
+              <th>เพศ</th>
               <th>เบอร์</th>
               <th>อายุ</th>
             </tr>
@@ -29,6 +30,7 @@ const BlackPopup = ({ onClose, patients }) => (
                 <td>{(index + 1).toString().padStart(3, "0")}</td>
                 <td>{p.id}</td>
                 <td>{p.fullname}</td>
+                <td>{p.gender}</td>
                 <td>{p.phone}</td>
                 <td>{p.age}</td>
               </tr>

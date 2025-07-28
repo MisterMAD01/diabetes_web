@@ -81,6 +81,11 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
   return (
     <div className="health-popup-overlay">
       <div className="health-popup-content">
+        {/* ปุ่มปิดอยู่มุมขวาบน */}
+        <button className="health-popup-close-btn" onClick={onClose}>
+          ×
+        </button>
+
         <h2>แก้ไขข้อมูลสุขภาพ</h2>
         <form onSubmit={handleSubmit} className="health-popup-form">
           <div className="health-popup-row">
@@ -196,13 +201,6 @@ const HealthEditPopup = ({ record, onClose, onSave, onDelete }) => {
           </div>
 
           <div className="health-popup-buttons">
-            <button
-              type="button"
-              className="health-popup-cancel-btn"
-              onClick={onClose}
-            >
-              ปิด
-            </button>
             <button
               type="button"
               className="health-popup-danger-btn"

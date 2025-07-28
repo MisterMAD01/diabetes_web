@@ -254,18 +254,18 @@ const EditPatientPage = () => {
         </button>
 
         <button
-          onClick={() => navigate(-1)}
-          className="edit-patient-cancel-btn"
-          disabled={saving}
-        >
-          ย้อนกลับ
-        </button>
-        <button
           onClick={handleSave}
           className="edit-patient-submit-btn"
           disabled={saving}
         >
           {saving ? "กำลังบันทึก..." : "บันทึก"}
+        </button>
+        <button
+          onClick={() => navigate(-1)}
+          className="edit-patient-cancel-btn"
+          disabled={saving}
+        >
+          ย้อนกลับ
         </button>
       </div>
 

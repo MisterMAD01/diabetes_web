@@ -1,25 +1,62 @@
 .health-popup-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 9999;
 }
 
 .health-popup-content {
+  position: relative;
   background: white;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 2rem;
   max-width: 800px;
   width: 100%;
-  box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  animation: popup-popIn 0.2s ease-out;
 }
 
+@keyframes popup-popIn {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.health-popup-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: white;
+  color: #666;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: color 0.2s ease;
+  z-index: 10;
+}
+
+.health-popup-close-btn:hover {
+  color: #ef4444;
+}
+
+/* ฟอร์ม และปุ่มอื่น ๆ ตามที่คุณมีอยู่ */
 .health-popup-form {
   display: flex;
   flex-direction: column;
@@ -75,43 +112,31 @@
   min-width: 120px;
   padding: 0 1.5rem;
   font-size: 1rem;
-  font-family: 'Sarabun', sans-serif;
   font-weight: 600;
   border-radius: 10px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
   cursor: pointer;
-}
-
-/* ปุ่มปิด */
-.health-popup-cancel-btn {
-  background-color: white;
-  border: 1px solid #cbd5e1;
-  color: #1e293b;
-}
-.health-popup-cancel-btn:hover {
-  background-color: #f1f5f9;
-  border-color: #94a3b8;
 }
 
 /* ปุ่มบันทึก */
 .health-popup-submit-btn {
-  background-color: #2563eb;
+  background-color: #22c55e; /* เขียว */
   color: white;
   border: none;
+  transition: background-color 0.3s ease;
 }
+
 .health-popup-submit-btn:hover {
-  background-color: #1d4ed8;
+  background-color: #16a34a;
 }
 
 /* ปุ่มลบ */
 .health-popup-danger-btn {
-  background-color: #dc2626;
+  background-color: #ef4444; /* แดง */
   color: white;
   border: none;
+  transition: background-color 0.3s ease;
 }
+
 .health-popup-danger-btn:hover {
   background-color: #b91c1c;
 }

@@ -1,4 +1,4 @@
-const pool = require('../../config/db');
+const pool = require("../../config/db");
 
 // ดึงจำนวนผู้ป่วยแต่ละกลุ่มสี
 exports.getRiskCounts = async (req, res) => {
@@ -10,8 +10,8 @@ exports.getRiskCounts = async (req, res) => {
     `);
     res.json(rows);
   } catch (error) {
-    console.error('❌ Error in getRiskCounts:', error);
-    res.status(500).json({ error: 'เกิดข้อผิดพลาดใน getRiskCounts' });
+    console.error("❌ Error in getRiskCounts:", error);
+    res.status(500).json({ error: "เกิดข้อผิดพลาดใน getRiskCounts" });
   }
 };
 
@@ -19,14 +19,18 @@ exports.getRiskCounts = async (req, res) => {
 exports.getPatientsByColor = async (req, res) => {
   const color = req.params.color;
   try {
-    const [rows] = await pool.query(`
-      SELECT Patient_ID AS id, P_Name AS fullname, Phone_Number AS phone, Age AS age
+    const [rows] = await pool.query(
+      `
+      SELECT Patient_ID AS id, P_Name AS fullname, Phone_Number AS phone, Age AS age,
+        Gender AS gender
       FROM patient
       WHERE Color = ?
-    `, [color]);
+    `,
+      [color]
+    );
     res.json(rows);
   } catch (error) {
-    console.error('❌ Error in getPatientsByColor:', error);
-    res.status(500).json({ error: 'เกิดข้อผิดพลาดใน getPatientsByColor' });
+    console.error("❌ Error in getPatientsByColor:", error);
+    res.status(500).json({ error: "เกิดข้อผิดพลาดใน getPatientsByColor" });
   }
 };
