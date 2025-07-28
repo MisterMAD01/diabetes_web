@@ -1,22 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import "./UserEditFormModal.css";
 
 const UserEditForm = ({ user, handleSave, handleCancel }) => {
-  const [formData, setFormData] = useState({ ...user });
+  // แยกชื่อ-นามสกุลจาก name
+  const splitName = (fullName) => {
+    if (!fullName) return { firstName: "", lastName: "" };
+    const parts = fullName.trim().split(" ");
+    return {
+      firstName: parts[0] || "",
+      lastName: parts.slice(1).join(" ") || "",
+    };
+  };
+
+  const initialName = splitName(user.name);
+  const [formData, setFormData] = useState({
+    ...user,
+    firstName: initialName.firstName,
+    lastName: initialName.lastName,
+  });
+
   const isGoogleUser = !!user.google_id;
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    if (name === "firstName" || name === "lastName") {
+      const newFirstName = name === "firstName" ? value : formData.firstName;
+      const newLastName = name === "lastName" ? value : formData.lastName;
+      const fullName = `${newFirstName} ${newLastName}`.trim();
+
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+        name: fullName,
+      }));
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleSave(formData);
+    handleSave(formData); // ส่ง name ที่รวมแล้ว
   };
 
   return (
@@ -31,24 +61,34 @@ const UserEditForm = ({ user, handleSave, handleCancel }) => {
         </button>
         <form className="user-edit-modal-form" onSubmit={handleSubmit}>
           <h2 className="user-edit-modal-title">แก้ไขข้อมูลผู้ใช้</h2>
-
+          <div style={{ display: "flex", gap: "10px" }}>
+            <label style={{ flex: 1 }}>
+              ชื่อ:
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName || ""}
+                onChange={handleChange}
+                required
+              />
+            </label>
+            <label style={{ flex: 1 }}>
+              นามสกุล:
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName || ""}
+                onChange={handleChange}
+                required
+              />
+            </label>
+          </div>
           <label>
             ชื่อผู้ใช้:
             <input
               type="text"
               name="username"
               value={formData.username || ""}
-              onChange={handleChange}
-              required
-            />
-          </label>
-
-          <label>
-            ชื่อจริง:
-            <input
-              type="text"
-              name="name"
-              value={formData.name || ""}
               onChange={handleChange}
               required
             />

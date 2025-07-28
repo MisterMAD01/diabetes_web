@@ -6,17 +6,34 @@ import "react-toastify/dist/ReactToastify.css";
 const UserForm = ({ handleSave, handleCancel }) => {
   const [formData, setFormData] = useState({
     username: "",
-    name: "",
+    firstName: "",
+    lastName: "",
+    name: "", // จะถูกอัปเดตจาก firstName + lastName
     email: "",
     password: "",
     role: "user",
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    // ถ้าเปลี่ยนชื่อหรือสกุล ให้ประกอบเป็น name ใหม่
+    if (name === "firstName" || name === "lastName") {
+      const newFirstName = name === "firstName" ? value : formData.firstName;
+      const newLastName = name === "lastName" ? value : formData.lastName;
+      const fullName = `${newFirstName} ${newLastName}`.trim();
+
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+        name: fullName,
+      }));
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -31,7 +48,7 @@ const UserForm = ({ handleSave, handleCancel }) => {
       return;
     }
     if (handleSave) {
-      handleSave(formData);
+      handleSave(formData); // จะได้ชื่อเต็มใน formData.name
     }
   };
 
@@ -43,22 +60,34 @@ const UserForm = ({ handleSave, handleCancel }) => {
         </button>
         <form className="user-modal-form" onSubmit={handleSubmit}>
           <h2 className="user-modal-title">เพิ่มผู้ใช้ใหม่</h2>
+
+          <label>
+            ชื่อ:
+            <input
+              type="text"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+            />
+          </label>
+          <label>
+            นามสกุล:
+            <input
+              type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+            />
+          </label>
+
           <label>
             ชื่อผู้ใช้:
             <input
               type="text"
               name="username"
               value={formData.username}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            ชื่อจริง:
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
               onChange={handleChange}
               required
             />
@@ -73,6 +102,7 @@ const UserForm = ({ handleSave, handleCancel }) => {
               required
             />
           </label>
+
           <label>
             รหัสผ่าน:
             <input
@@ -83,6 +113,7 @@ const UserForm = ({ handleSave, handleCancel }) => {
               required
             />
           </label>
+
           <label>
             สิทธิ์การใช้งาน:
             <select name="role" value={formData.role} onChange={handleChange}>
@@ -90,6 +121,7 @@ const UserForm = ({ handleSave, handleCancel }) => {
               <option value="user">User</option>
             </select>
           </label>
+
           <div className="user-modal-actions">
             <button type="submit" className="user-modal-submit-btn">
               เพิ่มผู้ใช้

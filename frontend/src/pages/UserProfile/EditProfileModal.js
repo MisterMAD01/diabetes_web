@@ -26,7 +26,6 @@ import "./EditProfileModal.css";
 
 const API_URL = process.env.REACT_APP_API;
 
-// ฟังก์ชันดึงตัวอักษรแรกของชื่อ สำหรับ placeholder avatar
 const getInitial = (name) =>
   name && name.trim() ? name.trim().charAt(0).toUpperCase() : "?";
 
@@ -36,12 +35,11 @@ export default function EditProfileModal({
   formData,
   onChange,
   onSave,
-  isGoogleUser, // รับ prop สำหรับตรวจสอบว่าผู้ใช้สมัครด้วย Google หรือไม่
+  isGoogleUser,
 }) {
   const { user } = useContext(UserContext);
   const fileInputRef = useRef();
 
-  // State สำหรับจัดการภาพที่เลือกและครอป
   const [imageSrc, setImageSrc] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -49,11 +47,21 @@ export default function EditProfileModal({
   const [previewImage, setPreviewImage] = useState(null);
   const [showCropperModal, setShowCropperModal] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
-
-  // State สำหรับเก็บ error email
   const [emailError, setEmailError] = useState("");
 
-  // โหลดรูป preview หรือ placeholder ตอนเปิด modal หรือเปลี่ยนข้อมูล
+  // 🟡 แยกชื่อ นามสกุล
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  // 🟡 เมื่อเปิด modal โหลดชื่อเข้า first/last name
+  useEffect(() => {
+    if (formData.name) {
+      const parts = formData.name.trim().split(" ");
+      setFirstName(parts[0] || "");
+      setLastName(parts.slice(1).join(" ") || "");
+    }
+  }, [formData.name]);
+
   useEffect(() => {
     if (formData.deleteAvatar === "true") {
       setPreviewImage(null);
@@ -62,7 +70,6 @@ export default function EditProfileModal({
     if (formData.avatarFile) {
       const url = URL.createObjectURL(formData.avatarFile);
       setPreviewImage(url);
-      // คืนค่า cleanup revoke URL เมื่อ component unmount
       return () => URL.revokeObjectURL(url);
     }
     if (user?.picture) {
@@ -76,43 +83,37 @@ export default function EditProfileModal({
     }
   }, [formData.deleteAvatar, formData.avatarFile, user]);
 
-  // ฟังก์ชันตรวจสอบอีเมลแบบง่าย
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
-  // เมื่อเลือกไฟล์รูปใหม่
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
-      setImageSrc(reader.result); // แสดงรูปใน cropper
+      setImageSrc(reader.result);
       setShowCropperModal(true);
     };
     reader.readAsDataURL(file);
   };
 
-  // เมื่อคลิกที่ avatar ให้เปิด dialog เลือกรูป
   const handleAvatarClick = () => {
-    fileInputRef.current.value = null; // เคลียร์ค่าเก่า
+    fileInputRef.current.value = null;
     fileInputRef.current.click();
   };
 
-  // ลบรูป avatar
   const handleRemoveAvatar = () => {
     setPreviewImage(null);
     onChange({ target: { name: "deleteAvatar", value: "true" } });
     onChange({ target: { name: "avatarFile", files: [] } });
   };
 
-  // เมื่อครอปเสร็จ
   const onCropComplete = useCallback((_, croppedArea) => {
     setCroppedAreaPixels(croppedArea);
   }, []);
 
-  // บันทึกรูปที่ครอปแล้ว
   const handleCropSave = async () => {
     try {
       const blob = await getCroppedImg(imageSrc, croppedAreaPixels, 180);
@@ -125,28 +126,36 @@ export default function EditProfileModal({
     }
   };
 
-  // ปิด modal หลัก โดยไม่ปิดตอนกด backdrop หรือ escape
   const handleModalClose = (_, reason) => {
     if (reason === "backdropClick" || reason === "escapeKeyDown") return;
     onClose();
   };
 
-  // แก้ onChange สำหรับ input ทุกตัว โดยเฉพาะ email จะตรวจสอบฟอร์แมต
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
     if (name === "email") {
-      if (!validateEmail(value)) {
-        setEmailError("รูปแบบอีเมลไม่ถูกต้อง");
-      } else {
-        setEmailError("");
-      }
+      setEmailError(validateEmail(value) ? "" : "รูปแบบอีเมลไม่ถูกต้อง");
     }
-
     onChange(e);
   };
 
-  // บันทึกข้อมูล และแสดงสถานะ loading
+  // 🟡 handle change แยกชื่อ-นามสกุล แล้วรวมใส่ formData.name
+  const handleFirstNameChange = (e) => {
+    const newFirst = e.target.value;
+    setFirstName(newFirst);
+    onChange({
+      target: { name: "name", value: `${newFirst} ${lastName}`.trim() },
+    });
+  };
+
+  const handleLastNameChange = (e) => {
+    const newLast = e.target.value;
+    setLastName(newLast);
+    onChange({
+      target: { name: "name", value: `${firstName} ${newLast}`.trim() },
+    });
+  };
+
   const handleSaveClick = async () => {
     if (emailError) {
       toast.error("กรุณากรอกอีเมลให้ถูกต้องก่อนบันทึก");
@@ -165,7 +174,6 @@ export default function EditProfileModal({
 
   return (
     <>
-      {/* Main Edit Modal */}
       <Modal
         open={open}
         onClose={handleModalClose}
@@ -180,6 +188,7 @@ export default function EditProfileModal({
               แก้ไขข้อมูลผู้ใช้
             </Typography>
 
+            {/* Avatar */}
             <Box className="avatar-preview" sx={{ position: "relative" }}>
               {previewImage ? (
                 <img
@@ -203,7 +212,6 @@ export default function EditProfileModal({
                   {getInitial(user?.name || user?.username)}
                 </div>
               )}
-
               {previewImage && (
                 <Button
                   size="small"
@@ -220,7 +228,6 @@ export default function EditProfileModal({
                   ลบรูป
                 </Button>
               )}
-
               <Typography
                 variant="caption"
                 color="textSecondary"
@@ -229,7 +236,6 @@ export default function EditProfileModal({
               >
                 คลิกเพื่อเปลี่ยนรูปภาพ
               </Typography>
-
               <input
                 ref={fileInputRef}
                 name="avatarFile"
@@ -240,14 +246,25 @@ export default function EditProfileModal({
               />
             </Box>
 
-            <TextField
-              name="name"
-              label="ชื่อ"
-              value={formData.name}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
+            {/* 🟡 ชื่อ-นามสกุล */}
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <TextField
+                name="firstName"
+                label="ชื่อ"
+                value={firstName}
+                onChange={handleFirstNameChange}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                name="lastName"
+                label="นามสกุล"
+                value={lastName}
+                onChange={handleLastNameChange}
+                fullWidth
+                margin="normal"
+              />
+            </Box>
 
             <TextField
               name="email"
@@ -256,7 +273,7 @@ export default function EditProfileModal({
               onChange={handleInputChange}
               fullWidth
               margin="normal"
-              disabled={isGoogleUser} // ปิดแก้ไขถ้าเป็น Google user
+              disabled={isGoogleUser}
               error={!!emailError}
               helperText={emailError}
             />
@@ -339,7 +356,6 @@ export default function EditProfileModal({
                 />
               </Box>
             )}
-
             <Box sx={{ mt: 2 }}>
               <Typography gutterBottom>ซูม</Typography>
               <Slider
@@ -350,7 +366,6 @@ export default function EditProfileModal({
                 onChange={(_, value) => setZoom(value)}
               />
             </Box>
-
             <Box
               sx={{
                 display: "flex",
