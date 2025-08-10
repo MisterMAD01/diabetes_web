@@ -1,129 +1,153 @@
 .appointment-card {
-    background: #ffffff;
-    border-radius: 0.5rem;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    margin-bottom: 1rem;
-  }
-  
-  .appointment-header {
-    background: #f9fafb;
-    border-bottom: 1px solid #e5e7eb;
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #1f2937;
-  }
-  
-  .view-all {
-    color: #2563eb;
-    font-size: 0.875rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .view-all:hover {
-    color: #1e40af;
-  }
-  
-  .appointment-body {
-    padding: 1.5rem;
-  }
-  
-  .table-container {
-    overflow-x: auto;
-  }
-  
-  .appointment-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .appointment-table th,
-  .appointment-table td {
-    padding: 0.75rem 1rem;
-    font-size: 0.875rem;
-    text-align: left;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  
-  .appointment-table th {
-    color: #6b7280;
-    text-transform: uppercase;
-    font-weight: 500;
-    font-size: 0.75rem;
-  }
-  
-  .person-info {
-    display: flex;
-    align-items: center;
-  }
-  
-  .avatar {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 9999px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 0.75rem;
-    font-weight: 500;
-    font-size: 0.875rem;
-  }
-  
-  .bg-blue { background-color: #dbeafe; color: #1d4ed8; }
-  .bg-green { background-color: #d1fae5; color: #065f46; }
-  .bg-purple { background-color: #ede9fe; color: #6b21a8; }
-  .bg-red { background-color: #fee2e2; color: #b91c1c; }
-  
-  .name {
-    font-weight: 500;
-    color: #111827;
-  }
-  
-  .hn {
-    font-size: 0.75rem;
-    color: #6b7280;
-  }
-  
-  .status {
-    padding: 0.25rem 0.5rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    display: inline-block;
-  }
-  
-  .status-attended {
-    background-color: #d1fae5;
-    color: #065f46;
-  }
-  
-  .status-waiting {
-    background-color: #fef3c7;
-    color: #92400e;
-  }
-  
-  .status-pending {
-    background-color: #f3f4f6;
-    color: #374151;
-  }
-  
-  .view-btn {
-    background: none;
-    color: #2563eb;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .view-btn:hover {
-    color: #1e3a8a;
-  }
-  
+  background: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.appointment-header {
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.view-all {
+  color: #2563eb;
+  font-size: 0.875rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.view-all:hover {
+  color: #1e40af;
+}
+
+.appointment-body {
+  padding: 1.5rem;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.appointment-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.appointment-table th,
+.appointment-table td {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.appointment-table th {
+  color: #6b7280;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 0.75rem;
+}
+
+.person-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.person-info > div {
+  text-align: left;
+}
+
+.avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.bg-blue {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+.bg-green {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+.bg-purple {
+  background-color: #ede9fe;
+  color: #6b21a8;
+}
+.bg-red {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.name {
+  font-weight: 500;
+  color: #111827;
+  text-align: left;
+}
+
+.hn {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: left;
+}
+
+.status {
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-attended {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-waiting {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-pending {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.status-cancel {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.view-btn {
+  background: none;
+  color: #2563eb;
+  border: none;
+  cursor: pointer;
+}
+
+.view-btn:hover {
+  color: #1e3a8a;
+}
