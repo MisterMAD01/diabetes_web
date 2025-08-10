@@ -153,7 +153,7 @@ const DataManagement = () => {
         <div className="title-group">
           <h2 className="data-title">จัดการข้อมูลระบบ</h2>
           <p className="data-subtitle">
-            เลือกช่วงเวลาที่ต้องการ และเลือกข้อมูลเพื่อส่งออก
+            เลือกประเภทข้อมูลที่ต้องการเพื่อส่งออกข้อมูล
           </p>
         </div>
 
@@ -163,25 +163,6 @@ const DataManagement = () => {
         >
           <FontAwesomeIcon icon={faFileImport} /> นำเข้าข้อมูล
         </button>
-      </div>
-
-      <div className="date-filters">
-        <div className="input-group">
-          <label>วันที่เริ่มต้น</label>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-        </div>
-        <div className="input-group">
-          <label>วันที่สิ้นสุด</label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-        </div>
       </div>
 
       <div className="checkbox-group">

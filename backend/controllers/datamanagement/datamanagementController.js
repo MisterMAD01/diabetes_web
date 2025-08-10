@@ -33,11 +33,12 @@ const exportData = async (req, res) => {
     switch (type) {
       case "patient":
         query = `
-  SELECT Patient_ID, P_Name, Address, Phone_Number, Age, Gender, Birthdate, Underlying_Disease, Risk, Color
-  FROM patient
-`;
+    SELECT Patient_ID, Citizen_ID, P_Name, Address, Phone_Number, Age, Gender, Birthdate, Underlying_Disease, Risk, Color
+    FROM patient
+  `;
         fields = [
           "Patient_ID",
+          "Citizen_ID",
           "P_Name",
           "Address",
           "Phone_Number",
@@ -113,7 +114,7 @@ const exportData = async (req, res) => {
 
       case "users":
         query = `
-    SELECT id, username, name, email, approved, role, password, created_at, updated_at
+    SELECT id, username, name, email, approved, role, password,google_id, created_at, updated_at
     FROM users
   `;
         fields = [
@@ -124,6 +125,7 @@ const exportData = async (req, res) => {
           "approved",
           "role",
           "password",
+          "google_id",
           "created_at",
           "updated_at",
         ];
@@ -177,12 +179,13 @@ const importData = async (req, res) => {
     switch (type) {
       case "patient":
         insertQuery = `INSERT INTO patient (
-  Patient_ID, P_Name, Address, Phone_Number, Age, Gender, Birthdate, Underlying_Disease, Risk, Color
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    Patient_ID, Citizen_ID, P_Name, Address, Phone_Number, Age, Gender, Birthdate, Underlying_Disease, Risk, Color
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
         checkDuplicateQuery = `SELECT Patient_ID FROM patient WHERE Patient_ID = ?`;
         paramsArray = records.map((r) => [
           r.Patient_ID,
+          r.Citizen_ID,
           r.P_Name,
           r.Address || null,
           r.Phone_Number || null,
@@ -193,7 +196,6 @@ const importData = async (req, res) => {
           r.Risk || null,
           r.Color || null,
         ]);
-
         break;
 
       case "appointments":
@@ -239,7 +241,7 @@ const importData = async (req, res) => {
         break;
 
       case "users":
-        insertQuery = `INSERT INTO users (id, username, name, email, approved, role, password, created_at, updated_at)
+        insertQuery = `INSERT INTO users (id, username, name, email, approved, role, password,google_id, created_at, updated_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         checkDuplicateQuery = `SELECT id FROM users WHERE id = ?`;
         paramsArray = records.map((r) => [
@@ -250,6 +252,7 @@ const importData = async (req, res) => {
           r.approved,
           r.role,
           r.password,
+          r.google_id,
           r.created_at ? r.created_at.split("T")[0] : null, // แปลงวันที่ถ้ามี
           r.updated_at ? r.updated_at.split("T")[0] : null,
         ]);
