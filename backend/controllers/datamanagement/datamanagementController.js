@@ -241,8 +241,9 @@ const importData = async (req, res) => {
         break;
 
       case "users":
-        insertQuery = `INSERT INTO users (id, username, name, email, approved, role, password,google_id, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        insertQuery = `INSERT INTO users (id, username, name, email, approved, role, password, google_id, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
         checkDuplicateQuery = `SELECT id FROM users WHERE id = ?`;
         paramsArray = records.map((r) => [
           r.id,
