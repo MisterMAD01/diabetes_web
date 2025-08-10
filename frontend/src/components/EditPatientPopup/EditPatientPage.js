@@ -23,6 +23,7 @@ const EditPatientPage = () => {
     phone: "",
     age: "",
     disease: "",
+    citizen_id: "", // เพิ่ม citizen_id
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -61,6 +62,7 @@ const EditPatientPage = () => {
           phone: data.Phone_Number || "",
           age: data.Age || "",
           disease: data.Underlying_Disease || "",
+          citizen_id: data.Citizen_ID || "", // เพิ่มดึง Citizen_ID
         });
         setError(null);
       } catch (err) {
@@ -120,6 +122,13 @@ const EditPatientPage = () => {
     } else if (isNaN(age) || age < 1 || age > 150)
       errors.age = "อายุควรอยู่ระหว่าง 1 - 150 ปี";
 
+    // validate citizen_id 13 หลัก
+    const citizenIdRegex = /^[0-9]{13}$/;
+    if (!formData.citizen_id.trim())
+      errors.citizen_id = "กรุณากรอกเลขบัตรประชาชน";
+    else if (!citizenIdRegex.test(formData.citizen_id))
+      errors.citizen_id = "เลขบัตรประชาชนต้องเป็นตัวเลข 13 หลัก";
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -136,6 +145,7 @@ const EditPatientPage = () => {
       Gender: formData.gender,
       Birthdate: formData.birthdate,
       Underlying_Disease: formData.disease || null,
+      Citizen_ID: formData.citizen_id, // เพิ่ม Citizen_ID ใน payload
     };
 
     try {
@@ -198,6 +208,12 @@ const EditPatientPage = () => {
       <div className="edit-patient-row">
         {renderInput("ชื่อ", "name", "กรอกชื่อ")}
         {renderInput("นามสกุล", "lastname", "กรอกนามสกุล")}
+        {renderInput(
+          "เลขบัตรประชาชน",
+          "citizen_id",
+          "กรอกเลขบัตรประชาชน",
+          "text"
+        )}
       </div>
 
       {renderInput("บ้านเลขที่", "address", "กรอกบ้านเลขที่")}

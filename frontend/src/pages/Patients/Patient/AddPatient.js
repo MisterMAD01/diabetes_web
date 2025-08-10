@@ -6,6 +6,7 @@ const API_URL = process.env.REACT_APP_API;
 
 const AddPatient = ({ onSuccess, closePopup }) => {
   const [formData, setFormData] = useState({
+    citizen_id: "",
     name: "",
     lastname: "",
     address: "",
@@ -20,26 +21,31 @@ const AddPatient = ({ onSuccess, closePopup }) => {
     disease: "",
   });
 
-  const [errors, setErrors] = useState({}); // เก็บ error messages
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
-    // ลบ error ข้อความเมื่อแก้ไข input นั้น
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  // ฟังก์ชันตรวจสอบข้อมูลและคืนค่า error object
   const validateFormData = () => {
     const newErrors = {};
-    const nameRegex = /^[ก-๙a-zA-Z\s]+$/; // ตัวอักษรไทย/อังกฤษ และเว้นวรรค
-    const phoneRegex = /^[0-9]{10}$/; // เบอร์โทรต้องมี 10 หลัก
-    const addressRegex = /^[0-9]+(\/[0-9A-Za-z]+)?$/; // เช่น 17, 17/4, 123/1A
-    const villageRegex = /^[0-9]+$/; // เฉพาะตัวเลข
+    const nameRegex = /^[ก-๙a-zA-Z\s]+$/;
+    const phoneRegex = /^[0-9]{10}$/;
+    const addressRegex = /^[0-9]+(\/[0-9A-Za-z]+)?$/;
+    const villageRegex = /^[0-9]+$/;
+    const citizenIdRegex = /^[0-9]{13}$/;
+
     const ageNum = Number(formData.age);
     const today = new Date();
     const birthDateObj = new Date(formData.birthdate);
+
+    if (!formData.citizen_id.trim()) {
+      newErrors.citizen_id = "กรุณากรอกเลขบัตรประชาชน";
+    } else if (!citizenIdRegex.test(formData.citizen_id)) {
+      newErrors.citizen_id = "เลขบัตรประชาชนต้องเป็นตัวเลข 13 หลัก";
+    }
 
     if (!formData.name.trim()) {
       newErrors.name = "กรุณากรอกชื่อ";
@@ -119,6 +125,7 @@ const AddPatient = ({ onSuccess, closePopup }) => {
     }
 
     const payload = {
+      Citizen_ID: formData.citizen_id,
       P_Name: `${formData.name} ${formData.lastname}`,
       Address: `${formData.address} หมู่ ${formData.village} ต.${formData.subdistrict} อ.${formData.district} จ.${formData.province}`,
       Phone_Number: formData.phone,
@@ -189,6 +196,20 @@ const AddPatient = ({ onSuccess, closePopup }) => {
                 )}
               </div>
             </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <input
+                type="text"
+                name="citizen_id"
+                placeholder="เลขบัตรประชาชน 13 หลัก"
+                value={formData.citizen_id}
+                onChange={handleChange}
+                maxLength={13}
+                required
+              />
+              {errors.citizen_id && (
+                <div className="input-error">{errors.citizen_id}</div>
+              )}
+            </div>
 
             <div style={{ display: "flex", flexDirection: "column" }}>
               <input
@@ -217,7 +238,7 @@ const AddPatient = ({ onSuccess, closePopup }) => {
                     }}
                   >
                     <input
-                      type={field === "village" ? "number" : "text"} // ✅ เปลี่ยนเฉพาะ village
+                      type={field === "village" ? "number" : "text"}
                       name={field}
                       placeholder={
                         field === "village"
@@ -231,7 +252,7 @@ const AddPatient = ({ onSuccess, closePopup }) => {
                       value={formData[field]}
                       onChange={handleChange}
                       required
-                      {...(field === "village" && { min: 1, step: 1 })} // ✅ ใส่ min และ step เฉพาะ village
+                      {...(field === "village" && { min: 1, step: 1 })}
                     />
                     {errors[field] && (
                       <div className="input-error">{errors[field]}</div>
@@ -250,7 +271,7 @@ const AddPatient = ({ onSuccess, closePopup }) => {
                   name="birthdate"
                   value={formData.birthdate}
                   onChange={handleChange}
-                  max={new Date().toISOString().split("T")[0]} // ปิดไม่ให้เลือกวันเกินวันนี้
+                  max={new Date().toISOString().split("T")[0]}
                   required
                 />
                 {errors.birthdate && (

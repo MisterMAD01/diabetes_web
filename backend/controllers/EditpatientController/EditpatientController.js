@@ -33,6 +33,7 @@ exports.updatePatient = async (req, res) => {
     Underlying_Disease,
     Address,
     Gender,
+    Citizen_ID, // เพิ่มตรงนี้
   } = req.body;
 
   try {
@@ -45,7 +46,8 @@ exports.updatePatient = async (req, res) => {
         Phone_Number = ?,
         Underlying_Disease = ?,
         Address = ?,
-        Gender = ?
+        Gender = ?,
+        Citizen_ID = ?     -- เพิ่มตรงนี้
       WHERE Patient_ID = ?
     `;
 
@@ -57,6 +59,7 @@ exports.updatePatient = async (req, res) => {
       Underlying_Disease,
       Address,
       Gender,
+      Citizen_ID, // เพิ่มตรงนี้
       id,
     ];
 
@@ -194,6 +197,7 @@ exports.updateHealthRecord = async (req, res) => {
     res.status(500).json({ error: "เกิดข้อผิดพลาดในการอัปเดตข้อมูล" });
   }
 };
+
 exports.deleteHealthRecord = async (req, res) => {
   const { id } = req.params;
 

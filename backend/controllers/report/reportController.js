@@ -25,6 +25,7 @@ exports.getReportByPatientId = async (req, res) => {
       อายุ: report.Age,
       เพศ: report.Gender,
       วันเกิด: report.Birthday,
+      เลขบัตรประชาชน: report.Citizen_ID ?? null, // เพิ่มตรงนี้
       "%โอกาสเกิดโรคแทรกซ้อน": report.Risk_Percentage ?? 0,
       "กลุ่มเสี่ยงปิงปองจราจร 7 สี": report.Color ?? null,
     };
