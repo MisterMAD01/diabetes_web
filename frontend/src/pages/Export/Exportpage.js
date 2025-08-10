@@ -189,7 +189,7 @@ const ExportPage = () => {
             <div className="avatar">{patient.name.charAt(0)}</div>
             <div className="patient-info">
               <div className="name-line">{patient.name}</div>
-              <div className="hn">{patient.hn}</div>
+              <div className="hn">{patient.citizenId}</div>
             </div>
           </div>
         ))}
@@ -251,7 +251,7 @@ const ExportPage = () => {
                 .map((p) => (
                   <div key={p.id} style={{ padding: "0.25rem 0" }}>
                     <span className="patient-name">{p.name}</span>{" "}
-                    <span className="patient-hn">({p.hn})</span>
+                    <span className="patient-hn">({p.citizenId})</span>
                   </div>
                 ))}
             </div>

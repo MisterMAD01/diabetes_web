@@ -267,17 +267,20 @@ exports.exportPDF = async (req, res) => {
 
 exports.exportExcel = async (req, res) => {
   const ids = req.query.ids?.split(",").map(Number);
-  if (!ids || ids.length === 0)
+  if (!ids || ids.length === 0) {
     return res.status(400).send("Missing patient IDs");
+  }
 
   try {
     // ดึงข้อมูลผู้ป่วยจากฐานข้อมูล
     const rows = await getLatestForExcel(ids);
-    if (!rows.length) return res.status(404).send("No data found");
+    if (!rows.length) {
+      return res.status(404).send("No data found");
+    }
 
-    // แปลงข้อมูลวันที่ให้เป็นรูปแบบไทย
+    // แปลงข้อมูลเป็นภาษาไทยและเพิ่มเลขบัตรประชาชน
     const formattedRows = rows.map((row) => ({
-      HN: row.Patient_ID,
+      เลขบัตรประจำตัวประชาชน: row.Citizen_ID,
       ชื่อ: row.P_Name,
       อายุ: row.Age,
       น้ำตาลในเลือด: row.Blood_Sugar,
@@ -298,10 +301,10 @@ exports.exportExcel = async (req, res) => {
       }),
     }));
 
-    // สร้าง Worksheet จากข้อมูลที่ได้
+    // สร้าง Worksheet จากข้อมูล
     const ws = XLSX.utils.json_to_sheet(formattedRows, {
       header: [
-        "HN",
+        "เลขบัตรประจำตัวประชาชน",
         "ชื่อ",
         "อายุ",
         "น้ำตาลในเลือด",
@@ -314,59 +317,34 @@ exports.exportExcel = async (req, res) => {
       ],
     });
 
-    // กำหนดสีพื้นหลังให้กับหัวคอลัมน์
+    // ปรับหัวคอลัมน์ให้มีพื้นหลังสีเทา
     for (let col = 0; col < 10; col++) {
       const headerCell = ws[XLSX.utils.encode_cell({ r: 0, c: col })];
       if (headerCell) {
         headerCell.s = {
-          fill: {
-            fgColor: { rgb: "D9D9D9" }, // สี #D9D9D9 สำหรับพื้นหลัง
-          },
-          font: {
-            bold: true,
-            color: { rgb: "000000" }, // สีตัวอักษรดำ
-          },
-          alignment: {
-            vertical: "center", // ตั้งตัวอักษรกลางในแนวตั้ง
-            horizontal: "center", // ตั้งตัวอักษรกลางในแนวนอน
-          },
+          fill: { fgColor: { rgb: "D9D9D9" } },
+          font: { bold: true, color: { rgb: "000000" } },
+          alignment: { vertical: "center", horizontal: "center" },
         };
       }
     }
 
-    // การปรับความกว้างของคอลัมน์ตามความยาวข้อมูล
-    const colWidths = [
-      "HN",
-      "ชื่อ",
-      "อายุ",
-      "น้ำตาลในเลือด",
-      "ความดันโลหิต",
-      "น้ำหนัก",
-      "รอบเอว",
-      "เสี่ยง",
-      "กลุ่มเสี่ยง",
-      "วันที่",
-    ].map((header, i) => {
+    // ปรับความกว้างคอลัมน์อัตโนมัติ
+    const colWidths = Object.keys(formattedRows[0]).map((header) => {
       const maxLength = Math.max(
-        ...formattedRows.map((row) => row[header]?.toString().length || 0),
-        header.length // ความยาวของหัวคอลัมน์
+        header.length,
+        ...formattedRows.map((row) => row[header]?.toString().length || 0)
       );
-      return { wch: maxLength + 2 }; // เพิ่ม padding เล็กน้อย
+      return { wch: maxLength + 2 };
     });
-
-    // กำหนดความกว้างของคอลัมน์ใน Worksheet
     ws["!cols"] = colWidths;
 
-    // จัดรูปแบบให้แถวข้อมูลอยู่ตรงกลางเฉพาะในแนวตั้งด้วย
-    for (let rowIdx = 1; rowIdx < formattedRows.length + 1; rowIdx++) {
+    // จัดแนวข้อมูลตรงกลางในแนวตั้ง
+    for (let rowIdx = 1; rowIdx <= formattedRows.length; rowIdx++) {
       for (let colIdx = 0; colIdx < 10; colIdx++) {
         const cell = ws[XLSX.utils.encode_cell({ r: rowIdx, c: colIdx })];
         if (cell) {
-          cell.s = {
-            alignment: {
-              vertical: "center", // ตั้งตัวอักษรกลางในแนวตั้ง
-            },
-          };
+          cell.s = { alignment: { vertical: "center" } };
         }
       }
     }
@@ -375,26 +353,22 @@ exports.exportExcel = async (req, res) => {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "ข้อมูลผู้ป่วย");
 
-    // แปลงวันที่ในรูปแบบ 20/02/2568
+    // ตั้งชื่อไฟล์เป็นวันที่ปัจจุบันและ ID ผู้ป่วย
     const date = new Date()
       .toLocaleDateString("th-TH", {
         timeZone: "Asia/Bangkok",
-        day: "2-digit", // ใช้วันที่เป็นรูปแบบ 2 หลัก เช่น 20
-        month: "2-digit", // ใช้เดือนเป็นรูปแบบ 2 หลัก เช่น 02
-        year: "numeric", // ใช้ปีเต็ม (พ.ศ.)
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
       })
-      .replace(/\//g, "-"); // ใช้ / แทน -
-
-    // สร้างชื่อไฟล์ที่มีวันที่และ ID ของผู้ป่วย
+      .replace(/\//g, "-");
     const fileName = `${date} ข้อมูลผู้ป่วย ${ids.join(",")}.xlsx`;
-
-    // กำหนดที่เก็บไฟล์ Excel
     const filePath = path.join(exportDir, fileName);
 
-    // เขียนไฟล์ Excel
+    // เขียนไฟล์
     XLSX.writeFile(wb, filePath);
 
-    // ส่งไฟล์ให้ผู้ใช้ดาวน์โหลด
+    // ส่งให้ดาวน์โหลด
     res.download(filePath);
   } catch (error) {
     console.error(error);
