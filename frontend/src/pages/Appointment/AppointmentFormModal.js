@@ -26,11 +26,15 @@ const PatientSelect = ({ patients, selectedPatient, onChange, isDisabled }) => {
         isSearchable={!isDisabled}
         components={{ DropdownIndicator: isDisabled ? null : undefined }}
         isDisabled={isDisabled}
-        getOptionLabel={(option) => {
-          if (!option) return "";
-          const P_Name = option.P_Name || "";
-          const Citizen_ID = option.Citizen_ID || "";
-          return `${P_Name} - ${Citizen_ID}`;
+        // แสดงใน dropdown: ชื่อ - เลขบัตร
+        formatOptionLabel={(option, { context }) => {
+          if (context === "menu") {
+            // ใน dropdown list
+            return `${option.P_Name} - ${option.Citizen_ID}`;
+          } else {
+            // ใน input (selected)
+            return option.P_Name;
+          }
         }}
         filterOption={(option, inputValue) => {
           if (!option?.data) return false;
@@ -82,7 +86,7 @@ const TimeInput = ({ defaultValue }) => (
 
 const HnField = ({ hn }) => (
   <div>
-    <label>รหัสผู้ป่วย (HN)</label>
+    <label>เลขบัตรประชาชน</label>
     <input type="text" name="hn" value={hn} disabled />
   </div>
 );
@@ -97,7 +101,8 @@ const NoteTextarea = ({ defaultValue }) => (
 const AppointmentFormModal = ({ onClose, editAppointment }) => {
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [hn, setHn] = useState("");
+  const [hn, setHn] = useState(""); // Patient_ID
+  const [citizenId, setCitizenId] = useState(""); // Citizen_ID
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
@@ -119,6 +124,7 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
           const match = options.find((opt) => opt.value === editAppointment.hn);
           setSelectedPatient(match || null);
           setHn(editAppointment.hn);
+          setCitizenId(match?.Citizen_ID || "");
         }
       })
       .catch((err) => console.error("โหลดรายชื่อผู้ป่วยล้มเหลว:", err));
@@ -174,6 +180,7 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
       setSelectedPatient(null);
       setSelectedDoctor(null);
       setHn("");
+      setCitizenId("");
     } catch (error) {
       console.error("เกิดข้อผิดพลาด:", error);
       toast.error("ไม่สามารถบันทึกนัดหมายได้");
@@ -183,6 +190,7 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
   const handlePatientChange = (selected) => {
     setSelectedPatient(selected);
     setHn(selected?.value || "");
+    setCitizenId(selected?.Citizen_ID || "");
   };
 
   return (
@@ -202,7 +210,7 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
               onChange={handlePatientChange}
               isDisabled={!!editAppointment} // Disable ถ้าแก้ไข
             />
-            <HnField hn={hn} />
+            <HnField hn={citizenId} />
             <DateInput defaultValue={editAppointment?.date} min={todayString} />
             <DoctorSelect
               doctors={doctors}

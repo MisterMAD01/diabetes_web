@@ -109,6 +109,7 @@ const AppointmentPage = () => {
     setSelectedAppointment({
       id: appt.Appointment_ID,
       hn: appt.Patient_ID,
+      Citizen: appt.Citizen_ID,
       name: appt.Patient_Name,
       date: formatDateForInput(appt.Appointment_Date),
       time: appt.Appointment_Time?.slice(0, 5),

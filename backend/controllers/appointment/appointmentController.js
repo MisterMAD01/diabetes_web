@@ -39,7 +39,7 @@ exports.getAppointments = async (req, res) => {
          a.Patient_ID,
          a.Doctor_ID, 
          p.P_Name AS Patient_Name,
-         p.Citizen_ID,    -- เพิ่มตรงนี้
+         p.Citizen_ID, 
          a.Appointment_Date,
          a.Appointment_Time,
          a.Reason,

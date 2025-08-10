@@ -33,7 +33,7 @@ const AppointmentInfoBox = ({ appointment }) => (
       <p>
         <strong>{appointment.name}</strong>
       </p>
-      <p>HN: {appointment.hn}</p>
+      <p>เลขบัตรประชาชน: {appointment.Citizen}</p>
     </div>
     <StatusBadge status={appointment.status} />
   </div>
