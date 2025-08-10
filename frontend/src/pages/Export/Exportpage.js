@@ -43,15 +43,14 @@ const ExportPage = () => {
       });
   }, []);
 
-  // กรองรายชื่อผู้ป่วยตามคำค้นหา (ชื่อหรือ HN)
+  // กรองรายชื่อผู้ป่วยตามคำค้นหา (ชื่อหรือเลขบัตรประชาชน)
   const filteredPatients = patients.filter((p) => {
-    const name = p.name || "";
-    const citizenId = p.citizenId || "";
-    const searchLower = search.toLowerCase();
+    const name = (p.name || "").toString().toLowerCase();
+    const citizenId = (p.citizenId || p.Citizen_ID || "").toString(); // รองรับหลายรูปแบบ key
+    const searchLower = search.toString().toLowerCase();
 
     return (
-      name.toLowerCase().includes(searchLower) ||
-      citizenId.toLowerCase().includes(searchLower)
+      name.includes(searchLower) || citizenId.includes(searchLower) // เลขบัตรใช้ includes แบบไม่แปลงเป็น lower เพราะเป็นตัวเลข
     );
   });
 
@@ -154,7 +153,7 @@ const ExportPage = () => {
       <div className="export-controls">
         <input
           type="text"
-          placeholder="ค้นหา"
+          placeholder="ค้นหาผู้ป่วย"
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
