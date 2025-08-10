@@ -21,7 +21,7 @@ exports.getPatientsByColor = async (req, res) => {
   try {
     const [rows] = await pool.query(
       `
-      SELECT Patient_ID AS id, P_Name AS fullname, Phone_Number AS phone, Age AS age,
+      SELECT Patient_ID AS id, Citizen_ID AS citizenId, P_Name AS fullname, Phone_Number AS phone, Age AS age,
         Gender AS gender
       FROM patient
       WHERE Color = ?

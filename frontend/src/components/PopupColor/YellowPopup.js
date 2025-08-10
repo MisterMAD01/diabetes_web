@@ -17,8 +17,8 @@ const YellowPopup = ({ onClose, patients }) => (
           <thead>
             <tr>
               <th>ลำดับ</th>
-              <th>HN</th>
               <th>ชื่อ</th>
+              <th>เลขบัตรประชาชน</th>
               <th>เพศ</th>
               <th>เบอร์</th>
               <th>อายุ</th>
@@ -28,8 +28,8 @@ const YellowPopup = ({ onClose, patients }) => (
             {patients.map((p, index) => (
               <tr key={p.id}>
                 <td>{(index + 1).toString().padStart(3, "0")}</td>
-                <td>{p.id}</td>
                 <td>{p.fullname}</td>
+                <td>{p.citizenId}</td>
                 <td>{p.gender}</td>
                 <td>{p.phone}</td>
                 <td>{p.age}</td>
