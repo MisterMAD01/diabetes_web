@@ -14,20 +14,38 @@ const getTodayDateString = () => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
-const PatientSelect = ({ patients, selectedPatient, onChange, isDisabled }) => (
-  <div>
-    <label>ชื่อผู้ป่วย</label>
-    <Select
-      options={patients}
-      value={selectedPatient}
-      onChange={onChange}
-      placeholder="ค้นหาชื่อผู้ป่วย..."
-      isSearchable={!isDisabled}
-      components={{ DropdownIndicator: isDisabled ? null : undefined }}
-      isDisabled={isDisabled} // ปิดไม่ให้แก้ไข
-    />
-  </div>
-);
+const PatientSelect = ({ patients, selectedPatient, onChange, isDisabled }) => {
+  return (
+    <div>
+      <label>ชื่อผู้ป่วย</label>
+      <Select
+        options={patients}
+        value={selectedPatient}
+        onChange={onChange}
+        placeholder="ค้นหาผู้ป่วย"
+        isSearchable={!isDisabled}
+        components={{ DropdownIndicator: isDisabled ? null : undefined }}
+        isDisabled={isDisabled}
+        getOptionLabel={(option) => {
+          if (!option) return "";
+          const P_Name = option.P_Name || "";
+          const Citizen_ID = option.Citizen_ID || "";
+          return `${P_Name} - ${Citizen_ID}`;
+        }}
+        filterOption={(option, inputValue) => {
+          if (!option?.data) return false;
+          const P_Name = option.data.P_Name || "";
+          const Citizen_ID = option.data.Citizen_ID || "";
+          const search = inputValue.toLowerCase();
+          return (
+            P_Name.toLowerCase().includes(search) ||
+            Citizen_ID.toLowerCase().includes(search)
+          );
+        }}
+      />
+    </div>
+  );
+};
 
 const DoctorSelect = ({ doctors, selectedDoctor, onChange }) => (
   <div>
@@ -91,7 +109,9 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
       .then((res) => {
         const options = res.data.map((p) => ({
           value: p.Patient_ID,
-          label: p.P_Name,
+          label: `${p.P_Name} - ${p.Citizen_ID}`,
+          P_Name: p.P_Name,
+          Citizen_ID: p.Citizen_ID,
         }));
         setPatients(options);
 
@@ -189,7 +209,6 @@ const AppointmentFormModal = ({ onClose, editAppointment }) => {
               selectedDoctor={selectedDoctor}
               onChange={setSelectedDoctor}
             />
-
             <TimeInput defaultValue={editAppointment?.time} />
             <NoteTextarea defaultValue={editAppointment?.note} />
           </div>

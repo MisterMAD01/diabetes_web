@@ -69,7 +69,7 @@ const AppointmentPage = () => {
     const search = searchTerm.toLowerCase();
     const matchesSearch =
       appt.Patient_Name?.toLowerCase().includes(search) ||
-      appt.Patient_ID?.toString().includes(search);
+      appt.Citizen_ID?.toLowerCase().includes(search);
 
     const appointmentDate = toLocalISODate(appt.Appointment_Date);
 

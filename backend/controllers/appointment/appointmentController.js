@@ -39,6 +39,7 @@ exports.getAppointments = async (req, res) => {
          a.Patient_ID,
          a.Doctor_ID, 
          p.P_Name AS Patient_Name,
+         p.Citizen_ID,    -- เพิ่มตรงนี้
          a.Appointment_Date,
          a.Appointment_Time,
          a.Reason,
@@ -120,10 +121,12 @@ exports.updateAppointment = async (req, res) => {
 
 exports.getPatients = async (req, res) => {
   try {
-    const [rows] = await pool.execute("SELECT Patient_ID, P_Name FROM patient"); // SQL สำหรับดึงข้อมูลผู้ป่วย
-    res.status(200).json(rows); // ส่งข้อมูลผู้ป่วยกลับในรูปแบบ JSON
+    const [rows] = await pool.execute(
+      "SELECT Patient_ID, P_Name, Citizen_ID FROM patient"
+    );
+    res.status(200).json(rows);
   } catch (error) {
-    console.error("Error fetching patients:", error); // Log ข้อผิดพลาด
-    res.status(500).json({ message: "Failed to fetch patients" }); // ส่งสถานะ 500 พร้อมข้อความข้อผิดพลาด
+    console.error("Error fetching patients:", error);
+    res.status(500).json({ message: "Failed to fetch patients" });
   }
 };

@@ -3,7 +3,7 @@ const db = require("../../config/db");
 
 exports.getPatients = async () => {
   const [rows] = await db.query(`
-    SELECT Patient_ID, P_Name
+    SELECT Patient_ID, P_Name, Citizen_ID
     FROM patient
   `);
   return rows;
@@ -21,7 +21,8 @@ exports.getReportByPatientId = async (id) => {
       p.Gender,
       p.Birthdate AS Birthday,
       p.Risk AS Risk_Percentage,
-      p.Color
+      p.Color,
+      p.Citizen_ID
     FROM patient p
     WHERE p.Patient_ID = ?
   `,

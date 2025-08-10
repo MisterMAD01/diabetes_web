@@ -34,6 +34,7 @@ const ExportPage = () => {
           id: p.ID,
           name: p.Name,
           hn: p.HN || `HN: ${p.ID}`,
+          citizenId: p.Citizen_ID || "", // เพิ่มเลขบัตรประชาชน
         }));
         setPatients(mapped);
       })
@@ -43,11 +44,16 @@ const ExportPage = () => {
   }, []);
 
   // กรองรายชื่อผู้ป่วยตามคำค้นหา (ชื่อหรือ HN)
-  const filteredPatients = patients.filter(
-    (p) =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.hn.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredPatients = patients.filter((p) => {
+    const name = p.name || "";
+    const citizenId = p.citizenId || "";
+    const searchLower = search.toLowerCase();
+
+    return (
+      name.toLowerCase().includes(searchLower) ||
+      citizenId.toLowerCase().includes(searchLower)
+    );
+  });
 
   const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
 

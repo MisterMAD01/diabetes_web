@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import './TodayAppointments.css';
-import { getLocalISODate } from '../utils'; // ปรับ path ตามจริงของคุณ
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./TodayAppointments.css";
+import { getLocalISODate } from "../utils"; // ปรับ path ตามจริงของคุณ
 
 const TodayAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -11,7 +11,7 @@ const TodayAppointments = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/appointments');
+        const res = await axios.get("http://localhost:5000/api/appointments");
 
         const today = getLocalISODate(new Date()); // วันที่ปัจจุบัน (เขตเวลาไทย)
 
@@ -22,7 +22,7 @@ const TodayAppointments = () => {
 
         setAppointments(todayAppointments);
       } catch (err) {
-        console.error('โหลดนัดหมายล้มเหลว:', err);
+        console.error("โหลดนัดหมายล้มเหลว:", err);
       }
     };
 
@@ -31,14 +31,14 @@ const TodayAppointments = () => {
 
   const getStatusClass = (status) => {
     switch (status) {
-      case 'รอพบแพทย์':
-        return 'status-waiting';
-      case 'เสร็จสิ้น':
-        return 'status-attended';
-      case 'ยกเลิก':
-        return 'status-cancel';
+      case "รอพบแพทย์":
+        return "status-waiting";
+      case "เสร็จสิ้น":
+        return "status-attended";
+      case "ยกเลิก":
+        return "status-cancel";
       default:
-        return 'status-pending';
+        return "status-pending";
     }
   };
 
@@ -46,7 +46,7 @@ const TodayAppointments = () => {
     <div className="appointment-card">
       <div className="appointment-header">
         <h3 className="title">การนัดหมายวันนี้</h3>
-        <button className="view-all" onClick={() => navigate('/appointments')}>
+        <button className="view-all" onClick={() => navigate("/appointments")}>
           ดูทั้งหมด
         </button>
       </div>
@@ -70,7 +70,9 @@ const TodayAppointments = () => {
                       </div>
                       <div>
                         <div className="name">{apt.Patient_Name}</div>
-                        <div className="hn">HN: {apt.Patient_ID}</div>
+                        <div className="hn">
+                          เลขบัตรประชาชน: {apt.Citizen_ID}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -84,7 +86,7 @@ const TodayAppointments = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="3" style={{ textAlign: 'center' }}>
+                <td colSpan="3" style={{ textAlign: "center" }}>
                   ไม่มีนัดหมายวันนี้
                 </td>
               </tr>

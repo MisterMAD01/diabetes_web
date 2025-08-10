@@ -191,3 +191,27 @@
 .p-action-buttons .p-edit-btn {
   color: #ef4444;
 }
+@media (max-width: 768px) {
+  .patient-row {
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .patient-row > div {
+    flex: none;
+    padding: 6px 0;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .add-button {
+    width: 100%;
+  }
+}

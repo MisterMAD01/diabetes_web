@@ -52,8 +52,10 @@ const AllPatients = () => {
     fetchPatients();
   };
 
-  const filteredPatients = patients.filter((patient) =>
-    patient.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPatients = patients.filter(
+    (patient) =>
+      patient.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      patient.citizenId?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
@@ -119,7 +121,7 @@ const AllPatients = () => {
 
         <div className="patient-table">
           <div className="patient-row patient-header">
-            <div>HN</div>
+            <div>เลขบัตรประชาชน</div>
             <div>ชื่อ-นามสกุล</div>
             <div>อายุ</div>
             <div>เบอร์โทร</div>
@@ -130,7 +132,7 @@ const AllPatients = () => {
 
           {currentPatients.map((patient) => (
             <div key={patient.id} className="patient-row">
-              <div>{patient.id}</div>
+              <div>{patient.citizenId || "-"}</div>
               <div>{patient.name}</div>
               <div>{patient.age || "-"}</div>
               <div>{patient.phone || "-"}</div>
