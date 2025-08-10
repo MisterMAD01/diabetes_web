@@ -136,7 +136,7 @@ const AllPatients = () => {
               <div>{patient.name}</div>
               <div>{patient.age || "-"}</div>
               <div>{patient.phone || "-"}</div>
-              <div>{patient.Underlying_Disease || "-"}</div>
+              <div>{patient.underlyingDisease || "-"}</div>
               <div>
                 <span
                   className={`risk-tag ${patient.color_level
