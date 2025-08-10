@@ -70,9 +70,7 @@ const TodayAppointments = () => {
                       </div>
                       <div>
                         <div className="name">{apt.Patient_Name}</div>
-                        <div className="hn">
-                          เลขบัตรประชาชน: {apt.Citizen_ID}
-                        </div>
+                        <div className="hn">{apt.Citizen_ID}</div>
                       </div>
                     </div>
                   </td>
