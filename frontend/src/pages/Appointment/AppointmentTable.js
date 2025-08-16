@@ -1,13 +1,7 @@
 import { formatTimeThai } from "../../components/utils";
 import React from "react";
 
-const AppointmentTable = ({
-  appointments,
-  onEdit,
-  onDelete,
-  onView,
-  allAppointments,
-}) => {
+const AppointmentTable = ({ appointments, onEdit, onDelete, onView }) => {
   const formatDateThai = (dateStr) => {
     if (!dateStr) return "-";
     return new Date(dateStr).toLocaleDateString("th-TH", {
@@ -63,7 +57,7 @@ const AppointmentTable = ({
               <button
                 className="edit"
                 title="แก้ไข"
-                onClick={() => onEdit(allAppointments.indexOf(appt))}
+                onClick={() => onEdit(appt)}
               >
                 <i className="fas fa-edit"></i>
               </button>

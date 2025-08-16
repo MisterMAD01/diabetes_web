@@ -132,8 +132,7 @@ const AppointmentPage = () => {
     setShowAppointmentModal(true);
   };
 
-  const openEditAppointment = (index) => {
-    const appt = appointments[index];
+  const openEditAppointment = (appt) => {
     setEditAppointment({
       id: appt.Appointment_ID,
       hn: appt.Patient_ID,
