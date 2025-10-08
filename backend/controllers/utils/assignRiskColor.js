@@ -3,19 +3,19 @@ const db = require("../../config/db");
 // ฟังก์ชันให้คะแนนความดันโลหิต
 function getBPScore(systolic, diastolic) {
   if (systolic <= 120 && diastolic <= 80) return 0;
-  if (systolic <= 139 && diastolic <= 89) return 1;
-  if (systolic <= 155 && diastolic <= 99) return 2;
-  if (systolic <= 179 && diastolic <= 109) return 3;
-  if (systolic <= 199 && diastolic <= 119) return 4;
+  if (systolic <= 130 && diastolic <= 85) return 1;
+  if (systolic <= 139 && diastolic <= 89) return 2;
+  if (systolic <= 159 && diastolic <= 99) return 3;
+  if (systolic <= 179 && diastolic <= 109) return 4;
   return 5;
 }
 
 function getSugarScore(blood_sugar) {
   if (blood_sugar <= 100) return 0;
-  if (blood_sugar <= 125) return 1;
-  if (blood_sugar <= 154) return 2;
-  if (blood_sugar <= 182) return 3;
-  if (blood_sugar <= 200) return 4;
+  if (blood_sugar <= 115) return 1;
+  if (blood_sugar <= 125) return 2;
+  if (blood_sugar <= 154) return 3;
+  if (blood_sugar <= 182) return 4;
   return 5;
 }
 
