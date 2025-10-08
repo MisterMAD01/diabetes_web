@@ -1,12 +1,13 @@
 @echo off
-REM --- ไปที่โฟลเดรีโปรเจกต์หลัก (ที่ไฟล์นี้อยู่) ---
-cd /d %~dp0
 
-REM --- สั่งรัน Backend ด้วย nodemon ในหน้าต่างใหม่ ---
-start "Backend" cmd /k "cd backend && npx nodemon server.js"
+REM --- ไปที่โฟลเดอร์หลักของโปรเจกต์ (ที่ไฟล์นี้อยู่) ---
+cd /d "%~dp0"
 
-REM --- สั่งรัน Frontend ด้วย npm start ในหน้าต่างใหม่ ---
-start "Frontend" cmd /k "cd frontend && npm start"
+REM --- รัน Backend: install packages, แล้วรัน nodemon ในหน้าต่างใหม่ ---
+start "Backend Service: Install & Run" cmd /k "cd backend && npm install && npx nodemon server.js"
 
-REM --- จบสคริปต์ ไม่ต้องรออะไรเพิ่ม ---
-exit
+REM --- รัน Frontend: install packages, แล้วรัน npm start ในหน้าต่างใหม่ ---
+start "Frontend Service: Install & Run" cmd /k "cd frontend && npm install && npm start"
+
+REM --- สคริปต์หลักจบการทำงานทันที (หน้าต่าง CMD นี้จะไม่ค้าง) ---
+EXIT /B
